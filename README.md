@@ -1,4 +1,4 @@
 # Grape
 
-An interactive platform widely used in classes or meeting.
+An interactive platform widely used in class and meeting.
 Let's share & discuss!
