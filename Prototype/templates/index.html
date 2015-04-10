@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Prototype</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
+  <div class="header">
+    {%if islogin == 1%}
+    <p>Welcome ,{{username}}!</p>
+    {%else%}
+    <p>{{username}}!</p>
+    {%endif%}
+    <a href="{{ url_for('login') }}">login</a>
+    <a href="{{ url_for('register') }}">register</a>
+  </div>
+  <div class="container">
+    {%if islogin == 1%}
+    <p>Aha, just kiding!</p>
+    {%else%}
+    <p>For more infomation, plz login or register!</p>
+    {%endif%}
+    <p>To be continued.</p>
+  </div>
+</body>
+</html>
