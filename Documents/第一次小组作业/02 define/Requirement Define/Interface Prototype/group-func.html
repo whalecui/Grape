@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+		<script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"></meta>
+		<link rel="stylesheet" href="static/css/group-func.css">
+
+	</head>
+	
+	<body>
+		<div class='main'>
+		
+			<nav class="navbar navbar-default">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">
+					LOGO and Project Name</a>
+				</div>
+				<div class="collapse navbar-collapse" 
+					id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav navbar-right">
+						<ul class="nav navbar-nav">
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" 
+									data-toggle="dropdown">
+								User Name
+								<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="#">View Groups</a></li>
+									<li><a href="#">Contact with Admin</a></li>
+									<li class="divider"></li>
+									<li><a href="#">Settings</a></li>
+									<li class="divider"></li>
+									<li><a href="#">Log Out</a></li>
+								</ul>
+							</li>
+						</ul>
+					</ul>
+				</div>
+			</nav>
+			
+			<div class="content">
+				<div class="group-li">
+					<h4>My Group</h4>
+					<ul class="nav nav-pills nav-stacked">
+					   <li class="active"><a href="#">group1</a></li>
+					   <li><a href="#">group2</a></li>
+					   <li><a href="#">group3</a></li>
+					</ul>
+					<h4>Attended Group</h4>
+					<ul class="nav nav-pills nav-stacked">
+					   <li><a href="#">group4</a></li>
+					   <li><a href="#">group5</a></li>
+					   <li><a href="#">group6</a></li>
+					</ul>
+				</div>
+				
+				<div class="group-details">
+					<ul id="myTab" class="nav nav-tabs">
+						<li class="active">
+							<a href="#Info" data-toggle="tab">
+							Group Information</a>
+						</li>
+						<li><a href="#Discussion" data-toggle="tab">Discussion</a></li>
+						<li><a href="#Vote" data-toggle="tab">Vote</a></li>
+						<li><a href="#Share" data-toggle="tab">Share</a></li>
+						<li><a href="#Bulletin" data-toggle="tab">Bulletin</a></li>
+					</ul>
+					<div id="myTabContent" class="tab-content">
+						<div class="tab-pane fade in active" id="Info">
+							<div class="dis">
+								Group Information
+							</div>
+						</div>
+						<div class="tab-pane fade" id="Discussion">
+							<div class="dis">
+								contents of discussion
+							</div>
+						</div>
+						<div class="tab-pane fade" id="Vote">
+							<p>
+								contents of vote
+							</p>
+						</div>
+						<div class="tab-pane fade" id="Share">
+							<p>
+								contents of share
+							</p>
+						</div>
+						<div class="tab-pane fade" id="Bulletin">
+							<p>
+								contents of bulletin
+							</p>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			
+			
+		</div>
+		
+		
+		
+	</body>
+</html>
