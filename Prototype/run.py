@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 app.secret_key='\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='test', charset='utf8')
+conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='test', charset='utf8')
 sql = 'create table if not exists user(\
       username varchar(128) primary key, \
       password varchar(128))'
