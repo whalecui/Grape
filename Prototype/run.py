@@ -12,19 +12,21 @@ app = Flask(__name__)
 app.secret_key='\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
 conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='test', charset='utf8')
+cursor = conn.cursor()
+sql = 'drop table user'
+cursor.execute(sql)
 sql = 'create table if not exists user(\
       username varchar(128) primary key, \
       password varchar(128))'
-cursor = conn.cursor()
 cursor.execute(sql)
 
 @app.route('/')
 def index():
   username = request.cookies.get('username')
   if not username:
-    username = u'请先登录'
+    username = 'undefined'
   islogin = session.get('islogin')
-  return render_template('index.html', username=username, islogin=islogin)
+  return render_template('index.html',username=username, islogin=islogin)
 
 
 @app.route('/register', methods=['GET','POST'])
@@ -33,18 +35,20 @@ def register():
     username = request.form.get('username')
     password = request.form.get('password')
     password2 = request.form.get('password2')
-    if(password2 == password):
+    cursor.execute('select username from user')
+    if(password2 == password and username not in cursor.fetchall()[0]):
       sql = 'insert into user(username, password) values("%s","%s")' % (username, password)
       cursor.execute(sql)
       conn.commit()
-      return render_template('/', username=username, islogin='1')
+      response = make_response(redirect('/login'))
+      return response
     else:
       # cursor.execute('select * from user')
       return render_template('register.html')
   else:
     return render_template('register.html')
 
-@app.route('/login/', methods=['GET','POST'])
+@app.route('/login', methods=['GET','POST'])
 def login():
   if request.method == 'POST':
     username = request.form.get('username')
@@ -52,7 +56,7 @@ def login():
     cursor.execute('select * from user')
     if (username, password) in cursor.fetchall():
       response = make_response(redirect('/'))
-      response.set_cookie('username', value=username, max_age=300)
+      response.set_cookie('username', username, max_age=10)
       session['islogin'] = '1'
       return response
     else:
