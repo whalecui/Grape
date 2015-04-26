@@ -1,55 +1,30 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-	<head>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css">
-		<script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
-		<script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-		<link rel="stylesheet" href="../static/css/index-unlog.css">
-		<link rel="stylesheet" href="../static/css/icon.css">
-		<script src="../static/js/main.js"></script>
-        <script type=text/javascript>
-            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-        </script>
-	</head>
-	
-	<body>
-		<div class='main'>
-			<nav class="navbar navbar-default">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse"
-                        data-target="#navbar-collapse">
-                        <span class="sr-only">切换导航</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand logo" href="#">
-                        <i class="grape"><s></s></i>Project Name</a>
-                </div>
-                <div class="collapse navbar-collapse" id="navbar-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#" data-toggle="modal" data-target="#logModal">
-                            Log In
-                        </a></li>
-                        <li><a href="#"  data-toggle="modal" data-target="#regModal">
-                            <i class="fa fa-user-plus"></i> Sign Up
-                        </a></li>
-                    </ul>
-                </div>
-			</nav>
-			
-			<div class="content">
-				<h1>INDEX</h1>
-				<p>Some introductions</p>
-			</div>
-			
-		</div>
-		
+{% extends "layout.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="../static/css/index-unlog.css">
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+{% endblock %}
+
+{% block navbar %}
+    <li><a href="#" data-toggle="modal" data-target="#logModal">
+        Log In
+    </a></li>
+    <li><a href="#"  data-toggle="modal" data-target="#regModal">
+        <i class="fa fa-user-plus"></i> Sign Up
+    </a></li>
+{% endblock %}
+
+{% block content %}
+    <h1>INDEX</h1>
+    <p>Some introductions</p>
+{% endblock %}
+
+{% block modal %}
 		<div class="modal fade" id="logModal" tabindex="-1" role="dialog" 
-		aria-labelledby="logModalLabel" aria-hidden="true">
+		    aria-labelledby="logModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -133,6 +108,4 @@
 				</div>
 			</div>
 		</div><!-- end of register modal -->
-		
-	</body>
-</html>
+{% endblock %}

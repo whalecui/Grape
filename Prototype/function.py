@@ -41,3 +41,12 @@ class User:
 		conn.commit()
 		conn.close()
 		return True
+
+def check_u(username):
+    conn = MySQLdb.connect(host=self.db_host,port=self.db_port,user=self.db_user,passwd=self.db_passwd,db=self.db_name,charset="utf8")
+    cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+    cursor.execute('select * from user')
+    for row in cursor.fetchall():
+        if row[1] == username:
+            return 0
+    return 1

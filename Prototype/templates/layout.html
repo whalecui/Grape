@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        {% block head %}
+            {% if title %}
+            <title>{{title}}</title>
+            {% else %}
+            <title>Grape</title>
+            {% endif %}
+            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+            <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css">
+            <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+            <script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+            <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+            <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+            <link rel="stylesheet" href="../static/css/icon.css">
+            <script src="../static/js/main.js"></script>
+        {% endblock %}
+    </head>
+
+    <body>
+        <div class='main'>
+
+            <nav class="navbar navbar-default">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle"
+                            data-toggle="collapse" data-target="#navbar-collapse">
+                        <span class="sr-only">切换导航</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand logo" href="#">
+                        <i class="grape"><s></s></i>Project Name
+                    </a>
+                </div>
+                <div class="collapse navbar-collapse"
+                    id="navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        {% block navbar %}{% endblock %}
+                    </ul>
+                </div>
+            </nav>
+
+			<div class="content">
+                {% block content %}{% endblock %}
+            </div>
+
+        </div>
+        {% block modal %}{% endblock %}
+    </body>
+</html>
