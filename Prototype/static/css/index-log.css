@@ -1,0 +1,17 @@
+
+.group-details
+{
+	width: 100%;
+	float: left;
+}
+
+.content
+{
+	width: 90% !important;
+	margin: auto;
+}
+.tab-content
+{
+	width: 90%;
+	margin: 5% auto 0 auto;
+}
