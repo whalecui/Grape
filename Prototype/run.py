@@ -119,7 +119,7 @@ def check_users():
         if row[1] == username:
             return jsonify(result = 0)
     return jsonify(result = 1)
-
+@app.route('/gm/', methods=['GET', 'POST'])
 def getMembers():
     name='test'
     Group1=Group(name)
