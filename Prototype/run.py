@@ -2,13 +2,13 @@
 #coding:utf8
 from flask import Flask, render_template, url_for, request,redirect,make_response,session
 import os,MySQLdb
+from flask import jsonify
 from config import *
 from function import *
-
 app = Flask(__name__)
 
 
-app.secret_key='\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
+app.secret_key = '\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
 conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='test', charset='utf8')
 cursor = conn.cursor()
@@ -18,7 +18,8 @@ cursor.execute(sql)
 sql = 'create table if not exists user(\
         user_id int not null primary key AUTO_INCREMENT, \
         username varchar(128), \
-        password varchar(128))'
+        password varchar(128), \
+        email varchar(128))'
 cursor.execute(sql)
 
 @app.route('/')
@@ -39,12 +40,13 @@ def index():
 def register():
     if request.method == 'POST':
         session.clear()
+        email = request.form.get('email')
         username = request.form.get('username')
         password = request.form.get('password')
         password2 = request.form.get('password2')
         response = make_response(redirect('/'))
         session['islogin'] = '0'
-        if(username == '' or password == ''):
+        if(username == '' or password == '' or email == ''):
             session['message1'] = 'fuck!'
             return response
         if password2 == password:
@@ -54,15 +56,17 @@ def register():
             if result:
                 session['message1'] = "User already existed!"
                 return response
-            sql = 'insert into user(username, password) values("%s","%s")' % (username, password)
+            sql = 'select * from user where email="%s"' % email
+            sql = 'insert into user(username, password, email) values("%s","%s","%s")' % (username, password, email)
             cursor.execute(sql)
             conn.commit()
-            sql = 'select * from user where username="%s"' % username
+            sql = 'select * from user where email="%s"' % email
             cursor.execute(sql)
             result = cursor.fetchall()[0]
             session['username'] = result[1]
             session['islogin'] = '1'
             session['userid'] = result[0]
+            session['email'] = result[3]
             return response
         else:
             # cursor.execute('select * from user')
@@ -75,27 +79,26 @@ def register():
 def login():
     if request.method == 'POST':
         session.clear()
-        username = request.form.get('username')
+        email = request.form.get('email')
         password = request.form.get('password')
         response = make_response(redirect('/'))
         session['islogin'] = '0'
-        if(username == '' or password == ''):
+        if(email == '' or password == ''):
             session['message2'] = 'fuck!'
             return response
         cursor.execute('select * from user')
         for row in cursor.fetchall():
-            if row[1] == username:
+            if row[3] == email:
                 if row[2] == password:
-                    #response.set_cookie('username', value=username, max_age=300)
-                    session['username'] = username
+                    session['username'] = row[1]
                     session['userid'] = row[0]
                     session['islogin'] = '1'
+                    session['email'] = email
                     return response
                 else:
                     session['message2'] = "Wrong password!"
                     return response
-        session['message2'] = "User not exist!"
-        #return render_template('index.html', message2=errorMessage)
+        session['message2'] = "Email not used!"
         return response
     else:
       session['islogin'] = '0'
@@ -108,12 +111,19 @@ def logout():
     response = make_response(redirect('/'))
     return response
 
-@app.route('/gm/', methods=['GET', 'POST'])
+@app.route('/_check_users')
+def check_users():
+    username = request.args.get('username', 0, type=str)
+    cursor.execute('select * from user')
+    for row in cursor.fetchall():
+        if row[1] == username:
+            return jsonify(result = 0)
+    return jsonify(result = 1)
+
 def getMembers():
     name='test'
     Group1=Group(name)
     members=Group1.get_members()
-
     name='myn'
     User1=User(name)
     mark=User1.create_group('groupCreatedByPy')
