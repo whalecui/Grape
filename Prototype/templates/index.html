@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 	<head>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css">
 		<script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
 		<script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
@@ -9,6 +10,9 @@
 		<link rel="stylesheet" href="../static/css/index-unlog.css">
 		<link rel="stylesheet" href="../static/css/icon.css">
 		<script src="../static/js/main.js"></script>
+        <script type=text/javascript>
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        </script>
 	</head>
 	
 	<body>
@@ -54,20 +58,19 @@
 						&times;
 						</button>
 						<h4 class="modal-title" id="logModalLabel">
-						Log In
-						</h4>
+						    Log In</h4>
 					</div>
 					<div class="modal-body">
 						<form action="{{ url_for('login') }}" method="post">
 							<div class="form-group">
 								<label for="emailL">Email address</label>
-								<input class="form-control email"
+								<input class="form-control email" name="email"
                                        id="emailL" placeholder="Enter email">
 							</div>
 							<div class="form-group">
 								<label for="passwordL">Password</label>
 								<input type="password" class="form-control password"
-                                       id="passwordL" placeholder="Password">
+                                       id="passwordL" placeholder="Password" name="password">
 							</div>
 							<button type="submit" class="btn btn-default">Submit</button>
 						</form>
@@ -98,13 +101,13 @@
 					<div class="modal-body">
 						<form action="{{ url_for('register') }}" method="post">
 							<div class="form-group">
-								<label for="email">Email address</label>
+								<label for="emailR">Email address</label>
 								<input class="form-control email" name="email"
                                        id="emailR" placeholder="Enter email">
 							</div>
 							<div class="form-group">
-								<label for="name">Username</label>
-								<input class="form-control username" name="username"
+								<label for="usernameR">Username</label>
+								<input class="form-control username-login" name="username"
                                        id="usernameR" placeholder="Enter username">
 							</div>
 							<div class="form-group">
@@ -113,7 +116,7 @@
                                        name="password" id="passwordR" placeholder="Password">
 							</div>
 							<div class="form-group">
-								<label for="confirm">Confirm Your Password</label>
+								<label for="confirmR">Confirm Your Password</label>
 								<input type="password" class="form-control password"
                                        name="password2" id="confirmR" placeholder="Confirm">
 							</div>
