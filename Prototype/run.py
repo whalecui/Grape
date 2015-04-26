@@ -111,13 +111,16 @@ def logout():
 @app.route('/gm/', methods=['GET', 'POST'])
 def getMembers():
     name='test'
-    Group1=Group(db_config,name)
+    Group1=Group(name)
     members=Group1.get_members()
 
     name='myn'
-    role=1
-    User1=User(db_config,name,role)
-    User1.create_group('groupCreatedByPy')
+    User1=User(name)
+    mark=User1.create_group('groupCreatedByPy')
+    if mark:
+        print "created successfully!"
+    else:
+        print "Already existed!"
     return render_template('gm.html',members=members)
 
 if __name__ == '__main__':
