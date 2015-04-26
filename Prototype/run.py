@@ -2,7 +2,8 @@
 #coding:utf8
 from flask import Flask, render_template, url_for, request,redirect,make_response,session
 import os,MySQLdb
-from flask import jsonifyfrom config import *
+from flask import jsonify
+from config import *
 from function import *
 app = Flask(__name__)
 
@@ -123,11 +124,11 @@ def getMembers():
     name='test'
     Group1=Group(db_config,name)
     members=Group1.get_members()
-
     name='myn'
     role=1
     User1=User(db_config,name,role)
     User1.create_group('groupCreatedByPy')
     return render_template('gm.html',members=members)
+
 if __name__ == '__main__':
   app.run(debug=True,host='127.0.0.1',port=8000)
