@@ -9,8 +9,9 @@ app = Flask(__name__)
 
 app.secret_key = '\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='test', charset='utf8')
+conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='test', charset='utf8')
 cursor = conn.cursor()
+
 sql = 'drop table user'
 cursor.execute(sql)
 sql = 'create table if not exists user(\
@@ -99,7 +100,9 @@ def login():
         session['message2'] = "Email not used!"
         return response
     else:
-        return render_template('index.html')
+      session['islogin'] = '0'
+      return redirect('/login')
+
 
 @app.route('/logout')
 def logout():
@@ -117,4 +120,4 @@ def check_users():
     return jsonify(result = 1)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=5000)
+  app.run(debug=True,host='127.0.0.1',port=8000)
