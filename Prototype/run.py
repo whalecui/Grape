@@ -14,10 +14,10 @@ app.secret_key='\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfd
 # <<<<<<< HEAD
 conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='test', charset='utf8')
 cursor = conn.cursor()
-sql = 'drop table user'
-cursor.execute(sql)
+# sql = 'drop table user'
+# cursor.execute(sql)
 # =======
-conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='test', charset='utf8')
+# conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='test', charset='utf8')
 # >>>>>>> 47dc9743ae9d2b3763a2f85937fa583dd3d642dc
 # sql = 'create table if not exists user(\
 #       username varchar(128) primary key, \
@@ -65,10 +65,10 @@ def login():
       return response
     else:
       session['islogin'] = '0'
-      return redirect('/login/')
+      return redirect('/login')
   else:
     return render_template('login.html')
 
 
 if __name__ == '__main__':
-  app.run(debug=True,host='127.0.0.1',port=5000)
+  app.run(debug=True,host='127.0.0.1',port=8000)
