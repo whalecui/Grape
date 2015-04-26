@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding:utf8
-from flask import Flask, render_template, url_for, request, redirect, make_response, session
-import os, MySQLdb
+from flask import Flask, render_template, url_for, request,redirect,make_response,session
+import os,MySQLdb
 from flask import jsonify
 from config import *
 from function import *
@@ -114,17 +114,24 @@ def logout():
 @app.route('/_check_users')
 def check_users():
     username = request.args.get('username', 0, type=str)
-    return jsonify(result = check_u(username))
-
+    cursor.execute('select * from user')
+    for row in cursor.fetchall():
+        if row[1] == username:
+            return jsonify(result = 0)
+    return jsonify(result = 1)
+@app.route('/gm/', methods=['GET', 'POST'])
 def getMembers():
     name='test'
-    Group1=Group(db_config,name)
+    Group1=Group(name)
     members=Group1.get_members()
     name='myn'
-    role=1
-    User1=User(db_config, name, role)
-    User1.create_group('groupCreatedByPy')
-    return render_template('gm.html', members=members)
+    User1=User(name)
+    mark=User1.create_group('groupCreatedByPy')
+    if mark:
+        print "created successfully!"
+    else:
+        print "Already existed!"
+    return render_template('gm.html',members=members)
 
 if __name__ == '__main__':
   app.run(debug=True,host='127.0.0.1',port=8000)
