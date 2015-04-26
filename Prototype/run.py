@@ -2,13 +2,15 @@
 #coding:utf8
 from flask import Flask, render_template, url_for, request,redirect,make_response,session
 import os,MySQLdb
+from config import *
+from function import *
 
 app = Flask(__name__)
 
 
 app.secret_key='\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='test', charset='utf8')
+conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='test', charset='utf8')
 cursor = conn.cursor()
 
 sql = 'drop table user'
@@ -105,6 +107,18 @@ def logout():
     session.clear()
     response = make_response(redirect('/'))
     return response
+
+@app.route('/gm/', methods=['GET', 'POST'])
+def getMembers():
+    name='test'
+    Group1=Group(db_config,name)
+    members=Group1.get_members()
+
+    name='myn'
+    role=1
+    User1=User(db_config,name,role)
+    User1.create_group('groupCreatedByPy')
+    return render_template('gm.html',members=members)
 
 if __name__ == '__main__':
   app.run(debug=True,host='127.0.0.1',port=8000)

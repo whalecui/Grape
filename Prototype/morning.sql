@@ -7,6 +7,7 @@ Create Table groups(
 name varchar(30) not null ,
 leadername varchar(30) not null
 );
+insert into groups(name,leadername) values('test','myn');
 
 
 Drop Table if exists groupMemberAssosiation;
@@ -15,6 +16,8 @@ groupname varchar(30) not null ,
 membername varchar(30) not null
 );
 
+insert into groupMemberAssosiation(groupname,membername) values('test','myn');
+insert into groupMemberAssosiation(groupname,membername) values('test','ttt');
 -- Drop Table if exists user;
 -- Create Table user(
 -- username varchar(30) not null ,
