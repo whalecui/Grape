@@ -1,28 +1,135 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>Prototype</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
-</head>
-<body>
-  <div class="header">
-    <p>islogin = {{islogin}}</p>
-    {%if islogin == 1%}
-    <p>Welcome ,{{username}}!</p>
-    {%else%}
-    <p>{{username}}!</p>
-    {%endif%}
-    <a href="{{ url_for('login') }}">login</a>
-    <a href="{{ url_for('register') }}">register</a>
-  </div>
-  <div class="container">
-    {%if islogin == 1%}
-    <p>Aha, just kiding!</p>
-    {%else%}
-    <p>For more infomation, plz login or register!</p>
-    {%endif%}
-    <p>To be continued.</p>
-  </div>
-</body>
+<html lang="zh-CN">
+	<head>
+		<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+		<script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+		<link rel="stylesheet" href="../static/css/index-unlog.css">
+		<link rel="stylesheet" href="../static/css/icon.css">
+		<script src="../static/js/main.js"></script>
+	</head>
+	
+	<body>
+		<div class='main'>
+			<nav class="navbar navbar-default">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#navbar-collapse">
+                        <span class="sr-only">切换导航</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand logo" href="#">
+                        <i class="grape"><s></s></i>Project Name</a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#" data-toggle="modal" data-target="#logModal">
+                            Log In
+                        </a></li>
+                        <li><a href="#"  data-toggle="modal" data-target="#regModal">
+                            <i class="fa fa-user-plus"></i> Sign Up
+                        </a></li>
+                    </ul>
+                </div>
+			</nav>
+			
+			<div class="content">
+				<h1>INDEX</h1>
+				<p>Some introductions</p>
+			</div>
+			
+		</div>
+		
+		<div class="modal fade" id="logModal" tabindex="-1" role="dialog" 
+		aria-labelledby="logModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" 
+						data-dismiss="modal" aria-hidden="true">
+						&times;
+						</button>
+						<h4 class="modal-title" id="logModalLabel">
+						Log In
+						</h4>
+					</div>
+					<div class="modal-body">
+						<form action="{{ url_for('login') }}" method="post">
+							<div class="form-group">
+								<label for="emailL">Email address</label>
+								<input class="form-control email"
+                                       id="emailL" placeholder="Enter email">
+							</div>
+							<div class="form-group">
+								<label for="passwordL">Password</label>
+								<input type="password" class="form-control password"
+                                       id="passwordL" placeholder="Password">
+							</div>
+							<button type="submit" class="btn btn-default">Submit</button>
+						</form>
+                        {% if message2 %}
+                            <p>{{ message2 }}</p>
+                        {% endif %}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" 
+						data-dismiss="modal">Close
+						</button>
+					</div>
+				</div>
+			</div>
+		</div><!-- end of log in modal -->
+		
+		<div class="modal fade" id="regModal" tabindex="-1" role="dialog" 
+		aria-labelledby="regModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" 
+                            data-dismiss="modal" aria-hidden="true">
+                            &times;</button>
+						<h4 class="modal-title" id="regModalLabel">
+						    Sign Up</h4>
+					</div>
+					<div class="modal-body">
+						<form action="{{ url_for('register') }}" method="post">
+							<div class="form-group">
+								<label for="email">Email address</label>
+								<input class="form-control email" name="email"
+                                       id="emailR" placeholder="Enter email">
+							</div>
+							<div class="form-group">
+								<label for="name">Username</label>
+								<input class="form-control username" name="username"
+                                       id="usernameR" placeholder="Enter username">
+							</div>
+							<div class="form-group">
+								<label for="password">Password</label>
+								<input type="password" class="form-control password"
+                                       name="password" id="passwordR" placeholder="Password">
+							</div>
+							<div class="form-group">
+								<label for="confirm">Confirm Your Password</label>
+								<input type="password" class="form-control password"
+                                       name="password2" id="confirmR" placeholder="Confirm">
+							</div>
+							<button type="submit" class="btn btn-default" >Join!</button>
+						</form>
+                        {% if message1 %}
+                            <p>{{ message1 }}</p>
+                        {% endif %}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" 
+						    data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div><!-- end of register modal -->
+		
+	</body>
 </html>

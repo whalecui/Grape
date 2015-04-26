@@ -5,70 +5,103 @@ import os,MySQLdb
 
 app = Flask(__name__)
 
-# @app.route('/')
-# def hello():
-#   return "hello world"
 
 app.secret_key='\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-# <<<<<<< HEAD
-conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='test', charset='utf8')
+conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='test', charset='utf8')
 cursor = conn.cursor()
 sql = 'drop table user'
 cursor.execute(sql)
-# =======
-conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='test', charset='utf8')
-# >>>>>>> 47dc9743ae9d2b3763a2f85937fa583dd3d642dc
-# sql = 'create table if not exists user(\
-#       username varchar(128) primary key, \
-#       password varchar(128))'
-# cursor.execute(sql)
+sql = 'create table if not exists user(\
+        user_id int not null primary key AUTO_INCREMENT, \
+        username varchar(128), \
+        password varchar(128))'
+cursor.execute(sql)
 
 @app.route('/')
 def index():
-  username = request.cookies.get('username')
-  if not username:
-    username = 'undefined'
-  islogin = session.get('islogin')
-  return render_template('index.html',username=username, islogin=islogin)
+    islogin = session.get('islogin')
+    username = session.get('username')
+    message1 = session.get('message1')
+    message2 = session.get('message2')
+    html = 'index.html'
+    if islogin == '1':
+        html = 'index-log.html'
+    else:
+        username = u'请先登录'
+    return render_template(html, username=username, islogin=islogin, message1=message1, message2=message2)
 
 
 @app.route('/register', methods=['GET','POST'])
 def register():
-  if request.method == 'POST':
-    username = request.form.get('username')
-    password = request.form.get('password')
-    password2 = request.form.get('password2')
-    cursor.execute('select username from user')
-    if(password2 == password and username not in cursor.fetchall()[0]):
-      sql = 'insert into user(username, password) values("%s","%s")' % (username, password)
-      cursor.execute(sql)
-      conn.commit()
-      response = make_response(redirect('/login'))
-      return response
+    if request.method == 'POST':
+        session.clear()
+        username = request.form.get('username')
+        password = request.form.get('password')
+        password2 = request.form.get('password2')
+        response = make_response(redirect('/'))
+        session['islogin'] = '0'
+        if(username == '' or password == ''):
+            session['message1'] = 'fuck!'
+            return response
+        if password2 == password:
+            sql = 'select * from user where username="%s"' % username
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            if result:
+                session['message1'] = "User already existed!"
+                return response
+            sql = 'insert into user(username, password) values("%s","%s")' % (username, password)
+            cursor.execute(sql)
+            conn.commit()
+            sql = 'select * from user where username="%s"' % username
+            cursor.execute(sql)
+            result = cursor.fetchall()[0]
+            session['username'] = result[1]
+            session['islogin'] = '1'
+            session['userid'] = result[0]
+            return response
+        else:
+            # cursor.execute('select * from user')
+            session['message1'] = "Password not the same"
+            return response
     else:
-      # cursor.execute('select * from user')
-      return render_template('register.html')
-  else:
-    return render_template('register.html')
+        return render_template('index.html')
 
-@app.route('/login', methods=['GET','POST'])
+@app.route('/login/', methods=['GET', 'POST'])
 def login():
-  if request.method == 'POST':
-    username = request.form.get('username')
-    password = request.form.get('password')
-    cursor.execute('select * from user')
-    if (username, password) in cursor.fetchall():
-      response = make_response(redirect('/'))
-      response.set_cookie('username', username, max_age=10)
-      session['islogin'] = '1'
-      return response
+    if request.method == 'POST':
+        session.clear()
+        username = request.form.get('username')
+        password = request.form.get('password')
+        response = make_response(redirect('/'))
+        session['islogin'] = '0'
+        if(username == '' or password == ''):
+            session['message2'] = 'fuck!'
+            return response
+        cursor.execute('select * from user')
+        for row in cursor.fetchall():
+            if row[1] == username:
+                if row[2] == password:
+                    #response.set_cookie('username', value=username, max_age=300)
+                    session['username'] = username
+                    session['userid'] = row[0]
+                    session['islogin'] = '1'
+                    return response
+                else:
+                    session['message2'] = "Wrong password!"
+                    return response
+        session['message2'] = "User not exist!"
+        #return render_template('index.html', message2=errorMessage)
+        return response
     else:
-      session['islogin'] = '0'
-      return redirect('/login/')
-  else:
-    return render_template('login.html')
+        return render_template('index.html')
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    response = make_response(redirect('/'))
+    return response
 
 if __name__ == '__main__':
-  app.run(debug=True,host='127.0.0.1',port=5000)
+    app.run(debug=True, host='127.0.0.1', port=5000)
