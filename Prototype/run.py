@@ -35,7 +35,6 @@ def index():
         username = u'请先登录'
     return render_template(html, username=username, islogin=islogin, message1=message1, message2=message2)
 
-
 @app.route('/register', methods=['GET','POST'])
 def register():
     if request.method == 'POST':
@@ -104,7 +103,6 @@ def login():
       session['islogin'] = '0'
       return redirect('/login')
 
-
 @app.route('/logout')
 def logout():
     session.clear()
@@ -114,24 +112,28 @@ def logout():
 @app.route('/_check_users')
 def check_users():
     username = request.args.get('username', 0, type=str)
-    cursor.execute('select * from user')
-    for row in cursor.fetchall():
-        if row[1] == username:
-            return jsonify(result = 0)
-    return jsonify(result = 1)
+    user = User(name=username)
+    return jsonify(result = user.check_u())
+
+@app.route('/_check_email')
+def check_email():
+    email = request.args.get('email', 0, type=str)
+    user = User(email=email)
+    return jsonify(user.check_e())
+
 @app.route('/gm/', methods=['GET', 'POST'])
 def getMembers():
-    name='test'
-    Group1=Group(name)
-    members=Group1.get_members()
-    name='myn'
-    User1=User(name)
-    mark=User1.create_group('groupCreatedByPy')
+    name = 'test'
+    Group1 = Group(name)
+    members = Group1.get_members()
+    name = 'myn'
+    User1 = User(name)
+    mark = User1.create_group('groupCreatedByPy')
     if mark:
         print "created successfully!"
     else:
         print "Already existed!"
-    return render_template('gm.html',members=members)
+    return render_template('gm.html', members=members)
 
 if __name__ == '__main__':
-  app.run(debug=True,host='127.0.0.1',port=8000)
+  app.run(debug=True, host='127.0.0.1', port=8000)
