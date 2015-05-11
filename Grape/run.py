@@ -134,6 +134,21 @@ def getMembers():
     return render_template('gm.html', members=members)
 
 
+@app.route('/group/', methods=['GET', 'POST'])
+def mygroups():
+    try:
+        name = session.get('username')
+        User1=User(name)
+        attendedGroups,ownGroups=User1.get_groups()
+    except Exception,e:
+        name = 'none'
+        ownGroups=['none']
+        attendedGroups=['none']
+        print e
+
+    return render_template('group-func.html',username=name,ownGroups=ownGroups,attendedGroups=attendedGroups)
+
+
 @app.route('/question', methods=['GET', 'POST'])
 def question_operation():
 	### Verify it's already login first!!
