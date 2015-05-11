@@ -29,9 +29,9 @@ class User:
         exist=cursor.fetchall()
         if(exist):
             return False
-        cursor.execute("insert into groupMemberAssosiation(groupname,membername) values(%s,%s);",(groupname,username))
+        cursor.execute("insert into groupMemberAssosiation(groupname,membername) values(%s,%s);",(groupname,self.username))
         conn.commit()
-        cursor.execute("insert into groups(name,leadername) values(%s,%s);",(groupname,username))
+        cursor.execute("insert into groups(name,leadername) values(%s,%s);",(groupname,self.username))
         conn.commit()
         conn.close()
         return True
@@ -40,7 +40,7 @@ class User:
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         #判断是否存在且用户为leader
-        cursor.execute("select name from groups where name='"+groupname+"' and leadername='"+username+"';")
+        cursor.execute("select name from groups where name='"+groupname+"' and leadername='"+self.username+"';")
         exist=cursor.fetchall()
         if(exist):
             cursor.execute("delete from groups where name='"+groupname+"';")
@@ -55,20 +55,20 @@ class User:
     def get_groups(self):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select groupname from groupMemberAssosiation where membername='"+username+"';")
-        groups=cursor.fetchall()
-        cursor.execute("select name from groups where leadername='"+username+"';")
-        leaderOfGroups=cursor.fetchall()
+        cursor.execute("select groupname from groupMemberAssosiation where membername='"+self.username+"';")
+        attendedGroups=cursor.fetchall()
+        cursor.execute("select name from groups where leadername='"+self.username+"';")
+        ownGroups=cursor.fetchall()
         conn.close()
-        return groups,leaderOfGroups
+        return attendedGroups,ownGroups
 
     def join_group(self,groupname):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select name from groups where name='"+groupname+"' and leadername='"+username+"';")
+        cursor.execute("select name from groups where name='"+groupname+"' and leadername='"+self.username+"';")
         exist=cursor.fetchall()
         if(exist):
-            cursor.execute("insert into groupMemberAssosiation(groupname,membername) values(%s,%s);",(groupname,username))
+            cursor.execute("insert into groupMemberAssosiation(groupname,membername) values(%s,%s);",(groupname,self.username))
             conn.commit()
         conn.close()
 

@@ -135,5 +135,18 @@ def getMembers():
         print "Already existed!"
     return render_template('gm.html', members=members)
 
+@app.route('/group/', methods=['GET', 'POST'])
+def mygroups():
+    try:
+        name = session.get('username')
+        User1=User(name)
+        attendedGroups,ownGroups=User1.get_groups()
+    except Exception,e:
+        name = 'none'
+        ownGroups=['none']
+        attendedGroups=['none']
+        print e
+
+    return render_template('group-func.html',username=name,ownGroups=ownGroups,attendedGroups=attendedGroups)
 if __name__ == '__main__':
   app.run(debug=True, host='127.0.0.1', port=8000)
