@@ -10,17 +10,15 @@ app = Flask(__name__)
 
 app.secret_key = '\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='test', charset='utf8')
+conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='grape', charset='utf8')
 cursor = conn.cursor()
 
-sql = 'drop table user'
-cursor.execute(sql)
-sql = 'create table if not exists user(\
-        user_id int not null primary key AUTO_INCREMENT, \
-        username varchar(128), \
-        password varchar(128), \
-        email varchar(128))'
-cursor.execute(sql)
+# sql = 'create table if not exists user(\
+#         user_id int not null primary key AUTO_INCREMENT, \
+#         username varchar(128), \
+#         password varchar(128), \
+#         email varchar(128))'
+# cursor.execute(sql)
 
 @app.route('/')
 def index():
@@ -135,5 +133,11 @@ def getMembers():
         print "Already existed!"
     return render_template('gm.html', members=members)
 
+
+@app.route('/question', methods=['GET', 'POST'])
+def question_operation():
+	return render_template('question.html')
+
+
 if __name__ == '__main__':
-  app.run(debug=True, host='127.0.0.1', port=8000)
+  app.run(debug=True, host=HOST, port=PORT)

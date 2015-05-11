@@ -19,11 +19,13 @@ membername varchar(30) not null
 insert into groupMemberAssosiation(groupname,membername) values('test','myn');
 insert into groupMemberAssosiation(groupname,membername) values('test','ttt');
 select groupname from groupMemberAssosiation where groupname='1';
--- Drop Table if exists user;
--- Create Table user(
--- username varchar(30) not null ,
--- password varchar(30) not null ,
+
+
+Drop Table if exists user;
+Create Table user(
+user_id int not null primary key AUTO_INCREMENT,
+username varchar(128) not null,
+password varchar(128) not null, 
+email varchar(128))
 -- role int not null default 0,
-
-
--- );
+);
