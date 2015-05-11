@@ -136,6 +136,8 @@ def getMembers():
 
 @app.route('/question', methods=['GET', 'POST'])
 def question_operation():
+	### Verify it's already login first!!
+	
 	return render_template('question.html')
 
 

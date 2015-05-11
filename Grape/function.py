@@ -101,3 +101,18 @@ class User:
                 return 0
         return 1
 
+
+class Question:
+
+    def __init__(self, user_id, group_id, content = ''):
+        self.user_id = user_id
+        self.group_id = group_id
+        self.content = content
+
+    def get_questions(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor.execute("select membername from groupMemberAssosiation where groupname="+"'"+self.groupname+"';")
+        members=cursor.fetchall()
+        conn.close()
+        return members
