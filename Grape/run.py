@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 app.secret_key = '\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='grape', charset='utf8')
+conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='grape', charset='utf8')
 cursor = conn.cursor()
 
 # sql = 'create table if not exists user(\
@@ -20,7 +20,7 @@ cursor = conn.cursor()
 #         email varchar(128))'
 # cursor.execute(sql)
 
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def index():
     islogin = session.get('islogin')
     username = session.get('username')
@@ -31,7 +31,20 @@ def index():
         html = 'index-log.html'
     else:
         username = u'请先登录'
-    return render_template(html, username=username, islogin=islogin, message1=message1, message2=message2)
+
+    User1=User(username)
+    members=None
+    leader=None
+    if request.method == 'GET':
+        groupname=request.args.get('groupname')
+        if groupname:
+            Group1=User1.search_group(groupname)
+            members=Group1.get_members()
+            leader=Group1.get_leader()
+            print members
+
+    return render_template(html, username=username, islogin=islogin, message1=message1, message2=message2,\
+                            members=members,leader=leader)
 
 @app.route('/register', methods=['GET','POST'])
 def register():

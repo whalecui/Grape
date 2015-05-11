@@ -14,6 +14,13 @@ class Group:
         members=cursor.fetchall()
         conn.close()
         return members
+    def get_leader(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor.execute("select leadername from groups where name="+"'"+self.groupname+"';")
+        leadername=cursor.fetchall()
+        conn.close()
+        return leadername      
 
 class User:
 
@@ -81,7 +88,7 @@ class User:
         if(exist):
             Group1=Group(groupname)
             return Group1
-        return False
+        return None
 
     def check_u(self):
         conn = MySQLdb.connect(host=self.db_host,port=self.db_port,user=self.db_user,passwd=self.db_passwd,db=self.db_name,charset="utf8")

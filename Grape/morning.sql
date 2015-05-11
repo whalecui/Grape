@@ -26,6 +26,6 @@ Create Table user(
 user_id int not null primary key AUTO_INCREMENT,
 username varchar(128) not null,
 password varchar(128) not null, 
-email varchar(128))
--- role int not null default 0,
+email varchar(128),
+role int not null default 0
 );
