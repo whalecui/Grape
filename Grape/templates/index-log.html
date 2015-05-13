@@ -14,7 +14,7 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">My Groups</a></li>
+                <li><a href="{{url_for('mygroups')}}">My Groups</a></li>
                 <li><a href="#">Contact with Admin</a></li>
                 <li class="divider"></li>
                 <li><a href="#">Settings</a></li>
@@ -34,6 +34,8 @@
             </li>
             <li><a href="#Message" data-toggle="tab">Message</a></li>
             <li><a href="#Group" data-toggle="tab">New Group</a></li>
+            <li><a href="#delGroup" data-toggle="tab">Del Group</a></li>
+            <li><a href="#quitGroup" data-toggle="tab">Quit Group</a></li>
             <li><a href="#Find" data-toggle="tab">Find Group</a></li>
         </ul>
         <div id="myTabContent" class="tab-content">
@@ -70,31 +72,54 @@
                 </ul>
             </div>
             <div class="tab-pane fade" id="Group">
-                <form>
+                <form action="" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="name">Group Name</label>
-                        <input class="form-control" id="name" placeholder="Enter Group Name">
+                        <input class="form-control" name="name" placeholder="Enter Group Name">
                     </div>
                     <div class="form-group">
                         <label for="topic">Topic</label>
-                        <input class="form-control" id="topic" placeholder="Enter Topic">
+                        <input class="form-control" name="topic" placeholder="Enter Topic">
                     </div>
-                    <div class="form-group">
+<!--                     <div class="form-group">
                         <label for="capa">Group Capability</label>
-                        <select class="form-control" id="capa">
+                        <select class="form-control" name="capa">
                             <option>20</option>
                             <option>50</option>
                             <option>100</option>
                             <option>200</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="form-group">
                         <label for="confirm">Confirm Message</label>
-                        <input class="form-control" id="confirm" placeholder="Enter Confirm Message">
+                        <input class="form-control" name="confirmMessage" placeholder="Enter Confirm Message">
                     </div>
                     <button type="submit" class="btn btn-default">Create</button>
                 </form>
             </div>
+
+            <div class="tab-pane fade" id="delGroup">
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="name">Group Name</label>
+                        <input class="form-control" name="delname" placeholder="Enter Group Name you wanna delete">
+                    </div>
+
+                    <button type="submit" class="btn btn-default">Delete</button>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="quitGroup">
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="name">Group Name</label>
+                        <input class="form-control" name="quitname" placeholder="Enter Group Name you wanna quit">
+                    </div>
+
+                    <button type="submit" class="btn btn-default">Quit</button>
+                </form>
+            </div>
+
             <div class="tab-pane fade" id="Find">
                 <form >
                     <div class="form-group">
@@ -105,9 +130,7 @@
                 </form>
                 {% if leader %}
                     <p>Leader:</p>
-                    {% for l in leader %}
-                    {{l.leadername}}
-                    {% endfor %}
+                    <p>{{leader}}</p>
                 {% endif %} 
                 <br><br>
                 {% if members %}
