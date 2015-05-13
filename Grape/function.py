@@ -91,7 +91,7 @@ class User:
         return None
 
     def check_u(self):
-        conn = MySQLdb.connect(host=self.db_host,port=self.db_port,user=self.db_user,passwd=self.db_passwd,db=self.db_name,charset="utf8")
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute('select * from user')
         for row in cursor.fetchall():
@@ -100,7 +100,7 @@ class User:
         return 1
 
     def check_e(self):
-        conn = MySQLdb.connect(host=self.db_host,port=self.db_port,user=self.db_user,passwd=self.db_passwd,db=self.db_name,charset="utf8")
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute('select * from user')
         for row in cursor.fetchall():

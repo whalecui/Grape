@@ -15,5 +15,5 @@ db_config={
     "db_user":'root',
     "db_passwd":'1234',
     "db_port":3306,
-    'db_name':'grape'  
+    'db_name':'Grape'
 }
