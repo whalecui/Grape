@@ -15,6 +15,17 @@ class Group:
         conn.close()
         return members
 
+    def get_questions(self, group_id):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from question where group_id = %d ;" % group_id
+        cursor.execute(sql)
+        questions=cursor.fetchall()
+        conn.close()
+        return questions
+
 class User:
 
     def __init__(self, name = '', email = ''):
@@ -102,17 +113,11 @@ class User:
         return 1
 
 
-class Question:
+# class Question:
 
-    def __init__(self, user_id, group_id, content = ''):
-        self.user_id = user_id
-        self.group_id = group_id
-        self.content = content
+#     def __init__(self, user_id, group_id, content = ''):
+#         self.user_id = user_id
+#         self.group_id = group_id
+#         self.content = content
 
-    def get_questions(self):
-        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
-        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select membername from groupMemberAssosiation where groupname="+"'"+self.groupname+"';")
-        members=cursor.fetchall()
-        conn.close()
-        return members
+

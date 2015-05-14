@@ -1,1 +1,14 @@
 Hello world!
+<div>
+	<p>Here is the search results for questions</p>
+	<p>{{questions}}</p>
+</div>
+
+<div>
+	<p>Here we can insert new questions.</p>
+	<form action="{{ url_for('create_question') }}" method="POST">
+		<input type="text" name="title">
+		<input type="text" name="content">
+		<button type="submit">submit</button>
+	</form>
+</div>

@@ -152,8 +152,13 @@ def mygroups():
 @app.route('/question', methods=['GET', 'POST'])
 def question_operation():
 	### Verify it's already login first!!
-	
-	return render_template('question.html')
+	group = Group('test')
+	questions = group.get_questions(1);
+	return render_template('question.html', questions = questions)
+
+@app.route('/create_question', methods=['POST'])
+def create_question():
+	return
 
 
 if __name__ == '__main__':
