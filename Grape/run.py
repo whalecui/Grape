@@ -20,7 +20,7 @@ cursor = conn.cursor()
 #         email varchar(128))'
 # cursor.execute(sql)
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     islogin = session.get('islogin')
     username = session.get('username')
@@ -62,9 +62,6 @@ def index():
         quitname=request.form.get('quitname')
         if quitname:
             User1.quit_group(quitname)
-
-
-
 
     return render_template(html, username=username, islogin=islogin, message1=message1, message2=message2,\
                             members=members,leader=leader)
@@ -147,13 +144,13 @@ def logout():
 def check_users():
     username = request.args.get('username', 0, type=str)
     user = User(name=username)
-    return jsonify(result = user.check_u())
+    return jsonify(valid = user.check_u())
 
 @app.route('/_check_email')
 def check_email():
     email = request.args.get('email', 0, type=str)
     user = User(email=email)
-    return jsonify(user.check_e())
+    return jsonify(valid = user.check_e())
 
 
 @app.route('/group/', methods=['GET', 'POST'])

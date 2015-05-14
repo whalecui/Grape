@@ -11,7 +11,7 @@ HOST='127.0.0.1'
 PORT = 8000
 
 db_config={
-    "db_host":'localhost',
+    "db_host":'127.0.0.1',
     "db_user":'root',
     "db_passwd":'1234',
     "db_port":3306,

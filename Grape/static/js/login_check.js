@@ -12,13 +12,12 @@ $(function(){
         var myReg = /^[-_A-Za-z0-9]+@([_A-Za-z0-9]+\.)+[A-Za-z0-9]{2,3}$/;
         if(!myReg.test(input)){
             btn.attr('disabled', 'disabled');
-            console.log("email error");
         }else{
             check[0] = 1;
             $(btn).removeAttr('disabled');
+            console.log(btn);
             for (var x in check){
-                console.log(check[x]);
-                if(x == 0){
+                if(check[x] == 0){
                     btn.attr('disabled', 'disabled');
                 }
             }
@@ -30,13 +29,13 @@ $(function(){
         $.getJSON($SCRIPT_ROOT + '/_check_users',
             {username: input},
             function(data){
-                if(valid == '0'){
+                if(data.valid == '0'){
                     btn.attr('disabled', 'disabled');
                 }else{
                     check[1] = 1;
                     $(btn).removeAttr('disabled');
                     for (var x in check){
-                        if(x == 0){
+                        if(check[x] == 0){
                             btn.attr('disabled', 'disabled');
                         }
                     }
@@ -51,7 +50,7 @@ $(function(){
             check[2] = 1;
             $(btn).removeAttr('disabled');
             for (var x in check){
-                if(x == 0){
+                if(check[x] == 0){
                     btn.attr('disabled', 'disabled');
                 }
             }

@@ -137,7 +137,7 @@ class User:
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute('select * from user')
         for row in cursor.fetchall():
-            if row[1] == self.username:
+            if row['username'] == self.username:
                 return 0
         return 1
 
@@ -146,7 +146,7 @@ class User:
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute('select * from user')
         for row in cursor.fetchall():
-            if row[3] == self.email:
+            if row['email'] == self.email:
                 return 0
         return 1
 
