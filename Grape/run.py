@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 app.secret_key = '\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='grape', charset='utf8')
+conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='grape', charset='utf8')
 cursor = conn.cursor()
 
 # sql = 'create table if not exists user(\
@@ -20,7 +20,7 @@ cursor = conn.cursor()
 #         email varchar(128))'
 # cursor.execute(sql)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
     islogin = session.get('islogin')
     username = session.get('username')
@@ -31,7 +31,40 @@ def index():
         html = 'index-log.html'
     else:
         username = u'请先登录'
-    return render_template(html, username=username, islogin=islogin, message1=message1, message2=message2)
+
+    User1=User(username)
+    members=None
+    leader=None
+    if request.method == 'GET':
+        #Find group by groupname
+        groupname=request.args.get('groupname')
+        if groupname:
+            Group1=User1.search_group(groupname)
+            members=Group1.get_members()
+            leader=Group1.leadername
+
+            print leader,members,233
+    if request.method == 'POST':
+        #create new group
+        
+        name=request.form.get('name')
+        topic=request.form.get('topic')
+        confirmMessage=request.form.get('confirmMessage')
+        if name and topic and confirmMessage:
+            # print name,topic,confirmMessage,1235543
+            success=User1.create_group(name,topic,confirmMessage)
+
+        #del group
+        delname=request.form.get('delname')
+        if delname:
+            User1.delete_group(delname)
+        #quit group
+        quitname=request.form.get('quitname')
+        if quitname:
+            User1.quit_group(quitname)
+
+    return render_template(html, username=username, islogin=islogin, message1=message1, message2=message2,\
+                            members=members,leader=leader)
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -111,27 +144,13 @@ def logout():
 def check_users():
     username = request.args.get('username', 0, type=str)
     user = User(name=username)
-    return jsonify(result = user.check_u())
+    return jsonify(valid = user.check_u())
 
 @app.route('/_check_email')
 def check_email():
     email = request.args.get('email', 0, type=str)
     user = User(email=email)
-    return jsonify(user.check_e())
-
-@app.route('/gm/', methods=['GET', 'POST'])
-def getMembers():
-    name = 'test'
-    Group1 = Group(name)
-    members = Group1.get_members()
-    name = 'myn'
-    User1 = User(name)
-    mark = User1.create_group('groupCreatedByPy')
-    if mark:
-        print "created successfully!"
-    else:
-        print "Already existed!"
-    return render_template('gm.html', members=members)
+    return jsonify(valid = user.check_e())
 
 
 @app.route('/group/', methods=['GET', 'POST'])
@@ -140,13 +159,24 @@ def mygroups():
         name = session.get('username')
         User1=User(name)
         attendedGroups,ownGroups=User1.get_groups()
+
+        attendedGroupsList=[]
+        ownGroupsList=[]
+        print 'att=',attendedGroups
+        print 'own=',ownGroups
+###把group对象存到了两个list中
+        for i in attendedGroups:
+            attendedGroupsList+=[Group(i['groupname']).get_data()]
+        for i in ownGroups:
+            ownGroupsList+=[Group(i['name']).get_data()]
+        print ownGroupsList
     except Exception,e:
         name = 'none'
         ownGroups=['none']
         attendedGroups=['none']
-        print e
+        print 1234,e
 
-    return render_template('group-func.html',username=name,ownGroups=ownGroups,attendedGroups=attendedGroups)
+    return render_template('group.html',username=name,ownGroups=ownGroupsList,attendedGroups=attendedGroupsList)
 
 
 @app.route('/question', methods=['GET', 'POST'])
