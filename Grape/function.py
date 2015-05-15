@@ -35,7 +35,7 @@ class User:
         self.username = name
         self.email = email
 
-    def create_group(self,groupname,topic,confirmMessage):
+    def create_group(self, groupname, topic, confirmMessage):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         #判断是否存在
@@ -79,7 +79,14 @@ class User:
         cursor.execute("select name from groups where leadername='"+self.username+"';")
         ownGroups=cursor.fetchall()
         conn.close()
-        return attendedGroups,ownGroups
+        attendedGroupsName = []
+        ownGroupsName = []
+        for i in attendedGroups:
+            attendedGroupsName += [i['groupname']]
+        for i in ownGroups:
+            ownGroupsName += [i['name']]
+        return attendedGroupsName, ownGroupsName
+    #注意！！这里的返回值是所有的小组名称组成的list，不是字典的list！！！
 
     def join_group(self,groupname):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")

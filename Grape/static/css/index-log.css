@@ -11,7 +11,7 @@
 
 .list-group li
 {
-    margin-bottom: 5%;
+    margin-top: 4%;
 }
 
 .group-details
@@ -20,7 +20,7 @@
     margin: 4% auto 0 auto;
 }
 
-.tab-content
+.tab-content-main
 {
 	width: 77%;
     float: right;

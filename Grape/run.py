@@ -29,6 +29,16 @@ def index():
     html = 'index.html'
     if islogin == '1':
         html = 'index-log.html'
+        #get groups
+        user = User(username)
+        attendedGroups, ownGroups = user.get_groups()
+        attendedGroupsList = []
+        ownGroupsList = []
+        for i in ownGroups:
+            ownGroupsList += [Group(i).get_data()]
+        for i in attendedGroups:
+            if i not in ownGroups:
+                attendedGroupsList += [Group(i).get_data()]
     else:
         username = u'请先登录'
 
@@ -44,6 +54,7 @@ def index():
             leader=Group1.leadername
 
             print leader,members,233
+
     if request.method == 'POST':
         #create new group
         
@@ -52,7 +63,7 @@ def index():
         confirmMessage=request.form.get('confirmMessage')
         if name and topic and confirmMessage:
             # print name,topic,confirmMessage,1235543
-            success=User1.create_group(name,topic,confirmMessage)
+            success=User1.create_group(name, topic, confirmMessage)
 
         #del group
         delname=request.form.get('delname')
@@ -63,8 +74,10 @@ def index():
         if quitname:
             User1.quit_group(quitname)
 
-    return render_template(html, username=username, islogin=islogin, message1=message1, message2=message2,\
-                            members=members,leader=leader)
+    return render_template(html, username=username, islogin=islogin,\
+                            message1=message1, message2=message2,\
+                            attend=attendedGroupsList, own=ownGroupsList, \
+                            members=members, leader=leader)
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -144,39 +157,38 @@ def logout():
 def check_users():
     username = request.args.get('username', 0, type=str)
     user = User(name=username)
-    return jsonify(valid = user.check_u())
+    return jsonify(valid=user.check_u())
 
 @app.route('/_check_email')
 def check_email():
     email = request.args.get('email', 0, type=str)
     user = User(email=email)
-    return jsonify(valid = user.check_e())
-
+    return jsonify(valid=user.check_e())
 
 @app.route('/group/', methods=['GET', 'POST'])
-def mygroups():
+def myGroups():
     try:
         name = session.get('username')
-        User1=User(name)
-        attendedGroups,ownGroups=User1.get_groups()
+        User1 = User(name)
+        attendedGroups, ownGroups = User1.get_groups()
 
-        attendedGroupsList=[]
-        ownGroupsList=[]
-        print 'att=',attendedGroups
-        print 'own=',ownGroups
+        attendedGroupsList = []
+        ownGroupsList = []
+        print 'att=', attendedGroups
+        print 'own=', ownGroups
 ###把group对象存到了两个list中
         for i in attendedGroups:
-            attendedGroupsList+=[Group(i['groupname']).get_data()]
+            attendedGroupsList += [Group(i).get_data()]
         for i in ownGroups:
-            ownGroupsList+=[Group(i['name']).get_data()]
+            ownGroupsList += [Group(i).get_data()]
         print ownGroupsList
-    except Exception,e:
+    except Exception, e:
         name = 'none'
-        ownGroups=['none']
-        attendedGroups=['none']
-        print 1234,e
+        ownGroups = ['none']
+        attendedGroups = ['none']
+        print 1234, e
 
-    return render_template('group.html',username=name,ownGroups=ownGroupsList,attendedGroups=attendedGroupsList)
+    return render_template('group.html',username=name, ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
 
 
 @app.route('/question', methods=['GET', 'POST'])
