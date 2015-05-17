@@ -39,40 +39,43 @@ def index():
         for i in attendedGroups:
             if i not in ownGroups:
                 attendedGroupsList += [Group(i).get_data()]
+
+        User1=User(username)
+        members=None
+        leader=None
+        if request.method == 'GET':
+            #Find group by group_id
+            group_id=request.args.get('group_id')
+            print "id from front=",group_id
+            if group_id:
+                Group1=User1.search_group(group_id)
+                if Group1:
+                    members=Group1.get_members()
+                    leader=Group1.leadername
+                    print leader,members,233
+
+        if request.method == 'POST':
+            #create new group
+            
+            name=request.form.get('name')
+            topic=request.form.get('topic')
+            confirmMessage=request.form.get('confirmMessage')
+            if name and topic and confirmMessage:
+                # print name,topic,confirmMessage,1235543
+                success=User1.create_group(name, topic, confirmMessage)
+
+            #del group
+            delname=request.form.get('delname')
+            if delname:
+                User1.delete_group(delname)
+            #quit group
+            quitname=request.form.get('quitname')
+            if quitname:
+                User1.quit_group(quitname)
     else:
         username = u'请先登录'
 
-    User1=User(username)
-    members=None
-    leader=None
-    if request.method == 'GET':
-        #Find group by groupname
-        groupname=request.args.get('groupname')
-        if groupname:
-            Group1=User1.search_group(groupname)
-            members=Group1.get_members()
-            leader=Group1.leadername
 
-            print leader,members,233
-
-    if request.method == 'POST':
-        #create new group
-        
-        name=request.form.get('name')
-        topic=request.form.get('topic')
-        confirmMessage=request.form.get('confirmMessage')
-        if name and topic and confirmMessage:
-            # print name,topic,confirmMessage,1235543
-            success=User1.create_group(name, topic, confirmMessage)
-
-        #del group
-        delname=request.form.get('delname')
-        if delname:
-            User1.delete_group(delname)
-        #quit group
-        quitname=request.form.get('quitname')
-        if quitname:
-            User1.quit_group(quitname)
 
     return render_template(html, username=username, islogin=islogin,\
                             message1=message1, message2=message2,\
@@ -168,7 +171,7 @@ def check_email():
 @app.route('/_delete')
 def delete():
     name = session.get('username')
-    group_id = request.args.get('group_id', 0, type=int)
+    group_id = str(request.args.get('group_id', 0, type=int))
     user = User(name)
     return jsonify(success=user.delete_group(group_id))
 
