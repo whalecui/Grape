@@ -8,11 +8,10 @@
             <title>Grape</title>
             {% endif %}
             <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-            <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css">
-            <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
-            <script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-            <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+            <script src="{{ url_for('static', filename='js/jquery.min.js') }}" ></script>       
+            <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
             <link rel="stylesheet" href="../static/css/icon.css">
             <link rel="stylesheet" href="../static/css/grape.css">
         {% endblock %}
@@ -30,7 +29,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand logo" href="#">
+                    <a class="navbar-brand logo" href="{{url_for('index')}}">
                         <i class="grape"><s></s></i>Project Name
                     </a>
                 </div>
