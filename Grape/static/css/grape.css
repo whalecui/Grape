@@ -15,3 +15,8 @@
     width: 40%;
     margin: 10% auto 0 auto;
 }
+
+.hide
+{
+    display: none;
+}

@@ -3,6 +3,11 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index-log.css">
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        var username = {{ username }};
+    </script>
+    <script src="../static/js/index-log.js"></script>
 {% endblock %}
 
 {% block navbar %}
@@ -14,7 +19,7 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="{{url_for('mygroups')}}">My Groups</a></li>
+                <li><a href="#">My Groups</a></li>
                 <li><a href="#">Contact with Admin</a></li>
                 <li class="divider"></li>
                 <li><a href="#">Settings</a></li>
@@ -34,7 +39,10 @@
                 <li><a class="list-group-item" href="#Message" data-toggle="tab">
                     Message</a></li>
                 <hr>
-                <li><a class="list-group-item" href="#Group" data-toggle="tab">
+                <li><a class="list-group-item" href="#myGroup" data-toggle="tab">
+                    My Group</a></li>
+                <hr>
+                <li><a class="list-group-item" href="#newGroup" data-toggle="tab">
                     New Group</a></li>
                 {#<li><a class="list-group-item" href="#delGroup" data-toggle="tab">
                     Del Group</a></li>
@@ -44,8 +52,9 @@
                     Find Group</a></li>
             </ul>
         </div>
-        <div id="myTabContent" class="tab-content">
+        <div id="tab-content-main" class="tab-content tab-content-main">
             <div class="tab-pane fade in active" id="News">
+                <h3>News</h3><hr>
                 <ul class="news list-group">
                     <li class="list-group-item">
                         <h4>News 1</h4>
@@ -62,7 +71,8 @@
                 </ul>
             </div>
             <div class="tab-pane fade" id="Message">
-                <ul class="news list-group">
+                <h3>Messages</h3><hr>
+                <ul class="message list-group">
                     <li class="list-group-item">
                         <h4>Message 1</h4>
                         <p>details</p>
@@ -77,22 +87,46 @@
                     </li>
                 </ul>
             </div>
-            <div class="tab-pane fade" id="Group">
-                <form action="" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="name">Group Name</label>
-                        <input class="form-control" name="name" placeholder="Enter Group Name">
+
+            <div class="tab-pane fade" id="myGroup">
+                <ul id="tab-sub-group" class="nav nav-tabs">
+                    <li class="active">
+                    <a href="#attend" data-toggle="tab">Attended Groups</a>
+                    </li>
+                    <li><a href="#own" data-toggle="tab">Owned Groups</a></li>
+                </ul>
+                <div id="tab-sub-content-group" class="tab-content tab-content-group">
+                    <div class="tab-pane fade in active" id="attend">
+                        <ul class="attendedGroup list-group">
+                        {% for group in attend %}
+                            <li class="list-group-item">
+                                <h4>{{ group['name'] }}</h4>
+                                <a class="show-detail">details</a>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">
+                                <h4>Oops! You haven't got attended in any groups!</h4>
+                                <h5>Click "Find Groups" to find one!</h5>
+                            </li>
+                        {% endfor %}
+                        </ul>
                     </div>
-                    <div class="form-group">
-                        <label for="topic">Topic</label>
-                        <input class="form-control" name="topic" placeholder="Enter Topic">
+                    <div class="tab-pane fade" id="own">
+                        <ul class="ownedGroup list-group">
+                        {% for group in own %}
+                            <li class="list-group-item">
+                                <h4>{{ group['name'] }}</h4>
+                                <a class="show-detail">details</a>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">
+                                <h4>Oops! You haven't created any groups!</h4>
+                                <h5>Click "Create Groups" to find one!</h5>
+                            </li>
+                        {% endfor %}
+                        </ul>
                     </div>
-                    <div class="form-group">
-                        <label for="confirm">Confirm Message</label>
-                        <input class="form-control" name="confirmMessage" placeholder="Enter Confirm Message">
-                    </div>
-                    <button type="submit" class="btn btn-default">Create</button>
-                </form>
+                </div>
             </div>
 
             {#
@@ -118,11 +152,31 @@
                 </form>
             </div>#}
 
+            <div class="tab-pane fade" id="newGroup">
+                <h3>New Group</h3><hr>
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="name">Group Name</label>
+                        <input class="form-control" name="name" placeholder="Enter Group Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="topic">Topic</label>
+                        <input class="form-control" name="topic" placeholder="Enter Topic">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm">Confirm Message</label>
+                        <input class="form-control" name="confirmMessage" placeholder="Enter Confirm Message">
+                    </div>
+                    <button type="submit" class="btn btn-default">Create</button>
+                </form>
+            </div>
+
             <div class="tab-pane fade" id="Find">
+                <h3>Find Group</h3><hr>
                 <form >
                     <div class="form-group">
                         <label for="groupId">Group Number</label>
-                        <input class="form-control" name="groupname" id="groupId" placeholder="Enter Group NAME!!">
+                        <input class="form-control" name="group_id"  placeholder="Enter Group ID">
                     </div>
                     <button type="submit" class="btn btn-default">Find</button>
                 </form>
