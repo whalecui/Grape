@@ -26,14 +26,14 @@ def index():
     username = session.get('username')
     message1 = session.get('message1')
     message2 = session.get('message2')
+    attendedGroupsList = []
+    ownGroupsList = []
     html = 'index.html'
     if islogin == '1':
         html = 'index-log.html'
         #get groups
         user = User(username)
         attendedGroups, ownGroups = user.get_groups()
-        attendedGroupsList = []
-        ownGroupsList = []
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
         for i in attendedGroups:
@@ -165,6 +165,13 @@ def check_email():
     user = User(email=email)
     return jsonify(valid=user.check_e())
 
+@app.route('/_delete')
+def delete():
+    name = session.get('username')
+    group_id = request.args.get('group_id', 0, type=int)
+    user = User(name)
+    return jsonify(success=user.delete_group(group_id))
+
 @app.route('/group/', methods=['GET', 'POST'])
 def myGroups():
     try:
@@ -188,7 +195,8 @@ def myGroups():
         attendedGroups = ['none']
         print 1234, e
 
-    return render_template('group.html',username=name, ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
+    return render_template('group.html', username=name, ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
+
 
 
 @app.route('/question', methods=['GET', 'POST'])
