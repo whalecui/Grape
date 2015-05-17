@@ -63,6 +63,7 @@
 				</div>
 				
 				{% for group in ownGroups %}
+				{{group.disucssion}}
 				<div class="group-details" id="{{group.name}}">
 					<ul id="myTab" class="nav nav-tabs">
 						<li class="active"><a href="#Info" data-toggle="tab">
@@ -83,7 +84,19 @@
 						</div>
 						<div class="tab-pane fade" id="Discussion">
 							<div class="dis">
-								contents of discussion
+								contents of discussion is here.
+								{% for discuss in group.discussion %}
+								<p>discussion: {{discuss}} </p>
+								{% endfor %}
+								<p>Here we can insert new questions.</p>
+								<form action="{{ url_for('create_discussion') }}" method="POST">
+									<input type="hidden" name="group_name" value="{{group.group_name}}"><br>
+									<label for="title">title:</label>
+									<input type="text" name="title"><br>
+									<label for="content">content:</label>
+									<input type="text" name="content"><br>
+									<button type="submit">submit</button>
+								</form>
 							</div>
 						</div>
 						<div class="tab-pane fade" id="Vote">

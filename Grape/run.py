@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 app.secret_key = '\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='grape', charset='utf8')
+conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='grape', charset='utf8')
 cursor = conn.cursor()
 
 # sql = 'create table if not exists user(\
@@ -159,7 +159,6 @@ def mygroups():
         name = session.get('username')
         User1=User(name)
         attendedGroups,ownGroups=User1.get_groups()
-
         attendedGroupsList=[]
         ownGroupsList=[]
         print 'att=',attendedGroups
@@ -170,25 +169,36 @@ def mygroups():
         for i in ownGroups:
             ownGroupsList+=[Group(i['name']).get_data()]
         print ownGroupsList
+
+        ##For discussion part.
+
+
+
     except Exception,e:
         name = 'none'
         ownGroups=['none']
         attendedGroups=['none']
         print 1234,e
 
-    return render_template('group.html',username=name,ownGroups=ownGroupsList,attendedGroups=attendedGroupsList)
+    return render_template('group.html',username=name,ownGroups=ownGroupsList,\
+                            attendedGroups=attendedGroupsList)
 
 
-@app.route('/question', methods=['GET', 'POST'])
-def question_operation():
+@app.route('/discussion', methods=['GET', 'POST'])
+def discussion_operation():
 	### Verify it's already login first!!
-	group = Group('test')
-	questions = group.get_questions(1);
-	return render_template('question.html', questions = questions)
+	group = Group('group1')
+	discussions = group.get_discussions(1);
+	return render_template('discussion.html', discussions = discussions)
 
-@app.route('/create_question', methods=['POST'])
-def create_question():
-	return
+@app.route('/create_discussion', methods=['POST'])
+def create_discussion():
+    group_name = request.form.get('group_name')
+    group = Group('group1')
+    title = request.form.get('title')
+    content = request.form.get('content')
+    user = '1'
+    group.create_discussion(user, title, content)
 
 
 if __name__ == '__main__':

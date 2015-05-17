@@ -29,6 +29,7 @@ insert into groupMemberAssosiation(groupname,membername) values('group2','myn');
 insert into groupMemberAssosiation(groupname,membername) values('group3','myn');
 select * from groupMemberAssosiation;
 
+
 Drop Table if exists user;
 Create Table user(
 user_id int not null primary key AUTO_INCREMENT,
@@ -41,14 +42,15 @@ insert into user(username, password, email) values('123','123','123@123.com');
 insert into user(username, password, email) values('myn','myn','myn@123.com');
 
 
-Drop Table if exists question;
-Create Table question(
-question_id int not null primary key AUTO_INCREMENT,
+Drop Table if exists discussion;
+Create Table discussion(
+discuss_id int not null primary key AUTO_INCREMENT,
 user_id int not null,
 group_id int not null,
 title varchar(256) not null,
-content varchar(256) not null
+content varchar(256) not null,
+foreign key (group_id) references groups(group_id)
 );
-insert into question(user_id, group_id, title, content) values('1','1','question1','This is question 1');
-insert into question(user_id, group_id, title, content) values('1','2','question2','This is question 2');
-insert into question(user_id, group_id, title, content) values('1','1','question3','This is question 3');
+insert into discussion(user_id, group_id, title, content) values('1','1','discussion1','This is discussion 1');
+insert into discussion(user_id, group_id, title, content) values('1','2','discussion2','This is discussion 2');
+insert into discussion(user_id, group_id, title, content) values('1','1','discussion3','This is discussion 3');

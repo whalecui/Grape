@@ -21,16 +21,27 @@ class Group:
         conn.close()
         return members
 
-    def get_questions(self, group_id):
+    def create_discussion(self, user, title, content):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = "select * from question where group_id = %d ;" % group_id
-        cursor.execute(sql)
-        questions=cursor.fetchall()
+        cursor.execute("insert into discussion(user, group, title, content) values(1,1,'test','test');")
+        conn.commit()
         conn.close()
-        return questions
+        return True
+
+    def get_discussions(self, group_id):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from discussion where group_id = %d ;" % group_id
+        cursor.execute(sql)
+        discussions=cursor.fetchall()
+        conn.close()
+        return discussions
 
     def get_data(self):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
@@ -163,7 +174,7 @@ class User:
         return 1
 
 
-# class Question:
+# class discussion:
 
 #     def __init__(self, user_id, group_id, content = ''):
 #         self.user_id = user_id
