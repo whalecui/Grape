@@ -18,13 +18,13 @@ select * from groups;
 
 Drop Table if exists groupMemberAssosiation;
 Create Table groupMemberAssosiation(
-groupname varchar(30) not null ,
+group_id int not null ,
 membername varchar(30) not null
 );
 
-insert into groupMemberAssosiation(groupname,membername) values('group1','myn');
-insert into groupMemberAssosiation(groupname,membername) values('group2','myn');
-insert into groupMemberAssosiation(groupname,membername) values('group3','myn');
+insert into groupMemberAssosiation(group_id,membername) values('1','myn');
+insert into groupMemberAssosiation(group_id,membername) values('2','myn');
+insert into groupMemberAssosiation(group_id,membername) values('3','myn');
 select * from groupMemberAssosiation;
 
 Drop Table if exists user;

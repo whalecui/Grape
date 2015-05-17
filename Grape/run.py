@@ -34,7 +34,7 @@ def index():
         #get groups
         user = User(username)
         attendedGroups, ownGroups = user.get_groups()
-        print attendedGroups
+        # print attendedGroups
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
         for i in attendedGroups:
@@ -45,14 +45,15 @@ def index():
         members=None
         leader=None
         if request.method == 'GET':
-            #Find group by groupname
-            groupname=request.args.get('groupname')
-            if groupname:
-                Group1=User1.search_group(groupname)
-                members=Group1.get_members()
-                leader=Group1.leadername
-
-                print leader,members,233
+            #Find group by group_id
+            group_id=request.args.get('group_id')
+            print "id from front=",group_id
+            if group_id:
+                Group1=User1.search_group(group_id)
+                if Group1:
+                    members=Group1.get_members()
+                    leader=Group1.leadername
+                    print leader,members,233
 
         if request.method == 'POST':
             #create new group
