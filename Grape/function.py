@@ -16,7 +16,7 @@ class Group:
     def get_members(self):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select membername from groupMemberAssosiation where group_id="+"'"+self.group_id+"';")
+        cursor.execute("select membername from groupMemberAssosiation where group_id=" + "'" + self.group_id + "';")
         members=cursor.fetchall()
         conn.close()
         return members
@@ -24,7 +24,7 @@ class Group:
     def get_data(self):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select * from groups where group_id="+self.group_id+";")
+        cursor.execute("select * from groups where group_id=" + self.group_id + ";")
         data=cursor.fetchall()
         # print data
         conn.close()
@@ -37,17 +37,25 @@ class User:
         self.username = name
         self.email = email
 
+    def get_data_by_email(self):
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor.execute("select * from user where email='" + self.email + "';")
+        data = cursor.fetchall()
+        conn.close()
+        return data[0]
+
     def create_group(self, groupname, topic, confirmMessage):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         #判断是否存在
-        cursor.execute("select name from groups where name='"+groupname+"';")
+        cursor.execute("select name from groups where name='" + groupname + "';")
         exist=cursor.fetchall()
         if(exist):
-            print 'failed to create group :',groupname
+            print 'failed to create group :', groupname
             return False
         cursor.execute("insert into groups(name,topic,confirmMessage,leadername) values(%s,%s,%s,%s);",\
-            (groupname,topic,confirmMessage,self.username))
+            (groupname, topic, confirmMessage, self.username))
         conn.commit()
 
         cursor.execute("select group_id from groups where name='"+groupname+"';")
@@ -56,7 +64,7 @@ class User:
         cursor.execute("insert into groupMemberAssosiation(group_id,membername) values(%s,%s);",(group_id,self.username))
         conn.commit()
         conn.close()
-        print 'created group successfully:',groupname
+        print 'created group successfully:', groupname
         return True
 
     def delete_group(self,group_id):
@@ -71,10 +79,10 @@ class User:
             cursor.execute("delete from groupMemberAssosiation where group_id='"+group_id+"';")
             conn.commit()
             conn.close()
-            print 'deleted group successfully :',group_id
+            print 'deleted group successfully :', group_id
             return True
         conn.close()
-        print 'failed to delete group :',group_id
+        print 'failed to delete group :', group_id
         return False
 
     def get_groups(self):
@@ -94,26 +102,26 @@ class User:
         return attendedGroupsName, ownGroupsName
     #注意！！这里的返回值是所有的小组id组成的list，不是字典的list！！！
 
-    def join_group(self,group_id):
-        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
-        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+    def join_group(self, group_id):
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute("select name from groups where group_id='"+group_id+"';")
-        exist=cursor.fetchall()
+        exist = cursor.fetchall()
         if(exist):
-            cursor.execute("insert into groupMemberAssosiation(group_id,membername) values(%s,%s);",(groupname,self.username))
+            cursor.execute("insert into groupMemberAssosiation(group_id,membername) values(%s,%s) ;", (group_id, self.username) )
             conn.commit()
             conn.close()
-            print 'joined group successfully :',group_id
+            print 'joined group successfully :', group_id
             return True
         conn.close()
-        print 'failed to join group :',group_id
+        print 'failed to join group :', group_id
         return False
 
     def quit_group(self,group_id):
-        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
-        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute("select * from groupMemberAssosiation where membername='"+self.username+"' and group_id='"+group_id+"';")
-        exist=cursor.fetchall()    
+        exist = cursor.fetchall()
         if(exist):
             cursor.execute("delete from groupMemberAssosiation where membername='"+self.username+"' and group_id='"+group_id+"';")   
             conn.commit()
@@ -132,11 +140,9 @@ class User:
         conn.close()
         return False
 
-        
-
-    def search_group(self,group_id):
+    def search_group(self, group_id):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
-        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         #判断是否存在
         cursor.execute("select name from groups where group_id='"+group_id+"';")
         exist=cursor.fetchall()
@@ -147,7 +153,7 @@ class User:
 
     def check_u(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
-        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute('select * from user')
         for row in cursor.fetchall():
             if row['username'] == self.username:
@@ -156,13 +162,35 @@ class User:
 
     def check_e(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
-        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute('select * from user')
         for row in cursor.fetchall():
             if row['email'] == self.email:
                 return 0
         return 1
 
+    def login(self, pw):
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor.execute('select * from user')
+        for row in cursor.fetchall():
+            if row['email'] == self.email:
+                if row['password'] == pw:
+                    return 1    #匹配成功
+                else:
+                    return 0    #密码错误
+        return -1               #邮箱不存在
+
+    def register(self, password):
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = 'insert into user(username, password, email) values("%s","%s","%s")' % (self.username, password, self.email)
+        cursor.execute(sql)
+        conn.commit()
+        sql = 'select * from user where email="%s"' % self.email
+        cursor.execute(sql)
+        result = cursor.fetchall()[0]
+        return result
 
 class Question:
 

@@ -29,6 +29,8 @@ def index():
     attendedGroupsList = []
     ownGroupsList = []
     html = 'index.html'
+    members=None
+    leader=None
     if islogin == '1':
         html = 'index-log.html'
         #get groups
@@ -41,8 +43,6 @@ def index():
                 attendedGroupsList += [Group(i).get_data()]
 
         User1=User(username)
-        members=None
-        leader=None
         if request.method == 'GET':
             #Find group by group_id
             group_id=request.args.get('group_id')
@@ -75,8 +75,6 @@ def index():
     else:
         username = u'请先登录'
 
-
-
     return render_template(html, username=username, islogin=islogin,\
                             message1=message1, message2=message2,\
                             attend=attendedGroupsList, own=ownGroupsList, \
@@ -96,26 +94,17 @@ def register():
             session['message1'] = 'fuck!'
             return response
         if password2 == password:
-            sql = 'select * from user where username="%s"' % username
-            cursor.execute(sql)
-            result = cursor.fetchall()
-            if result:
+            user = User(name=username, email=email)
+            if user.check_e() == 0 or user.check_u() == 0:
                 session['message1'] = "User already existed!"
                 return response
-            sql = 'select * from user where email="%s"' % email
-            sql = 'insert into user(username, password, email) values("%s","%s","%s")' % (username, password, email)
-            cursor.execute(sql)
-            conn.commit()
-            sql = 'select * from user where email="%s"' % email
-            cursor.execute(sql)
-            result = cursor.fetchall()[0]
-            session['username'] = result[1]
+            result = user.register(password)
+            session['username'] = result['username']
             session['islogin'] = '1'
-            session['userid'] = result[0]
-            session['email'] = result[3]
+            session['userid'] = result['user_id']
+            session['email'] = result['email']
             return response
         else:
-            # cursor.execute('select * from user')
             session['message1'] = "Password not the same"
             return response
     else:
@@ -132,20 +121,22 @@ def login():
         if(email == '' or password == ''):
             session['message2'] = 'fuck!'
             return response
-        cursor.execute('select * from user')
-        for row in cursor.fetchall():
-            if row[3] == email:
-                if row[2] == password:
-                    session['username'] = row[1]
-                    session['userid'] = row[0]
-                    session['islogin'] = '1'
-                    session['email'] = email
-                    return response
-                else:
-                    session['message2'] = "Wrong password!"
-                    return response
-        session['message2'] = "Email not used!"
-        return response
+        user = User(email=email)
+        state = user.login(password)
+        if state == 1:
+            data = user.get_data_by_email()
+            print data
+            session['username'] = data['username']
+            session['userid'] = data['user_id']
+            session['islogin'] = '1'
+            session['email'] = email
+            return response
+        if state == 0:
+            session['message2'] = "Wrong password!"
+            return response
+        if state == -1:
+            session['message2'] = "Email not used!"
+            return response
     else:
       session['islogin'] = '0'
       return redirect('/login')
