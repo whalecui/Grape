@@ -34,7 +34,8 @@ def index():
     if islogin == '1':
         html = 'index-log.html'
         #get groups
-        user = User(username)
+        print username
+        user = User(name=username)
         attendedGroups, ownGroups = user.get_groups()
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
@@ -101,7 +102,7 @@ def register():
             result = user.register(password)
             session['username'] = result['username']
             session['islogin'] = '1'
-            session['userid'] = result['user_id']
+            session['user_id'] = result['user_id']
             session['email'] = result['email']
             return response
         else:
@@ -125,9 +126,8 @@ def login():
         state = user.login(password)
         if state == 1:
             data = user.get_data_by_email()
-            print data
             session['username'] = data['username']
-            session['userid'] = data['user_id']
+            session['user_id'] = data['user_id']
             session['islogin'] = '1'
             session['email'] = email
             return response
@@ -163,35 +163,47 @@ def check_email():
 def delete():
     name = session.get('username')
     group_id = str(request.args.get('group_id', 0, type=int))
-    user = User(name)
+    user = User(name=name)
     return jsonify(success=user.delete_group(group_id))
 
 @app.route('/group/', methods=['GET', 'POST'])
 def myGroups():
     try:
         name = session.get('username')
-        User1 = User(name)
+        User1 = User(name=name)
         attendedGroups, ownGroups = User1.get_groups()
 
         attendedGroupsList = []
         ownGroupsList = []
         print 'att=', attendedGroups
         print 'own=', ownGroups
-###把group对象存到了两个list中
+    ###把group对象存到了两个list中
         for i in attendedGroups:
             attendedGroupsList += [Group(i).get_data()]
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
         print ownGroupsList
     except Exception, e:
-        name = 'none'
+        name = '!none!'
         ownGroups = ['none']
         attendedGroups = ['none']
         print 1234, e
 
     return render_template('group.html', username=name, ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
 
-
+@app.route('/group/gp<int:group_id>')
+def groupDetail(group_id):
+    is_login = session.get('islogin')
+    if(is_login == 0):                       #please login first!
+        return make_response(redirect('/'))
+    name = session.get('username')
+    user = User(name)
+    if(user.check_u() == 0):                #username not exist?
+        session.clear()
+        return make_response(redirect('/'))
+    user_data = user.get_data_by_name()
+    #code above checks user data
+    #to be continued
 
 @app.route('/question', methods=['GET', 'POST'])
 def question_operation():
@@ -201,4 +213,4 @@ def question_operation():
 
 
 if __name__ == '__main__':
-  app.run(debug=True, host=HOST, port=PORT)
+    app.run(debug=True, host=HOST, port=PORT)
