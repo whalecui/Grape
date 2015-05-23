@@ -5,40 +5,53 @@ from config import *
 
 class User:
 
-    def __init__(self, name='', email='', user_id=2):
-        self.username = name
-        self.email = email
-        self.user_id = user_id
+    def __init__(self, name='', email='', user_id=0):
+        if(name=='' and email==''):
+            self.user_id = user_id
+            self.init_by_id()
+            return
+        else:
+            self.username = name
+            self.email = email
+            data = self.get_data_by_name()
+
+    def init_by_id(self):
+        if(self.check_id()):
+            return
+        data = self.get_data_by_id()
+        self.username = data['username']
+        self.email = data['email']
 
     def get_data_by_id(self):
+        if(self.check_id()):
+            return {}
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select * from user where user_id='" + self.user_id + "';")
+        cursor.execute("select * from user where user_id='" + str(self.user_id) + "';")
         data = cursor.fetchall()
         conn.close()
-        if(data != ()):
-            return data[0]
-        return {'user_id':0, 'username':'', 'email':''}
+        return data[0]
 
     def get_data_by_email(self):
+        if(self.check_e()):
+            return {}
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute("select * from user where email='" + self.email + "';")
         data = cursor.fetchall()
         conn.close()
-        if(data != ()):
-            return data[0]
-        return {'user_id':0, 'username':'', 'email':''}
+        return data[0]
+
 
     def get_data_by_name(self):
+        if(self.check_u()):
+            return {}
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute("select * from user where username='" + self.username + "';")
         data = cursor.fetchall()
         conn.close()
-        if(data != ()):
-            return data[0]
-        return {'user_id':0, 'username':'', 'email':''}
+        return data[0]
 
     def create_group(self, groupname, topic, confirmMessage):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
@@ -163,6 +176,15 @@ class User:
         cursor.execute('select * from user')
         for row in cursor.fetchall():
             if row['email'] == self.email:
+                return 0
+        return 1
+    #返回0表示存在此用户
+    def check_id(self):
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor.execute('select * from user')
+        for row in cursor.fetchall():
+            if row['user_id'] == self.user_id:
                 return 0
         return 1
 
