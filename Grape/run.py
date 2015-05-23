@@ -13,12 +13,6 @@ app.secret_key = '\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\x
 conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='grape', charset='utf8')
 cursor = conn.cursor()
 
-# sql = 'create table if not exists user(\
-#         user_id int not null primary key AUTO_INCREMENT, \
-#         username varchar(128), \
-#         password varchar(128), \
-#         email varchar(128))'
-# cursor.execute(sql)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -26,26 +20,27 @@ def index():
     username = session.get('username')
     message1 = session.get('message1')
     message2 = session.get('message2')
-    html = 'index.html'
     attendedGroupsList = []
     ownGroupsList = []
+
+    html = 'index.html'
     members = None
     leader = None
+
     if islogin == '1':
         html = 'index-log.html'
         #get groups
-        user = User(username)
+        print username
+        user = User(name=username)
         attendedGroups, ownGroups = user.get_groups()
-        # print attendedGroups
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
         for i in attendedGroups:
             if i not in ownGroups:
                 attendedGroupsList += [Group(i).get_data()]
 
-        User1 = User(username)
-        members = None
-        leader = None
+        User1=User(username)
+
         if request.method == 'GET':
             #Find group by group_id
             group_id=request.args.get('group_id')
@@ -78,8 +73,6 @@ def index():
     else:
         username = u'请先登录'
 
-
-
     return render_template(html, username=username, islogin=islogin,\
                             message1=message1, message2=message2,\
                             attend=attendedGroupsList, own=ownGroupsList, \
@@ -99,26 +92,17 @@ def register():
             session['message1'] = 'fuck!'
             return response
         if password2 == password:
-            sql = 'select * from user where username="%s"' % username
-            cursor.execute(sql)
-            result = cursor.fetchall()
-            if result:
+            user = User(name=username, email=email)
+            if user.check_e() == 0 or user.check_u() == 0:
                 session['message1'] = "User already existed!"
                 return response
-            sql = 'select * from user where email="%s"' % email
-            sql = 'insert into user(username, password, email) values("%s","%s","%s")' % (username, password, email)
-            cursor.execute(sql)
-            conn.commit()
-            sql = 'select * from user where email="%s"' % email
-            cursor.execute(sql)
-            result = cursor.fetchall()[0]
-            session['username'] = result[1]
+            result = user.register(password)
+            session['username'] = result['username']
             session['islogin'] = '1'
-            session['userid'] = result[0]
-            session['email'] = result[3]
+            session['user_id'] = result['user_id']
+            session['email'] = result['email']
             return response
         else:
-            # cursor.execute('select * from user')
             session['message1'] = "Password not the same"
             return response
     else:
@@ -135,20 +119,21 @@ def login():
         if(email == '' or password == ''):
             session['message2'] = 'fuck!'
             return response
-        cursor.execute('select * from user')
-        for row in cursor.fetchall():
-            if row[3] == email:
-                if row[2] == password:
-                    session['username'] = row[1]
-                    session['userid'] = row[0]
-                    session['islogin'] = '1'
-                    session['email'] = email
-                    return response
-                else:
-                    session['message2'] = "Wrong password!"
-                    return response
-        session['message2'] = "Email not used!"
-        return response
+        user = User(email=email)
+        state = user.login(password)
+        if state == 1:
+            data = user.get_data_by_email()
+            session['username'] = data['username']
+            session['user_id'] = data['user_id']
+            session['islogin'] = '1'
+            session['email'] = email
+            return response
+        if state == 0:
+            session['message2'] = "Wrong password!"
+            return response
+        if state == -1:
+            session['message2'] = "Email not used!"
+            return response
     else:
       session['islogin'] = '0'
       return redirect('/login')
@@ -171,12 +156,46 @@ def check_email():
     user = User(email=email)
     return jsonify(valid=user.check_e())
 
+@app.route('/_delete')
+def delete():
+    name = session.get('username')
+    group_id = str(request.args.get('group_id', 0, type=int))
+    user = User(name=name)
+    return jsonify(success=user.delete_group(group_id))
+
+# @app.route('/group/',methods=['GET', 'POST'])  # maybe no methods here? 
+# def groupOverview():
+#     is_login = session.get('islogin')
+#     if(is_login == 0):                       #please login first!
+#         return make_response(redirect('/'))
+
+#     name = session.get('username')
+#     user = User(name=name)
+
+#     attendedGroups, ownGroups = user.get_groups()
+
+#     attendedGroupsList = []
+#     ownGroupsList = []
+
+#     for i in attendedGroups:
+#         attendedGroupsList += [Group(i).get_data()]
+#     for i in ownGroups:
+#         ownGroupsList += [Group(i).get_data()]
+
+#     overviewList = None     # A overview on group activities.
+
+#     return render_template('group.html', overview=1, username=name,\
+#                             ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
+
+
 @app.route('/group/', methods=['GET', 'POST'])
 def myGroups():
     try:
+
         name = session.get('username')
 
-        User1 = User(name)
+        User1 = User(name=name)
+
         attendedGroups, ownGroups = User1.get_groups()
 
         attendedGroupsList = []
@@ -184,7 +203,7 @@ def myGroups():
         print 'att=', attendedGroups
         print 'own=', ownGroups
 
-###把group对象存到了两个list中
+    ###把group对象存到了两个list中
         for i in attendedGroups:
             attendedGroupsList += [Group(i).get_data()]
         for i in ownGroups:
@@ -192,30 +211,85 @@ def myGroups():
         print ownGroupsList
 
     except Exception, e:
-        name = 'none'
-        ownGroupsList = ['none']
-        attendedGroupsList = ['none']
+
+        name = '!none!'
+        ownGroups = ['none']
+        attendedGroups = ['none']
         print 1234, e
 
-    return render_template('group.html',username=name,ownGroups=ownGroupsList,\
-                            attendedGroups=attendedGroupsList)
+    return render_template('group.html', username=name, ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
+
+@app.route('/group/gp<int:group_id>')
+def groupDetail(group_id):
+
+    is_login = session.get('islogin')
+    if(is_login == 0):                       #please login first!
+        return make_response(redirect('/'))
+    name = session.get('username')
+    user = User(name)
+    if(user.check_u() == 0):                #username not exist?
+        session.clear()
+        return make_response(redirect('/'))
+    user_data = user.get_data_by_name()
+    #code above checks user data
+    #to be continued
+
+
 
 @app.route('/discussion', methods=['GET', 'POST'])
 def discussion_operation():
 	### Verify it's already login first!!
-	group = Group('group1')
-	discussions = group.get_discussions(1);
-	return render_template('discussion.html', discussions = discussions)
 
-@app.route('/create_discussion', methods=['POST'])
+    name = session.get('username')
+    user = User(name)
+    attendedGroups, ownGroups = user.get_groups()
+
+    attendedGroupsList = []
+
+    for i in attendedGroups:
+        attendedGroupsList += [Group(i).get_data()]
+
+    discussionList = {}
+
+    for group_id in attendedGroups:
+        group = Group(group_id)
+        discussionList[group_id] = group.get_discussions()
+    
+    return render_template('discussion.html', attendedGroups=attendedGroupsList, discussionList = discussionList)
+
+@app.route('/_create_discussion', methods=['POST'])
 def create_discussion():
-    group_name = request.form.get('group_name')
-    group = Group('group1')
+    group_id = request.form.get('group_id')
     title = request.form.get('title')
     content = request.form.get('content')
-    user = '1'
-    group.create_discussion(user, title, content)
+    name = session.get('username')
+    user = User(name)
+    user_id = user.user_id
 
+    group = Group(group_id)
+    group.create_discussion(user_id, title, content)
+
+    return redirect('/discussion')
+
+@app.route('/_delete_discussion/<discuss_id>')
+def delete_discussion(discuss_id):
+    # make some protections here!
+    discuss = Discussion(discuss_id)
+    discuss.delete_discussion()
+    return redirect('/discussion')
+
+@app.route('/_reply_discussion/<discuss_id>', methods=['POST'])
+def reply_discussion(discuss_id):
+    # discuss_id = request.form.get('discuss_id')
+    print "from reply_discussion", discuss_id
+    reply_content =request.form.get('content')
+    username = session.get('username')
+    user = User(username)
+    user_id = user.user_id  ## a bad way to get user_id 
+
+    discuss = Discussion(discuss_id)
+    discuss.add_reply(user_id,reply_content)
+    return redirect('/discussion')
 
 if __name__ == '__main__':
-  app.run(debug=True, host=HOST, port=PORT)
+    app.run(debug=True, host=HOST, port=PORT)

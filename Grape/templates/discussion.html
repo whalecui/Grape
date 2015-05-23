@@ -1,0 +1,33 @@
+<div>
+	<p>Here is the search results for discussion</p>
+	{% for group in attendedGroups %}
+		<hr>
+		<p>from group: {{group.name}}</p>
+		{% for item in discussionList[group.group_id] %}
+			<p>dicussion title: {{item.title}} </p>
+			<p>dicussion content: {{item.content}} </p>
+			<a href="{{ url_for('delete_discussion',discuss_id=item.discuss_id) }}">delete</a>
+			<p>&nbsp;&nbsp;The reply is in below:</p>
+			{% for reply in item.reply %}
+				<p>{{reply}}</p>
+			{% endfor %}
+			<form action="{{ url_for('reply_discussion', discuss_id=item.discuss_id) }}" method="POST">
+				<label for="content">Reply content:</label>
+				<input type="text" name="content"><br>
+				<button type="submit">reply</button>
+			</form>
+		{% endfor %}
+	<div>
+		<p>Here we can insert new discussions.</p>
+		<form action="{{ url_for('create_discussion') }}" method="POST">
+			<input type="hidden" name="group_id" value="{{group.group_id}}">
+			<label for="title">title:</label>
+			<input type="text" name="title"><br>
+			<label for="content">content:</label>
+			<input type="text" name="content"><br>
+			<button type="submit">submit</button>
+		</form>
+	</div>
+	{% endfor %}
+	<hr>
+</div>
