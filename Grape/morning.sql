@@ -48,8 +48,7 @@ discuss_id int not null primary key AUTO_INCREMENT,
 user_id int not null,
 group_id int not null,
 title varchar(256) not null,
-content varchar(256) not null,
-foreign key (group_id) references groups(group_id)
+content varchar(256) not null
 );
 insert into discussion(user_id, group_id, title, content) values('1','1','discussion1','This is discussion 1');
 insert into discussion(user_id, group_id, title, content) values('1','2','discussion2','This is discussion 2');

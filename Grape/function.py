@@ -44,13 +44,21 @@ class Group:
         return discussions
 
     def get_data(self):
-        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
-        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select * from groups where group_id="+self.group_id+";")
-        data=cursor.fetchall()
-        # print data
-        conn.close()
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from groups where group_id="+self.group_id+";"
+        # sql =   "select *,d.title from groups as g    \
+        #         inner join discussion as d \
+        #         where g.group_id = "+self.group_id+";"
+        cursor.execute(sql)
+        data = cursor.fetchall()
 
+        sql = "select * from discussion where group_id="+self.group_id+";"
+        cursor.execute(sql)
+        discuss_list = cursor.fetchall()
+        # print discuss_list
+        data[0]['discuss_list'] = discuss_list
+        conn.close()
         return data[0]  
 
 

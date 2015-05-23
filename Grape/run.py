@@ -29,6 +29,8 @@ def index():
     html = 'index.html'
     attendedGroupsList = []
     ownGroupsList = []
+    members = None
+    leader = None
     if islogin == '1':
         html = 'index-log.html'
         #get groups
@@ -41,9 +43,9 @@ def index():
             if i not in ownGroups:
                 attendedGroupsList += [Group(i).get_data()]
 
-        User1=User(username)
-        members=None
-        leader=None
+        User1 = User(username)
+        members = None
+        leader = None
         if request.method == 'GET':
             #Find group by group_id
             group_id=request.args.get('group_id')
@@ -188,28 +190,15 @@ def myGroups():
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
         print ownGroupsList
-<<<<<<< HEAD
 
-        ##For discussion part.
-
-
-
-    except Exception,e:
-=======
     except Exception, e:
->>>>>>> 8b74c1fb04eab1733614fa05ab3d57f55989ecdb
         name = 'none'
-        ownGroups = ['none']
-        attendedGroups = ['none']
+        ownGroupsList = ['none']
+        attendedGroupsList = ['none']
         print 1234, e
 
-<<<<<<< HEAD
     return render_template('group.html',username=name,ownGroups=ownGroupsList,\
                             attendedGroups=attendedGroupsList)
-=======
-    return render_template('group.html',username=name, ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
->>>>>>> 8b74c1fb04eab1733614fa05ab3d57f55989ecdb
-
 
 @app.route('/discussion', methods=['GET', 'POST'])
 def discussion_operation():
