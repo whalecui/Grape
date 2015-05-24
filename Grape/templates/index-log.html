@@ -19,7 +19,7 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">My Groups</a></li>
+                <li><a href="{{url_for('myGroups')}}">My Groups</a></li>
                 <li><a href="#">Contact with Admin</a></li>
                 <li class="divider"></li>
                 <li><a href="#">Settings</a></li>
@@ -110,7 +110,10 @@
                                             Topic:{{ group['topic'] }}
                                         </li>
                                         <li class="gp-detail-leader">
-                                            Leader:{{ group['leadername'] }}
+                                            Leader_id:{{ group['leader_id'] }}
+                                        </li>
+                                        <li class="gp-detail-leader">
+                                            confirmMessage:{{ group['confirmMessage'] }}
                                         </li>
                                     </ul>
                                 </div>
@@ -138,7 +141,10 @@
                                             Topic:{{ group['topic'] }}
                                         </li>
                                         <li class="gp-detail-leader">
-                                            Leader:{{ group['leadername'] }}
+                                            Leader_id:{{ group['leader_id'] }}
+                                        </li>
+                                        <li class="gp-detail-leader">
+                                            confirmMessage:{{ group['confirmMessage'] }}
                                         </li>
                                     </ul>
                                 </div>

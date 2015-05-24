@@ -10,14 +10,14 @@ app = Flask(__name__)
 
 app.secret_key = '\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='grape', charset='utf8')
+conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='grape', charset='utf8')
 cursor = conn.cursor()
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     islogin = session.get('islogin')
-    username = session.get('username')
+    user_id = session.get('user_id')
     message1 = session.get('message1')
     message2 = session.get('message2')
     attendedGroupsList = []
@@ -30,8 +30,9 @@ def index():
     if islogin == '1':
         html = 'index-log.html'
         #get groups
-        print username
-        user = User(name=username)
+        print user_id
+        user = User(user_id=user_id)
+        username = user.username
         attendedGroups, ownGroups = user.get_groups()
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
@@ -39,18 +40,18 @@ def index():
             if i not in ownGroups:
                 attendedGroupsList += [Group(i).get_data()]
 
-        User1=User(username)
+        User1=User(user_id=user_id)
 
         if request.method == 'GET':
             #Find group by group_id
             group_id=request.args.get('group_id')
-            print "id from front=",group_id
+            print "id from front=", group_id
             if group_id:
                 Group1=User1.search_group(group_id)
                 if Group1:
                     members=Group1.get_members()
                     leader=Group1.leadername
-                    print leader,members,233
+                    print leader, members, 233
 
         if request.method == 'POST':
             #create new group
@@ -73,7 +74,7 @@ def index():
     else:
         username = u'请先登录'
 
-    return render_template(html, username=username, islogin=islogin,\
+    return render_template(html, user_id=user_id, username=username, islogin=islogin,\
                             message1=message1, message2=message2,\
                             attend=attendedGroupsList, own=ownGroupsList, \
                             members=members, leader=leader)
@@ -97,13 +98,13 @@ def register():
                 session['message1'] = "User already existed!"
                 return response
             result = user.register(password)
-            session['username'] = result['username']
+            #session['username'] = result['username']
             session['islogin'] = '1'
             session['user_id'] = result['user_id']
-            session['email'] = result['email']
+            #session['email'] = result['email']
             return response
         else:
-            session['message1'] = "Password not the same"
+            session['message1'] = "Password not the same!"
             return response
     else:
         return render_template('index.html')
@@ -123,10 +124,9 @@ def login():
         state = user.login(password)
         if state == 1:
             data = user.get_data_by_email()
-            session['username'] = data['username']
             session['user_id'] = data['user_id']
             session['islogin'] = '1'
-            session['email'] = email
+            #session['email'] = email
             return response
         if state == 0:
             session['message2'] = "Wrong password!"
@@ -158,9 +158,9 @@ def check_email():
 
 @app.route('/_delete')
 def delete():
-    name = session.get('username')
+    user_id = session.get('user_id')
     group_id = str(request.args.get('group_id', 0, type=int))
-    user = User(name=name)
+    user = User(user_id=user_id)
     return jsonify(success=user.delete_group(group_id))
 
 # @app.route('/group/',methods=['GET', 'POST'])  # maybe no methods here? 
@@ -191,70 +191,55 @@ def delete():
 @app.route('/group/', methods=['GET', 'POST'])
 def myGroups():
     try:
-
-        name = session.get('username')
-
-        User1 = User(name=name)
-
+        user_id = session.get('user_id')
+        User1 = User(user_id=user_id)
+        name=User1.username
         attendedGroups, ownGroups = User1.get_groups()
-
         attendedGroupsList = []
         ownGroupsList = []
         print 'att=', attendedGroups
         print 'own=', ownGroups
-
     ###把group对象存到了两个list中
         for i in attendedGroups:
             attendedGroupsList += [Group(i).get_data()]
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
         print ownGroupsList
-
     except Exception, e:
-
         name = '!none!'
         ownGroups = ['none']
         attendedGroups = ['none']
         print 1234, e
-
     return render_template('group.html', username=name, ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
 
 @app.route('/group/gp<int:group_id>')
 def groupDetail(group_id):
-
-    is_login = session.get('islogin')
-    if(is_login == 0):                       #please login first!
-        return make_response(redirect('/'))
-    name = session.get('username')
-    user = User(name)
-    if(user.check_u() == 0):                #username not exist?
-        session.clear()
-        return make_response(redirect('/'))
-    user_data = user.get_data_by_name()
+    # is_login = session.get('islogin')
+    # if(is_login == 0):                       #please login first!
+    #     return make_response(redirect('/'))
+    # name = session.get('username')
+    # user = User(name)
+    # if(user.check_u() == 0):                #username not exist?
+    #     session.clear()
+    #     return make_response(redirect('/'))
+    # user_data = user.get_data_by_name()
     #code above checks user data
     #to be continued
-
-
+    return render_template('group_id.html', group_id=group_id)
 
 @app.route('/discussion', methods=['GET', 'POST'])
 def discussion_operation():
 	### Verify it's already login first!!
-
-    name = session.get('username')
-    user = User(name)
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
     attendedGroups, ownGroups = user.get_groups()
-
     attendedGroupsList = []
-
     for i in attendedGroups:
         attendedGroupsList += [Group(i).get_data()]
-
     discussionList = {}
-
     for group_id in attendedGroups:
         group = Group(group_id)
         discussionList[group_id] = group.get_discussions()
-    
     return render_template('discussion.html', attendedGroups=attendedGroupsList, discussionList = discussionList)
 
 @app.route('/_create_discussion', methods=['POST'])
@@ -262,8 +247,8 @@ def create_discussion():
     group_id = request.form.get('group_id')
     title = request.form.get('title')
     content = request.form.get('content')
-    name = session.get('username')
-    user = User(name)
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
     user_id = user.user_id
 
     group = Group(group_id)
@@ -283,9 +268,8 @@ def reply_discussion(discuss_id):
     # discuss_id = request.form.get('discuss_id')
     print "from reply_discussion", discuss_id
     reply_content =request.form.get('content')
-    username = session.get('username')
-    user = User(username)
-    user_id = user.user_id  ## a bad way to get user_id 
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
 
     discuss = Discussion(discuss_id)
     discuss.add_reply(user_id,reply_content)
