@@ -42,7 +42,6 @@ class User:
         conn.close()
         return data[0]
 
-
     def get_data_by_name(self):
         if(self.check_u()):
             return {}
@@ -115,9 +114,14 @@ class User:
     def join_group(self, group_id):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select name from groups where group_id='"+group_id+"';")
+        cursor.execute("select name from groups where group_id='"+str(group_id)+"';")
         exist = cursor.fetchall()
         if(exist):
+            cursor.execute("select member_id from groupMemberAssosiation where group_id='"+str(group_id)+"';")
+            member_list = cursor.fetchall()
+            if(str(self.user_id) in member_list):
+                print 'already joined', group_id
+                return True
             cursor.execute("insert into groupMemberAssosiation(group_id,member_id) values(%s,%s) ;", (group_id, self.user_id) )
             conn.commit()
             conn.close()
@@ -216,12 +220,20 @@ class Group:
     def __init__(self, group_id):
         ##名字与数据库中相同
         self.group_id = str(group_id)
-        data = self.get_data()
-        self.name = data['name']
-        self.topic = data['topic']
-        self.confirmMessage = data['confirmMessage']
-        self.leader_id = data['leader_id']
+        if(self.exist_group()):
+            data = self.get_data()
+            self.name = data['name']
+            self.topic = data['topic']
+            self.confirmMessage = data['confirmMessage']
+            self.leader_id = data['leader_id']
         #这里leader的标识也变成id了，注意！！！
+
+    def exist_group(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor.execute("select name from groups where group_id='" + self.group_id + "';")
+        exist=cursor.fetchall()
+        return exist
 
     def get_members(self):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
@@ -259,7 +271,6 @@ class Group:
         conn.commit()
         conn.close()
         return True
-
 
     ## renew to be done!
     def get_data(self):

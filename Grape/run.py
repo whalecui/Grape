@@ -210,22 +210,35 @@ def myGroups():
         ownGroups = ['none']
         attendedGroups = ['none']
         print 1234, e
-    return render_template('group.html', username=name, ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
+    return render_template('group.html', user_id=user_id,\
+                           username=name, ownGroups=ownGroupsList, \
+                           attendedGroups=attendedGroupsList)
 
 @app.route('/group/gp<int:group_id>')
 def groupDetail(group_id):
-    # is_login = session.get('islogin')
-    # if(is_login == 0):                       #please login first!
-    #     return make_response(redirect('/'))
-    # name = session.get('username')
-    # user = User(name)
-    # if(user.check_u() == 0):                #username not exist?
-    #     session.clear()
-    #     return make_response(redirect('/'))
-    # user_data = user.get_data_by_name()
+    is_login = session.get('islogin')
+    if(is_login == 0):                       #please login first!
+        return make_response(redirect('/'))
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    if(user.check_id() == 0):                #user not exist?
+        session.clear()
+        return make_response(redirect('/'))
+    user_data = user.get_data_by_id()
     #code above checks user data
-    #to be continued
-    return render_template('group_id.html', group_id=group_id)
+    group = Group(group_id)
+    if(group.exist_group()):
+        if(str(user_id) == str(group.leader_id)):
+            return render_template('group_id.html', group_id=group_id,\
+                                   username=user_data['username'], role='leader')
+        if(str(user_id) in group.get_members()):
+            return render_template('group_id.html', group_id=group_id,\
+                                   username=user_data['username'], role='member')
+        #to be continued
+        return render_template('group_id.html', group_id=group_id,\
+                                   username=user_data['username'], role='other')
+    return render_template('group_id.html', group_id=group_id,\
+                           username=user_data['username'], role='non-exist')
 
 @app.route('/discussion', methods=['GET', 'POST'])
 def discussion_operation():
