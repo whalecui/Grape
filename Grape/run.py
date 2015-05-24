@@ -50,7 +50,7 @@ def index():
                 Group1=User1.search_group(group_id)
                 if Group1:
                     members=Group1.get_members()
-                    leader=Group1.leadername
+                    leader=Group1.leader_id 
                     print leader, members, 233
 
         if request.method == 'POST':
