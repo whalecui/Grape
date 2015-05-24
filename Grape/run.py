@@ -193,6 +193,7 @@ def myGroups():
     try:
         user_id = session.get('user_id')
         User1 = User(user_id=user_id)
+        name=User1.username
         attendedGroups, ownGroups = User1.get_groups()
         attendedGroupsList = []
         ownGroupsList = []
