@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding:utf8
-from flask import Flask, render_template, url_for, request,redirect,make_response,session
-import os,MySQLdb
+from flask import Flask, render_template, url_for, request, redirect, make_response, session
+import os, MySQLdb
 from flask import jsonify
 from config import *
 from function import *
@@ -30,7 +30,6 @@ def index():
     if islogin == '1':
         html = 'index-log.html'
         #get groups
-        print user_id
         user = User(user_id=user_id)
         username = user.username
         attendedGroups, ownGroups = user.get_groups()
@@ -50,7 +49,7 @@ def index():
                 Group1=User1.search_group(group_id)
                 if Group1:
                     members=Group1.get_members()
-                    leader=Group1.leadername
+                    leader=Group1.leader_id
                     print leader, members, 233
 
         if request.method == 'POST':
@@ -71,6 +70,7 @@ def index():
             quitname=request.form.get('quitname')
             if quitname:
                 User1.quit_group(quitname)
+            return make_response(redirect('/'))
     else:
         username = u'请先登录'
 
@@ -221,24 +221,32 @@ def groupDetail(group_id):
         return make_response(redirect('/'))
     user_id = session.get('user_id')
     user = User(user_id=user_id)
-    if(user.check_id() == 0):                #user not exist?
+    if(user.check_id() == 1):                #user not exist?
         session.clear()
         return make_response(redirect('/'))
     user_data = user.get_data_by_id()
     #code above checks user data
     group = Group(group_id)
+    group_data = group.get_data()
     if(group.exist_group()):
         if(str(user_id) == str(group.leader_id)):
             return render_template('group_id.html', group_id=group_id,\
-                                   username=user_data['username'], role='leader')
+                                   group_data=group_data,\
+                                   username=user_data['username'], role='2')
+                                   #leader
         if(str(user_id) in group.get_members()):
             return render_template('group_id.html', group_id=group_id,\
-                                   username=user_data['username'], role='member')
+                                   group_data=group_data,\
+                                   username=user_data['username'], role='1')
+                                   #member
         #to be continued
         return render_template('group_id.html', group_id=group_id,\
-                                   username=user_data['username'], role='other')
+                               group_data=group_data,\
+                               username=user_data['username'], role='0')
+                                   #other
     return render_template('group_id.html', group_id=group_id,\
-                           username=user_data['username'], role='non-exist')
+                           username=user_data['username'], role='-1')
+                           #non-exist
 
 @app.route('/discussion', methods=['GET', 'POST'])
 def discussion_operation():

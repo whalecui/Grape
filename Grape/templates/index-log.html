@@ -34,9 +34,9 @@
     <div class="group-details">
         <div class="tab-group">
             <ul class="list-group">
-                <li><a class="list-group-item" href="#News" data-toggle="tab">
+                <li><a class="list-group-item" href="#news" data-toggle="tab">
                     News</a></li>
-                <li><a class="list-group-item" href="#Message" data-toggle="tab">
+                <li><a class="list-group-item" href="#message" data-toggle="tab">
                     Message</a></li>
                 <hr>
                 <li><a class="list-group-item" href="#myGroup" data-toggle="tab">
@@ -48,12 +48,12 @@
                     Del Group</a></li>
                 <li><a class="list-group-item" href="#quitGroup" data-toggle="tab">
                     Quit Group</a></li>  #}
-                <li><a class="list-group-item" href="#Find" data-toggle="tab">
+                <li><a class="list-group-item" href="#find" data-toggle="tab">
                     Find Group</a></li>
             </ul>
         </div>
         <div id="tab-content-main" class="tab-content tab-content-main">
-            <div class="tab-pane fade in active" id="News">
+            <div class="tab-pane fade in active" id="news">
                 <h3>News</h3><hr>
                 <ul class="news list-group">
                     <li class="list-group-item">
@@ -70,7 +70,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="tab-pane fade" id="Message">
+            <div class="tab-pane fade" id="message">
                 <h3>Messages</h3><hr>
                 <ul class="message list-group">
                     <li class="list-group-item">
@@ -130,7 +130,7 @@
                         <ul class="ownedGroup list-group">
                         {% for group in own %}
                             <li class="list-group-item">
-                                <h4>{{ group['name'] }}</h4>
+                                <h4><a href="{{ url_for('groupDetail', group_id=group['group_id']) }}">{{ group['name'] }}</a></h4>
                                 <a class="show-detail" data-toggle="collapse"
                                    data-target="#group-{{ group['group_id'] }}">
                                     details</a>
@@ -202,7 +202,7 @@
                 </form>
             </div>
 
-            <div class="tab-pane fade" id="Find">
+            <div class="tab-pane fade" id="find">
                 <h3>Find Group</h3><hr>
                 <form >
                     <div class="form-group">
