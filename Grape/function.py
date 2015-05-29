@@ -77,7 +77,7 @@ class User:
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         #判断是否存在且用户为leader
-        cursor.execute("select name from groups where group_id='"+group_id+"' and leader_id='"+self.username+"';")
+        cursor.execute("select name from groups where group_id='"+group_id+"' and leader_id='"+str(self.user_id)+"';")
         right=cursor.fetchall()
         if(right):
             cursor.execute("delete from groups where group_id='"+group_id+"';")

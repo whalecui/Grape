@@ -6,7 +6,7 @@
     <script src="../static/js/index-log.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-        var username = {{ username }};
+        var username = "{{ username }}";
     </script>
 {% endblock %}
 
