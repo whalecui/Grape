@@ -157,7 +157,7 @@ def check_email():
     user = User(email=email)
     return jsonify(valid=user.check_e())
 
-@app.route('/_delete')
+@app.route('/_delete_group')
 def delete():
     user_id = session.get('user_id')
     group_id = str(request.args.get('group_id', 0, type=int))

@@ -32,11 +32,15 @@
     <div class="group-details">
         <div class="tab-group">
             <ul class="list-group">
-                <li><a class="list-group-item" href="#groupInfo" data-toggle="tab">
-                    Group Information</a></li>
+                {% if role == '0' %}
+                    <li><a class="list-group-item" href="#groupInfo" data-toggle="tab">
+                        Group Information</a></li>
+                {% endif %}
                 {% if role == '1' or role == '2' %}
                     <li><a class="list-group-item" href="#news" data-toggle="tab">
                         News</a></li>
+                    <li><a class="list-group-item" href="#groupInfo" data-toggle="tab">
+                        Group Information</a></li>
                     <hr>
                     <li><a class="list-group-item" href="#votes" data-toggle="tab">
                         Votes</a></li>
@@ -57,7 +61,11 @@
 
         <div id="tab-content-main" class="tab-content tab-content-main">
 
+            {% if role == '0' %}
             <div class="tab-pane fade in active" id="groupInfo">
+            {% else if role == '1' or role == '2' %}
+            <div class="tab-pane fade" id="groupInfo">
+            {% endif %}
                 <h3>Group Information</h3><hr>
                 <table class="table table-hover">
                     <tbody>
@@ -77,24 +85,27 @@
                 </table>
             </div>
 
-            <div class="tab-pane fade" id="news">
-                <h3>News</h3><hr>
-                <ul class="news list-group">
-                    <li class="list-group-item">
-                        <h4>News 1</h4>
-                        <p>details</p>
-                    </li>
-                    <li class="list-group-item">
-                        <h4>News 2</h4>
-                        <p>details</p>
-                    </li>
-                    <li class="list-group-item">
-                        <h4>News 3</h4>
-                        <p>details</p>
-                    </li>
-                </ul>
-            </div>
+            {% if role == '1' or role == '2' %}
+                <div class="tab-pane fade in active" id="news">
+                    <h3>News</h3><hr>
+                    <ul class="news list-group">
+                        <li class="list-group-item">
+                            <h4>News 1</h4>
+                            <p>details</p>
+                        </li>
+                        <li class="list-group-item">
+                            <h4>News 2</h4>
+                            <p>details</p>
+                        </li>
+                        <li class="list-group-item">
+                            <h4>News 3</h4>
+                            <p>details</p>
+                        </li>
+                    </ul>
+                </div>
 
+
+            {% endif %}
         </div>
 
     </div>
