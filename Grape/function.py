@@ -8,23 +8,22 @@ class User:
     def __init__(self, name='', email='', user_id=0):
         if(name=='' and email==''):
             self.user_id = user_id
-            self.init_by_id()
+            #print 'user_id:', user_id
+            try:
+                data = self.get_data_by_id()
+                self.username = data['username']
+                self.email = data['email']
+            except Exception, e:
+                print 'init', e
             return
         else:
             self.username = name
             self.email = email
             data = self.get_data_by_name()
 
-    def init_by_id(self):
-        if(self.check_id()):
-            return
-        data = self.get_data_by_id()
-        self.username = data['username']
-        self.email = data['email']
-
     def get_data_by_id(self):
-        if(self.check_id()):
-            return {}
+        #if(self.check_id()):
+        #    return {}
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute("select * from user where user_id='" + str(self.user_id) + "';")
@@ -62,7 +61,7 @@ class User:
             print 'failed to create group :', groupname
             return False
         cursor.execute("insert into groups(name,topic,confirmMessage,leader_id) values(%s,%s,%s,%s);",\
-            (groupname, topic, confirmMessage, self.username))
+            (groupname, topic, confirmMessage, self.user_id))
         conn.commit()
 
         cursor.execute("select group_id from groups where name='"+groupname+"';")
@@ -286,6 +285,18 @@ class Group:
         # print discuss_list
         data[0]['discuss_list'] = discuss_list
         conn.close()
+        # append some other lists
+        leader = User(user_id=int(data[0]['leader_id']))
+        data[0]['leader_info'] = {'name':leader.username, 'email':leader.email, 'id':leader.user_id}
+        try:
+            data[0]['user_info'] = []
+            for member in self.get_members():
+                member = User(user_id=member['member_id'])
+                data[0]['user_info'] += [{'name':member.username, 'email':member.email, 'id':member.user_id}]
+        except Exception, e:
+            #data[0]['leader_info'] = {'name':'', 'email':'', 'id':''}
+            data[0]['user_info'] = []
+            print e
         return data[0]  
 
 class Discussion:

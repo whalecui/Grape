@@ -28,6 +28,8 @@ member_id int not null
 insert into groupMemberAssosiation(group_id,member_id) values('1','2');
 insert into groupMemberAssosiation(group_id,member_id) values('2','2');
 insert into groupMemberAssosiation(group_id,member_id) values('3','2');
+insert into groupMemberAssosiation(group_id,member_id) values('1','1');
+insert into groupMemberAssosiation(group_id,member_id) values('2','1');
 select * from groupMemberAssosiation;
 
 
@@ -69,3 +71,5 @@ insert into reply_discuss(discuss_id, user_id, content) values(1, 2, 'This is re
 insert into reply_discuss(discuss_id, user_id, content) values(2, 2, 'This is reply1 for discussion2');
 insert into reply_discuss(discuss_id, user_id, content) values(3, 2, 'This is reply1 for discussion3');
 insert into reply_discuss(discuss_id, user_id, content) values(1, 1, 'This is reply2 for discussion1');
+
+
