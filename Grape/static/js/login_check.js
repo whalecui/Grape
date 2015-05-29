@@ -15,7 +15,6 @@ $(function(){
         }else{
             check[0] = 1;
             $(btn).removeAttr('disabled');
-            console.log(btn);
             for (var x in check){
                 if(check[x] == 0){
                     btn.attr('disabled', 'disabled');
@@ -46,7 +45,22 @@ $(function(){
     $('#confirmR').blur(function(){
         var input = $(this).val();
         var pw = $('#passwordR').val();
-        if(pw == input){
+        if(pw == input && input != ''){
+            check[2] = 1;
+            $(btn).removeAttr('disabled');
+            for (var x in check){
+                if(check[x] == 0){
+                    btn.attr('disabled', 'disabled');
+                }
+            }
+        }else{
+            btn.attr('disabled', 'disabled');
+        }
+    });
+    $('#passwordR').blur(function(){
+        var input = $('#confirmR').val();
+        var pw = $('#passwordR').val();
+        if(pw == input && pw != ''){
             check[2] = 1;
             $(btn).removeAttr('disabled');
             for (var x in check){
