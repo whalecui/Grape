@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #coding:utf8
-from flask import Flask, render_template, url_for, request, redirect, make_response, session
+from flask import Flask, render_template, url_for, request, redirect, make_response, session, abort
 import os, MySQLdb
 from flask import jsonify
 from config import *
@@ -44,13 +44,14 @@ def index():
         if request.method == 'GET':
             #Find group by group_id
             group_id=request.args.get('group_id')
-            print "id from front=", group_id
+            #print "id from front=", group_id
             if group_id:
-                Group1=User1.search_group(group_id)
-                if Group1:
-                    members=Group1.get_members()
-                    leader=Group1.leader_id
-                    print leader, members, 233
+            #    Group1=User1.search_group(group_id)
+            #    if Group1:
+            #        members=Group1.get_members()
+            #        leader=Group1.leader_id
+            #        print leader, members, 233
+                return redirect(url_for('groupDetail', group_id=group_id))
 
         if request.method == 'POST':
             #create new group
@@ -227,8 +228,8 @@ def groupDetail(group_id):
     user_data = user.get_data_by_id()
     #code above checks user data
     group = Group(group_id)
-    group_data = group.get_data()
     if(group.exist_group()):
+        group_data = group.get_data()
         if(str(user_id) == str(group.leader_id)):
             return render_template('group_id.html', group_id=group_id,\
                                    group_data=group_data,\
@@ -244,8 +245,9 @@ def groupDetail(group_id):
                                group_data=group_data,\
                                username=user_data['username'], role='0')
                                    #other
-    return render_template('group_id.html', group_id=group_id,\
-                           username=user_data['username'], role='-1')
+    #return render_template('group_id.html', group_id=group_id,\
+    #                       username=user_data['username'], role='-1')
+    abort(404)
                            #non-exist
 
 @app.route('/discussion', methods=['GET', 'POST'])
@@ -295,6 +297,17 @@ def reply_discussion(discuss_id):
     discuss = Discussion(discuss_id)
     discuss.add_reply(user_id,reply_content)
     return redirect('/discussion')
+
+@app.errorhandler(404)
+def page_not_found(error):
+    user_id = session.get('user_id')
+    islogin = session.get('islogin')
+    if islogin == '1':
+        user = User(user_id=user_id)
+        username = user.username
+    else:
+        username = u'请先登录'
+    return render_template('page_not_found.html', user_id=user_id, islogin=islogin, username=username), 404
 
 if __name__ == '__main__':
     app.run(debug=True, host=HOST, port=PORT)
