@@ -10,8 +10,8 @@ app = Flask(__name__)
 
 app.secret_key = '\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='grape', charset='utf8')
-cursor = conn.cursor()
+# conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='grape', charset='utf8')
+# cursor = conn.cursor()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -240,7 +240,7 @@ def groupDetail(group_id):
     return render_template('group_id.html', group_id=group_id,\
                            username=user_data['username'], role='non-exist')
 
-@app.route('/discussion', methods=['GET', 'POST'])
+@app.route('/discuss', methods=['GET', 'POST'])
 def discussion_operation():
 	### Verify it's already login first!!
     user_id = session.get('user_id')
