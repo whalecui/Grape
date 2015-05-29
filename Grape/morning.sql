@@ -43,6 +43,7 @@ role int not null default 0
 );
 insert into user(username, password, email) values('123','123','123@123.com');
 insert into user(username, password, email) values('myn','myn','myn@123.com');
+insert into user(username, password, email,role) values('admin','admin','admin@123.com',1);
 
 
 Drop Table if exists discussion;
@@ -71,5 +72,3 @@ insert into reply_discuss(discuss_id, user_id, content) values(1, 2, 'This is re
 insert into reply_discuss(discuss_id, user_id, content) values(2, 2, 'This is reply1 for discussion2');
 insert into reply_discuss(discuss_id, user_id, content) values(3, 2, 'This is reply1 for discussion3');
 insert into reply_discuss(discuss_id, user_id, content) values(1, 1, 'This is reply2 for discussion1');
-
-
