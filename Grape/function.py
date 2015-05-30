@@ -333,11 +333,11 @@ class Group:
         sql = "select * from discussion where group_id = %s ;" % self.group_id
         cursor.execute(sql)
         discussions=cursor.fetchall()
-        print "discussions: ",discussions
         for discuss in discussions:
             discuss_item = Discussion(discuss['discuss_id'])
             discuss['reply'] = discuss_item.get_reply()
         conn.close()
+        print "discussions: ",discussions
         return discussions
 
     def create_discussion(self, user, title, content):

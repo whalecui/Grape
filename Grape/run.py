@@ -42,7 +42,6 @@ def index():
             if i not in ownGroups:
                 attendedGroupsList += [Group(i).get_data()]
 
-
         if request.method == 'GET':
             #Find group by group_id
             group_id=request.args.get('group_id')
@@ -232,7 +231,7 @@ def myGroups():
                            username=name, ownGroups=ownGroupsList, \
                            attendedGroups=attendedGroupsList)
 
-@app.route('/group/gp<int:group_id>')
+@app.route('/group/gp<int:group_id>', methods=['GET', 'POST'])
 def groupDetail(group_id):
     is_login = session.get('islogin')
     if(is_login == 0):                       #please login first!
@@ -247,14 +246,24 @@ def groupDetail(group_id):
     group = Group(group_id)
     if(group.exist_group()):
         group_data = group.get_data()
+        discussions = group.get_discussions()
+        members = group.get_members()
+        if request.method == 'POST':
+            title = request.form.get('title')
+            content = request.form.get('content')
+            if title and content:
+                # print name,topic,confirmMessage,1235543
+                group.create_discussion(user=user_id, title=title, content=content)
+            return redirect(url_for('groupDetail', group_id=group_id))
+
         if(str(user_id) == str(group.leader_id)):
             return render_template('group_id.html', group_id=group_id,\
-                                   group_data=group_data,\
+                                   group_data=group_data, discussions=discussions,\
                                    username=user_data['username'], role='2')
                                    #leader
-        if(str(user_id) in group.get_members()):
+        if({'member_id': user_id} in members):
             return render_template('group_id.html', group_id=group_id,\
-                                   group_data=group_data,\
+                                   group_data=group_data, discussions=discussions,\
                                    username=user_data['username'], role='1')
                                    #member
         #to be continued
