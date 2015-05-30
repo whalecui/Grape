@@ -253,7 +253,7 @@ def groupDetail(group_id):
 
 @app.route('/discussion', methods=['GET', 'POST'])
 def discussion_operation():
-	### Verify it's already login first!!
+    ### Verify it's already login first!!
     user_id = session.get('user_id')
     user = User(user_id=user_id)
     attendedGroups, ownGroups = user.get_groups()
@@ -379,7 +379,7 @@ def vote_operation(group_id,vote_id): # use groupid to verify the vote
     is_voted = len(voted_status)
     option_voted = 0
     if is_voted != 0:
-        option_voted = voted_status[0][2] # votefor
+        option_voted = voted_status[0][3] # votefor
 
     sql = "select * from votes where vote_id = '%s'" % vote_id
     cursor.execute(sql)
@@ -389,7 +389,8 @@ def vote_operation(group_id,vote_id): # use groupid to verify the vote
     vote_options_list = []
     vote_options_data = cursor.fetchall()
     for vote_option in vote_options_data: 
-        vote_options_list.append(vote_option[2])
+        vote_options_list.append(vote_option[3])
+
     return render_template('view_the_vote_options.html',vote_options_list=vote_options_list,vote_content=vote_content,vote_id=vote_id,is_voted=is_voted,option_voted=option_voted,current_path=request.path)
 
 
@@ -432,8 +433,8 @@ def view_votes_result(group_id,vote_id):
 
     option = 0;
     for vote_item in votes_static:
-        vote_options_list.append('%s.' % (chr(65+option)) + vote_item[2])
-        votes_distribution.append(vote_item[3])
+        vote_options_list.append('%s.' % (chr(65+option)) + '%s' % vote_item[3])
+        votes_distribution.append(vote_item[4])
         option+=1
 
     data = Data([
