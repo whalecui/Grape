@@ -3,6 +3,7 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index-log.css">
+    <script src="{{ url_for('static',filename='js/group_id.js') }}"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
@@ -98,19 +99,31 @@
             <div class="tab-pane fade" id="discussions">
                 <h3>Discussions</h3><hr>
                 <ul class="dicussions list-group">
+                {% for discuss in group_data.discuss_list %}
                     <li class="list-group-item">
-                        <h4>dicussions 1</h4>
-                        <p>details</p>
+                        <h4>Title: {{discuss.title}}</h4>
+                        <p>Content: {{discuss.content}}</p> 
+
+                        <a class="show-detail" href="{{ url_for('show_discuss', group_id=group_id, discuss_id=discuss.discuss_id) }}">details</a>
+
+                        {% if role == '2' %}
+                            <a class="discuss-delete" victim="{{discuss.discuss_id}}">delete</a>
+                        {% endif %}
+
+                        <span>from user {{discuss.username}}</span>
                     </li>
-                    <li class="list-group-item">
-                        <h4>dicussions 2</h4>
-                        <p>details</p>
-                    </li>
-                    <li class="list-group-item">
-                        <h4>dicussions 3</h4>
-                        <p>details</p>
-                    </li>
+                {% endfor %}
                 </ul>
+                <div id="create_discuss_div">
+                    <p>Here we can insert new discussions.</p>
+                    <form action="{{ url_for('create_discussion',group_id=group_data.group_id) }}" method="POST">
+                        <label for="title">title:</label>
+                        <input type="text" name="title"><br>
+                        <label for="content">content:</label>
+                        <input type="text" name="content"><br>
+                        <button type="submit">submit</button>
+                    </form>
+                </div>
             </div>
 
         </div>

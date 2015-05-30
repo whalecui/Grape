@@ -156,36 +156,12 @@ def check_email():
     user = User(email=email)
     return jsonify(valid=user.check_e())
 
-@app.route('/_delete')
-def delete():
+@app.route('/_delete_group')
+def deleteGroup():
     user_id = session.get('user_id')
     group_id = str(request.args.get('group_id', 0, type=int))
     user = User(user_id=user_id)
     return jsonify(success=user.delete_group(group_id))
-
-# @app.route('/group/',methods=['GET', 'POST'])  # maybe no methods here? 
-# def groupOverview():
-#     is_login = session.get('islogin')
-#     if(is_login == 0):                       #please login first!
-#         return make_response(redirect('/'))
-
-#     name = session.get('username')
-#     user = User(name=name)
-
-#     attendedGroups, ownGroups = user.get_groups()
-
-#     attendedGroupsList = []
-#     ownGroupsList = []
-
-#     for i in attendedGroups:
-#         attendedGroupsList += [Group(i).get_data()]
-#     for i in ownGroups:
-#         ownGroupsList += [Group(i).get_data()]
-
-#     overviewList = None     # A overview on group activities.
-
-#     return render_template('group.html', overview=1, username=name,\
-#                             ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
 
 
 @app.route('/group/', methods=['GET', 'POST'])
@@ -227,18 +203,38 @@ def groupDetail(group_id):
     user_data = user.get_data_by_id()
     #code above checks user data
     group = Group(group_id)
+    group_data = group.get_data()
     if(group.exist_group()):
         if(str(user_id) == str(group.leader_id)):
-            return render_template('group_id.html', group_id=group_id,\
-                                   username=user_data['username'], role='2')
-        if(str(user_id) in group.get_members()):
-            return render_template('group_id.html', group_id=group_id,\
-                                   username=user_data['username'], role='1')
+            role = '2'
+        elif(str(user_id) in group.get_members()):
+            role='1'
         #to be continued
-        return render_template('group_id.html', group_id=group_id,\
-                                   username=user_data['username'], role='0')
-    return render_template('group_id.html', group_id=group_id,\
-                           username=user_data['username'], role='non-exist')
+        else:
+            role='0'
+    return render_template('group_id.html', group_id=group_id, role=role,\
+                           username=user_data['username'], group_data=group_data)
+
+
+@app.route('/group/gp<int:group_id>/dis<int:discuss_id>',methods=['GET','POST'])
+def show_discuss(group_id,discuss_id):
+    is_login = session.get('islogin')
+    if(is_login == 0):                       #please login first!
+        return make_response(redirect('/'))
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    if(user.check_id() == 0):                #user not exist?
+        session.clear()
+        return make_response(redirect('/'))
+    user_data = user.get_data_by_id()
+    group = Group(group_id)
+    discuss = Discussion(discuss_id)
+    discuss_data = discuss.get_data()
+    reply = discuss.get_reply()
+    return render_template('discussion.html',username=user_data['username'],\
+                            discuss=discuss_data,reply=reply)
+
+
 
 @app.route('/discussion', methods=['GET', 'POST'])
 def discussion_operation():
@@ -255,9 +251,8 @@ def discussion_operation():
         discussionList[group_id] = group.get_discussions()
     return render_template('discussion.html', attendedGroups=attendedGroupsList, discussionList = discussionList)
 
-@app.route('/_create_discussion', methods=['POST'])
-def create_discussion():
-    group_id = request.form.get('group_id')
+@app.route('/_create_discussion/<int:group_id>', methods=['POST'])
+def create_discussion(group_id):
     title = request.form.get('title')
     content = request.form.get('content')
     user_id = session.get('user_id')
@@ -267,14 +262,19 @@ def create_discussion():
     group = Group(group_id)
     group.create_discussion(user_id, title, content)
 
-    return redirect('/discussion')
+    return redirect('/group/gp'+str(group_id))
 
-@app.route('/_delete_discussion/<discuss_id>')
-def delete_discussion(discuss_id):
+@app.route('/_delete_discussion')
+def deleteDiscussion():
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    discuss_id = str(request.args.get('discuss_id', 0, type=int))
+    return jsonify(success=user.delete_discussion(discuss_id))
+
     # make some protections here!
     discuss = Discussion(discuss_id)
     discuss.delete_discussion()
-    return redirect('/discussion')
+    return redirect('/group/gp'+str(group_id))
 
 @app.route('/_reply_discussion/<discuss_id>', methods=['POST'])
 def reply_discussion(discuss_id):
