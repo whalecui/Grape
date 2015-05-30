@@ -43,6 +43,7 @@ role int not null default 0
 );
 insert into user(username, password, email) values('123','123','123@123.com');
 insert into user(username, password, email) values('myn','myn','myn@123.com');
+insert into user(username, password, email,role) values('admin','admin','admin@123.com',1);
 
 
 Drop Table if exists discussion;

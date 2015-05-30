@@ -4,11 +4,10 @@ from config import *
 
 
 class User:
-
     def __init__(self, name='', email='', user_id=0):
         if(name=='' and email==''):
             self.user_id = user_id
-            #print 'user_id:', user_id
+            # print 'user_id:', user_id
             try:
                 data = self.get_data_by_id()
                 self.username = data['username']
@@ -74,6 +73,7 @@ class User:
         return True
 
     def delete_group(self,group_id):
+        group_id=str(group_id)
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         #判断是否存在且用户为leader
@@ -111,6 +111,7 @@ class User:
     #注意！！这里的返回值是所有的小组id组成的list，不是字典的list！！！
 
     def join_group(self, group_id):
+        group_id=str(group_id)
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute("select name from groups where group_id='"+str(group_id)+"';")
@@ -131,6 +132,7 @@ class User:
         return False
 
     def quit_group(self,group_id):
+        group_id=str(group_id)
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute("select * from groupMemberAssosiation where member_id='"+self.user_id+"' and group_id='"+group_id+"';")
@@ -154,6 +156,7 @@ class User:
         return False
 
     def search_group(self, group_id):
+        group_id=str(group_id)
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         #判断是否存在
@@ -230,6 +233,76 @@ class User:
             return True
         conn.close()
         return False
+
+class Admin(User):
+    def __init__(self, user_id):
+        User.__init__(self,user_id=user_id)
+
+    def delete_group(self,group_id):
+        group_id=str(group_id)
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        #判断是否存在
+        cursor.execute("select name from groups where group_id='"+group_id+"';")
+        right=cursor.fetchall()
+        if(right):
+            cursor.execute("delete from groups where group_id='"+group_id+"';")
+            conn.commit()
+            cursor.execute("delete from groupMemberAssosiation where group_id='"+group_id+"';")
+            conn.commit()
+            conn.close()
+            print 'deleted group successfully :', group_id
+            return True
+        conn.close()
+        print 'failed to delete group :', group_id
+        return False
+
+    def show_all_groups(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)  
+        cursor.execute("select * from groups;")
+        groups=cursor.fetchall()
+        # print groups
+        conn.close()
+
+        return groups
+
+    def show_all_users(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)  
+        cursor.execute("select * from user;")
+        users=cursor.fetchall()
+        # print groups
+        conn.close()
+
+        return users
+    def delete_user(self,user_id):
+        user_id=str(user_id)
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+
+        cursor.execute("select user_id from user where user_id='"+user_id+"';")
+        right=cursor.fetchall()
+        if(right):
+            #删除全部相关信息
+            cursor.execute("delete from user where user_id='"+user_id+"';")
+            conn.commit()
+            cursor.execute("delete from groupMemberAssosiation where member_id='"+user_id+"';")
+            conn.commit()
+            cursor.execute("select group_id from groups where leader_id='"+user_id+"';")
+
+            leadergroups=cursor.fetchall()
+            print 'leadergroups',leadergroups
+            if(leadergroups):
+                for i in leadergroups:
+                    cursor.execute("delete from groupMemberAssosiation where group_id='"+str(i['group_id'])+"';")
+                    conn.commit()
+                cursor.execute("delete from groups where leader_id='"+user_id+"';")
+                conn.commit()
+
+            conn.close()
+            print 'deleted user successfully :', user_id
+            return True
 
 class Group:
 

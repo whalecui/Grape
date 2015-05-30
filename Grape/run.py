@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding:utf8
-from flask import Flask, render_template, url_for, request,redirect,make_response,session
-import os,MySQLdb
+from flask import Flask, render_template, url_for, request, redirect, make_response, session, abort
+import MySQLdb
 from flask import jsonify
 from config import *
 from function import *
@@ -282,11 +282,37 @@ def reply_discussion(discuss_id):
     print "from reply_discussion", discuss_id
     reply_content =request.form.get('content')
     user_id = session.get('user_id')
-    user = User(user_id=user_id)
+    #seems not used?
+    #user = User(user_id=user_id)
 
     discuss = Discussion(discuss_id)
     discuss.add_reply(user_id,reply_content)
     return redirect('/discussion')
+
+@app.errorhandler(404)
+def page_not_found(error):
+    user_id = session.get('user_id')
+    islogin = session.get('islogin')
+    if islogin == '1':
+        user = User(user_id=user_id)
+        username = user.username
+    else:
+        username = u'请先登录'
+    return render_template('page_not_found.html', user_id=user_id, islogin=islogin, username=username), 404
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    #未判断是否为admin
+
+    admin1=Admin(user_id=3)
+    groups=admin1.show_all_groups()
+    users=admin1.show_all_users()
+
+    # admin1.delete_user(2)
+    admin1.delete_group(2)
+
+
+    return render_template('admin.html', groups=groups,users=users)
 
 if __name__ == '__main__':
     app.run(debug=True, host=HOST, port=PORT)
