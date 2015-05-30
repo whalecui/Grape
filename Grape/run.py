@@ -30,16 +30,18 @@ def index():
     if islogin == '1':
         html = 'index-log.html'
         #get groups
-        user = User(user_id=user_id)
-        username = user.username
-        attendedGroups, ownGroups = user.get_groups()
+        User1 = User(user_id=user_id)
+        username = User1.username
+        role = User1.role
+        if(role==1):
+            return redirect('/admin')
+        attendedGroups, ownGroups = User1.get_groups()
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
         for i in attendedGroups:
             if i not in ownGroups:
                 attendedGroupsList += [Group(i).get_data()]
 
-        User1=User(user_id=user_id)
 
         if request.method == 'GET':
             #Find group by group_id
@@ -163,6 +165,21 @@ def delete():
     group_id = str(request.args.get('group_id', 0, type=int))
     user = User(user_id=user_id)
     return jsonify(success=user.delete_group(group_id))
+
+@app.route('/_delete_user')
+def delete_user():
+    user_id = session.get('user_id')
+    user_id_to_be_deleted = str(request.args.get('user_id', 0, type=int))
+    print 'del user',user_id_to_be_deleted
+    admin = Admin(user_id=user_id)
+    return jsonify(success=admin.delete_user(user_id_to_be_deleted))
+@app.route('/_delete_group_admin')
+def delete_group_admin():
+    user_id = session.get('user_id')
+    print 233
+    group_id = str(request.args.get('group_id', 0, type=int))
+    admin = Admin(user_id=user_id)
+    return jsonify(success=admin.delete_group(group_id))
 
 # @app.route('/group/',methods=['GET', 'POST'])  # maybe no methods here? 
 # def groupOverview():
@@ -313,17 +330,28 @@ def page_not_found(error):
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     #未判断是否为admin
+    is_login = session.get('islogin')
+    if(is_login == 0):                       #please login first!
+        return make_response(redirect('/'))
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    if(user.check_id() == 1):                #user not exist?
+        session.clear()
+        return make_response(redirect('/'))
 
-    admin1=Admin(user_id=3)
+    if(user.role!=1):
+        abort(404)
+
+    admin1=Admin(user_id=user_id)
     groups=admin1.show_all_groups()
     users=admin1.show_all_users()
 
     # admin1.delete_user(2)
-    admin1.delete_group(2)
+    # admin1.delete_group(2)
 
 
 
-    return render_template('admin.html', groups=groups,users=users)
+    return render_template('admin.html', username=user.username,groups=groups,users=users)
 
 if __name__ == '__main__':
     app.run(debug=True, host=HOST, port=PORT)
