@@ -150,7 +150,9 @@ def logout():
 def check_users():
     username = request.args.get('username', 0, type=str)
     user = User(name=username)
-    return jsonify(valid=user.check_u())
+    valid=user.check_u()
+    print valid
+    return jsonify(valid=valid)
 
 @app.route('/_check_email')
 def check_email():

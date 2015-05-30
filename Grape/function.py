@@ -15,13 +15,13 @@ class User:
                 self.role = data['role']
             except Exception, e:
                 print 'initUser', e
-
         else:
             self.username = name
             self.email = email
-            data = self.get_data_by_email()
-            # print data
-            self.role = data['role']
+            if(not self.check_e()):
+                data = self.get_data_by_email()
+                # print data
+                self.role = data['role']
 
     def get_data_by_id(self):
         #if(self.check_id()):
