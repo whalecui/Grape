@@ -158,6 +158,25 @@ def check_email():
     user = User(email=email)
     return jsonify(valid=user.check_e())
 
+@app.route('/_join_group')
+def join_group():
+    user_id = session.get('user_id')
+    group_id = str(request.args.get('group_id', 0, type=int))
+    confirm = str(request.args.get('confirm', 0, type=str))
+    group = Group(group_id=group_id)
+    user = User(user_id=user_id)
+    status=user.join_group(group_id=group_id, confirm=confirm)
+    return jsonify(status=status)
+
+@app.route('/_quit_group')
+def quit_group():
+    user_id = session.get('user_id')
+    group_id = str(request.args.get('group_id', 0, type=str))
+    group = Group(group_id=group_id)
+    user = User(user_id=user_id)
+    status=user.quit_group(group_id=group_id)
+    return jsonify(status=status)
+
 @app.route('/_delete_group')
 def delete():
     user_id = session.get('user_id')
@@ -172,6 +191,7 @@ def delete_user():
     print 'del user',user_id_to_be_deleted
     admin = Admin(user_id=user_id)
     return jsonify(success=admin.delete_user(user_id_to_be_deleted))
+
 @app.route('/_delete_group_admin')
 def delete_group_admin():
     user_id = session.get('user_id')
@@ -257,21 +277,21 @@ def groupDetail(group_id):
             return redirect(url_for('groupDetail', group_id=group_id))
 
         if(str(user_id) == str(group.leader_id)):
-            return render_template('group_id.html', group_id=group_id,\
+            return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\
                                    username=user_data['username'], role='2')
                                    #leader
         if({'member_id': user_id} in members):
-            return render_template('group_id.html', group_id=group_id,\
+            return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\
                                    username=user_data['username'], role='1')
                                    #member
         #to be continued
-        return render_template('group_id.html', group_id=group_id,\
+        return render_template('group-id.html', group_id=group_id,\
                                group_data=group_data,\
                                username=user_data['username'], role='0')
                                    #other
-    #return render_template('group_id.html', group_id=group_id,\
+    #return render_template('group-id.html', group_id=group_id,\
     #                       username=user_data['username'], role='-1')
     abort(404)
                            #non-exist

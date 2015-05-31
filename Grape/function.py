@@ -113,38 +113,42 @@ class User:
         return attendedGroupsName, ownGroupsName
     #注意！！这里的返回值是所有的小组id组成的list，不是字典的list！！！
 
-    def join_group(self, group_id):
+    def join_group(self, group_id, confirm):
         group_id=str(group_id)
+        group = Group(group_id=group_id)
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select name from groups where group_id='"+str(group_id)+"';")
-        exist = cursor.fetchall()
-        if(exist):
+        if(group.exist_group()):
             cursor.execute("select member_id from groupMemberAssosiation where group_id='"+str(group_id)+"';")
             member_list = cursor.fetchall()
             if(str(self.user_id) in member_list):
                 print 'already joined', group_id
-                return True
-            cursor.execute("insert into groupMemberAssosiation(group_id,member_id) values(%s,%s) ;", (group_id, self.user_id) )
-            conn.commit()
-            conn.close()
-            print 'joined group successfully :', group_id
-            return True
+                return 'joined'
+            if(confirm == group.confirmMessage):
+                cursor.execute("insert into groupMemberAssosiation(group_id,member_id) values(%s,%s) ;", (group_id, self.user_id) )
+                conn.commit()
+                conn.close()
+                print 'joined group successfully :', group_id
+                return 'success'
+            else:
+                conn.close()
+                print 'failed to join group :', group_id
+                return 'fail'
         conn.close()
-        print 'failed to join group :', group_id
-        return False
+        print 'group :', group_id, 'does not exist'
+        return 'non-ex'
 
     def quit_group(self,group_id):
         group_id=str(group_id)
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select * from groupMemberAssosiation where member_id='"+self.user_id+"' and group_id='"+group_id+"';")
+        cursor.execute("select * from groupMemberAssosiation where member_id='"+str(self.user_id)+"' and group_id='"+group_id+"';")
         exist = cursor.fetchall()
         if(exist):
-            cursor.execute("delete from groupMemberAssosiation where member_id='"+self.user_id+"' and group_id='"+group_id+"';")
+            cursor.execute("delete from groupMemberAssosiation where member_id='"+str(self.user_id)+"' and group_id='"+group_id+"';")
             conn.commit()
             #whether he's leader
-            cursor.execute("select name from groups where group_id='"+group_id+"' and leader_id='"+self.user_id+"';")
+            cursor.execute("select name from groups where group_id='"+group_id+"' and leader_id='"+str(self.user_id)+"';")
             isLeader=cursor.fetchall()  
             if(isLeader):
                 print "the user trying to quit is LEADER!"
@@ -153,10 +157,10 @@ class User:
 
             conn.close()
             print 'quit group successfully :',group_id
-            return True
+            return 1
         print 'failed to quit group :',group_id
         conn.close()
-        return False
+        return 0
 
     def search_group(self, group_id):
         group_id=str(group_id)
@@ -337,7 +341,7 @@ class Group:
             discuss_item = Discussion(discuss['discuss_id'])
             discuss['reply'] = discuss_item.get_reply()
         conn.close()
-        print "discussions: ",discussions
+        #print "discussions: ",discussions
         return discussions
 
     def create_discussion(self, user, title, content):

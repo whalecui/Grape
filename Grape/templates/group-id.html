@@ -3,6 +3,8 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index-log.css">
+    <link rel="stylesheet" href="../static/css/group-id.css">
+    <script src="../static/js/group-id.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
@@ -80,10 +82,18 @@
                         </tr>
                     </tbody>
                 </table>
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="confirm">I know the confirm message for this group</label>
+                        <input id="confirm" class="form-control" name="confirm" placeholder="Confirm message">
+                    </div>
+                </form>
+                    <button id="join" class="btn btn-default">Join!</button>
             </div>
             {% else %}
             <div class="tab-pane fade" id="groupInfo">
-                <h3>Group Information</h3><hr>
+                <h3 id="group-info-title">Group Information</h3>
+                <hr>
                 <table class="table table-hover">
                     <tbody>
                         <tr>
@@ -100,6 +110,9 @@
                         </tr>
                     </tbody>
                 </table>
+                {% if role == '1' %}
+                    <button id="quit" class="btn btn-default">quit</button>
+                {% endif %}
             </div>
             {% endif %}
 
