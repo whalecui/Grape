@@ -5,14 +5,24 @@ import MySQLdb
 from flask import jsonify
 from config import *
 from function import *
+import plotly.plotly as py  #easy_install plotly
+from xml.sax.saxutils import escape,quoteattr  # transfer ' to \' to escape error in mysql
+from plotly.graph_objs import *
+import string
+
 app = Flask(__name__)
 
+py.sign_in('NoListen','ueixigh6gr') # API KEY
 
 app.secret_key = '\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-# conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='grape', charset='utf8')
-# cursor = conn.cursor()
+conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='grape', charset='utf8')
+cursor = conn.cursor()
 
+open_event_scheduler ="SET GLOBAL event_scheduler = 1;"
+cursor.execute(open_event_scheduler)
+conn.commit()
+#open the event_scheduler to set time expiration event
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -22,7 +32,6 @@ def index():
     message2 = session.get('message2')
     attendedGroupsList = []
     ownGroupsList = []
-
     html = 'index.html'
     members = None
     leader = None
@@ -30,19 +39,12 @@ def index():
     if islogin == '1':
         html = 'index-log.html'
         #get groups
-<<<<<<< HEAD
-        print user_id
-        user = User(user_id=user_id)
-        username = user.username
-        attendedGroups, ownGroups = user.get_groups()
-=======
         User1 = User(user_id=user_id)
         username = User1.username
         role = User1.role
         if(role==1):
             return redirect('/admin')
         attendedGroups, ownGroups = User1.get_groups()
->>>>>>> 25731d86292efa201df354a2569eace024e30598
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
         for i in attendedGroups:
@@ -129,6 +131,7 @@ def login():
             return response
         user = User(email=email)
         state = user.login(password)
+        print "state:",state
         if state == 1:
             data = user.get_data_by_email()
             session['user_id'] = data['user_id']
@@ -143,7 +146,7 @@ def login():
             return response
     else:
       session['islogin'] = '0'
-      return redirect('/login')
+      return redirect('/')
 
 @app.route('/logout')
 def logout():
@@ -163,6 +166,25 @@ def check_email():
     user = User(email=email)
     return jsonify(valid=user.check_e())
 
+@app.route('/_join_group')
+def join_group():
+    user_id = session.get('user_id')
+    group_id = str(request.args.get('group_id', 0, type=int))
+    confirm = str(request.args.get('confirm', 0, type=str))
+    group = Group(group_id=group_id)
+    user = User(user_id=user_id)
+    status=user.join_group(group_id=group_id, confirm=confirm)
+    return jsonify(status=status)
+
+@app.route('/_quit_group')
+def quit_group():
+    user_id = session.get('user_id')
+    group_id = str(request.args.get('group_id', 0, type=str))
+    group = Group(group_id=group_id)
+    user = User(user_id=user_id)
+    status=user.quit_group(group_id=group_id)
+    return jsonify(status=status)
+
 @app.route('/_delete_group')
 def deleteGroup():
     user_id = session.get('user_id')
@@ -170,8 +192,6 @@ def deleteGroup():
     user = User(user_id=user_id)
     return jsonify(success=user.delete_group(group_id))
 
-<<<<<<< HEAD
-=======
 @app.route('/_delete_user')
 def delete_user():
     user_id = session.get('user_id')
@@ -179,6 +199,7 @@ def delete_user():
     print 'del user',user_id_to_be_deleted
     admin = Admin(user_id=user_id)
     return jsonify(success=admin.delete_user(user_id_to_be_deleted))
+
 @app.route('/_delete_group_admin')
 def delete_group_admin():
     user_id = session.get('user_id')
@@ -186,32 +207,6 @@ def delete_group_admin():
     group_id = str(request.args.get('group_id', 0, type=int))
     admin = Admin(user_id=user_id)
     return jsonify(success=admin.delete_group(group_id))
-
-# @app.route('/group/',methods=['GET', 'POST'])  # maybe no methods here? 
-# def groupOverview():
-#     is_login = session.get('islogin')
-#     if(is_login == 0):                       #please login first!
-#         return make_response(redirect('/'))
-
-#     name = session.get('username')
-#     user = User(name=name)
-
-#     attendedGroups, ownGroups = user.get_groups()
-
-#     attendedGroupsList = []
-#     ownGroupsList = []
-
-#     for i in attendedGroups:
-#         attendedGroupsList += [Group(i).get_data()]
-#     for i in ownGroups:
-#         ownGroupsList += [Group(i).get_data()]
-
-#     overviewList = None     # A overview on group activities.
-
-#     return render_template('group.html', overview=1, username=name,\
-#                             ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
-
->>>>>>> 25731d86292efa201df354a2569eace024e30598
 
 @app.route('/group/', methods=['GET', 'POST'])
 def myGroups():
@@ -254,11 +249,6 @@ def groupDetail(group_id):
     group = Group(group_id)
     group_data = group.get_data()
     if(group.exist_group()):
-
-        # if(str(user_id) == str(group.leader_id)):
-        #     role = '2'
-        # elif(str(user_id) in group.get_members()):
-        #     role='1'
         group_data = group.get_data()
         discussions = group.get_discussions()
         members = group.get_members()
@@ -271,20 +261,24 @@ def groupDetail(group_id):
             return redirect(url_for('groupDetail', group_id=group_id))
 
         if(str(user_id) == str(group.leader_id)):
-            return render_template('group_id.html', group_id=group_id,\
+            return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\
                                    username=user_data['username'], role='2')
                                    #leader
         if({'member_id': user_id} in members):
-            return render_template('group_id.html', group_id=group_id,\
+            return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\
                                    username=user_data['username'], role='1')
                                    #member
         #to be continued
-        else:
-            role='0'
-    return render_template('group_id.html', group_id=group_id, role=role,\
-                           username=user_data['username'], group_data=group_data)
+        return render_template('group-id.html', group_id=group_id,\
+                               group_data=group_data,\
+                               username=user_data['username'], role='0')
+                                   #other
+    #return render_template('group-id.html', group_id=group_id,\
+    #                       username=user_data['username'], role='-1')
+        abort(404)
+                           #non-exist
 
 
 @app.route('/group/gp<int:group_id>/dis<int:discuss_id>',methods=['GET','POST'])
@@ -306,10 +300,9 @@ def show_discuss(group_id,discuss_id):
                             discuss=discuss_data,reply=reply)
 
 
-
 @app.route('/discussion', methods=['GET', 'POST'])
 def discussion_operation():
-	### Verify it's already login first!!
+    ### Verify it's already login first!!
     user_id = session.get('user_id')
     user = User(user_id=user_id)
     attendedGroups, ownGroups = user.get_groups()
@@ -375,11 +368,11 @@ def page_not_found(error):
 def admin():
     #未判断是否为admin
     is_login = session.get('islogin')
-    if(is_login == 0):                       #please login first!
+    if(is_login == '0'):                       #please login first!
         return make_response(redirect('/'))
     user_id = session.get('user_id')
     user = User(user_id=user_id)
-    if(user.check_id() == 1):                #user not exist?
+    if(user.check_id() == '1'):                #user not exist?
         session.clear()
         return make_response(redirect('/'))
 
@@ -394,12 +387,153 @@ def admin():
     # admin1.delete_group(2)
 
 
-<<<<<<< HEAD
-    return render_template('admin.html', groups=groups,users=users)
-=======
-
     return render_template('admin.html', username=user.username,groups=groups,users=users)
->>>>>>> 25731d86292efa201df354a2569eace024e30598
+
+@app.route('/group/gp<int:group_id>/vote', methods=['GET', 'POST'])
+def vote(group_id):
+    return render_template('vote_index.html',current_path=request.path)
+
+@app.route('/group/gp<int:group_id>/vote/raise-vote',methods=['GET','POST'])
+def raise_a_vote(group_id):
+    return render_template('raise_a_vote.html',current_path=request.path)
+
+@app.route('/group/gp<int:group_id>/vote/raise-vote/result',methods=['GET','POST'])
+def raise_a_vote_result(group_id):
+    conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='grape', charset='utf8')
+    cursor = conn.cursor()
+    if request.method == "GET":
+        vote_content = quoteattr(request.args.get('vote-content'))
+        endtime_selection = request.args.get('endtime-selection')
+        if (endtime_selection == "2"):
+            endtime = request.args.get('datetime')
+            endtime = "'%s'" % endtime
+        else:
+            time_split = request.args.get('timeinterval').split(':')
+            endtime = "current_timestamp + interval %s hour + interval %s minute + interval %s second" % (time_split[0],time_split[1],time_split[2])
+        sql = """insert into votes (group_id,vote_content,voting,endtime) values ("%s",%s,1,%s)""" % (group_id,vote_content,endtime)
+        cursor.execute(sql)
+        conn.commit()
+
+        # need to add something here later
+        
+        cursor.execute("select LAST_INSERT_ID() from votes where group_id='%s'" % (group_id))
+
+        voteid = cursor.fetchall()[0][0]
+
+        sql = """ CREATE EVENT event_%s ON SCHEDULE AT %s  ENABLE DO update votes set voting=0 where vote_id=%d;""" % (voteid,endtime,voteid)
+        cursor.execute(sql)
+        conn.commit()
+
+        options = string.atoi(request.args.get('vote-options-num'))
+        for i in range (1,options+1):
+            sql = """insert into vote_detail(vote_id,option_order,vote_option,votes) values (%d,%d,%s,0)""" % (voteid,i,quoteattr(request.args.get('vote-option-content-%s'% str(i))).encode('utf-8'))
+            cursor.execute(sql)
+        conn.commit()
+        return redirect("/group/gp%d/vote" % group_id)
+
+@app.route('/group/gp<int:group_id>/vote/view-votes')
+def view_votes(group_id):
+
+    votes_list_voting = []
+    votes_list_end = []
+
+    sql = "select * from votes where group_id = %d and voting = 1" % group_id
+    cursor.execute(sql)
+    votes_data = cursor.fetchall()
+
+    for vote in votes_data:
+        vote_pair = (vote[0],vote[2]) # id and the contents of the question
+        votes_list_voting.append(vote_pair)
+
+    sql = "select * from votes where group_id = %d and voting = 0" % group_id
+    cursor.execute(sql);
+
+    votes_data = cursor.fetchall()
+    for vote in votes_data:
+        vote_pair = (vote[0],vote[2])
+        votes_list_end.append(vote_pair)
+
+    return render_template('view_the_votes.html',votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,current_path=request.path) # add status
+
+
+@app.route('/group/gp<int:group_id>/vote/view-votes/voting<vote_id>')
+def vote_operation(group_id,vote_id): # use groupid to verify the vote
+    user_id = session.get('user_id')
+
+    # ensure the vote has not voted before 
+    # if the user change the status to submit it
+    sql = "select * from vote_user_map where vote_id = '%s' and user_id = '%s'" % (vote_id,user_id)
+    cursor.execute(sql)
+    voted_status = cursor.fetchall() # it is possible the user has voted before
+    is_voted = len(voted_status)
+    option_voted = 0
+    if is_voted != 0:
+        option_voted = voted_status[0][3] # votefor
+
+    sql = "select * from votes where vote_id = '%s'" % vote_id
+    cursor.execute(sql)
+    vote_content = cursor.fetchall()[0][2]
+    sql = "select * from vote_detail where vote_id = '%s'" % vote_id
+    cursor.execute(sql)
+    vote_options_list = []
+    vote_options_data = cursor.fetchall()
+    for vote_option in vote_options_data: 
+        vote_options_list.append(vote_option[3])
+
+    return render_template('view_the_vote_options.html',vote_options_list=vote_options_list,vote_content=vote_content,vote_id=vote_id,is_voted=is_voted,option_voted=option_voted,current_path=request.path)
+
+
+@app.route('/group/gp<int:group_id>/vote/view-votes/voting<vote_id>/vote-operation-result',methods=['GET','POST'])
+def vote_operation_result(group_id,vote_id):
+    if request.method == 'GET':
+        user_id = session.get('user_id')
+        vote_option = request.args.get('vote-option')
+        vote_id = request.args.get('vote-id')
+
+        sql = "select * from vote_user_map where vote_id = '%s' and user_id = '%s'" % (vote_id,user_id)
+        cursor.execute(sql)
+        voted_status = cursor.fetchall() # it is possible the user has voted before
+        is_voted = len(voted_status)
+        if is_voted != 0:
+            return "you have voted before" 
+
+        sql = "select votes from vote_detail where option_order='%s' and vote_id='%s'" % (vote_option,vote_id)
+        cursor.execute(sql)
+        votes = cursor.fetchall()[0][0]
+        sql = "update vote_detail set votes=%d where option_order='%s' and vote_id='%s'" % (votes+1,vote_option,vote_id)
+        cursor.execute(sql)
+        conn.commit()
+
+        sql = "insert into vote_user_map(vote_id,user_id,votefor) values('%s','%s','%s')" % (vote_id,user_id,vote_option)
+        cursor.execute(sql)
+        conn.commit()
+    return redirect('/group/gp%d/vote' % group_id)
+
+@app.route('/group/gp<int:group_id>/vote/view-votes/rs<vote_id>',methods=['GET','POST'])
+def view_votes_result(group_id,vote_id):
+    groupname ="grape"
+
+    sql = "select * from vote_detail where vote_id='%s'" % vote_id
+    cursor.execute(sql)
+    votes_static = cursor.fetchall()
+    vote_options_list = []
+    votes_distribution = []
+
+
+    option = 0;
+    for vote_item in votes_static:
+        vote_options_list.append('%s.' % (chr(65+option)) + '%s' % vote_item[3])
+        votes_distribution.append(vote_item[4])
+        option+=1
+
+    data = Data([
+        Bar(
+            x=vote_options_list,
+            y=votes_distribution
+        )
+    ])
+    plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
+    return render_template('votes_static.html',plot_url=plot_url)
 
 if __name__ == '__main__':
     app.run(debug=True, host=HOST, port=PORT)

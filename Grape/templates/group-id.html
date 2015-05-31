@@ -3,7 +3,8 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index-log.css">
-    <script src="{{ url_for('static',filename='js/group_id.js') }}"></script>
+    <link rel="stylesheet" href="../static/css/group-id.css">
+    <script src="../static/js/group-id.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
@@ -81,10 +82,18 @@
                         </tr>
                     </tbody>
                 </table>
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="confirm">I know the confirm message for this group</label>
+                        <input id="confirm" class="form-control" name="confirm" placeholder="Confirm message">
+                    </div>
+                </form>
+                    <button id="join" class="btn btn-default">Join!</button>
             </div>
             {% else %}
             <div class="tab-pane fade" id="groupInfo">
-                <h3>Group Information</h3><hr>
+                <h3 id="group-info-title">Group Information</h3>
+                <hr>
                 <table class="table table-hover">
                     <tbody>
                         <tr>
@@ -101,6 +110,9 @@
                         </tr>
                     </tbody>
                 </table>
+                {% if role == '1' %}
+                    <button id="quit" class="btn btn-default">quit</button>
+                {% endif %}
             </div>
             {% endif %}
 
@@ -122,23 +134,19 @@
                         </li>
                     </ul>
                 </div>
-
-<!--             <div class="tab-pane fade" id="discussions">
-                <h3>Discussions</h3><hr>
-                <ul class="dicussions list-group">
-                {% for discuss in group_data.discuss_list %}
-                    <li class="list-group-item">
-                        <h4>Title: {{discuss.title}}</h4>
-                        <p>Content: {{discuss.content}}</p>  -->
                 <div class="tab-pane fade" id="discussions">
                     <h3>Discussions</h3><hr>
                     <ul class="news list-group">
                         {% for discussion in discussions %}
                             <li class="list-group-item">
-                                <h4><a href="#">{{ discussion['title'] }}</a></h4>
+                                <h4><a href="{{ url_for('show_discuss', group_id=group_id, discuss_id=discussion.discuss_id) }}">{{ discussion['title'] }}</a></h4>
                                 <a class="show-detail" data-toggle="collapse"
                                        data-target="#discussion-{{ discussion['discuss_id'] }}">
                                         details</a>
+                                {% if role == '2' %}
+                                    <a class="discuss-delete" victim="{{discussion.discuss_id}}">delete</a>
+                                {% endif %}
+                                <span>from user {{discussion.username}}</span>
                                 <div id="discussion-{{ discussion['discuss_id'] }}" class="collapse">
                                     <ul class="gp-detail">
                                         <li class="gp-detail-topic">
@@ -153,34 +161,21 @@
                         {% else %}
                             <li class="list-group-item">
                                 <h4>Oops! There are no discussions in your group!</h4>
-                                {% if role == '1' %}
-                                    <h5>Click "Find Groups" to find one!</h5>
-                                {% endif %}
                             </li>
                         {% endfor %}
                     </ul>
+                    <div id="create_discuss_div">
+                        <p>Here we can insert new discussions.</p>
+                        <form action="{{ url_for('create_discussion',group_id=group_data.group_id) }}" method="POST">
+                            <label for="title">title:</label>
+                            <input type="text" name="title"><br>
+                            <label for="content">content:</label>
+                            <input type="text" name="content"><br>
+                            <button type="submit">submit</button>
+                        </form>
+                    </div>
                 </div>
-
-                        <a class="show-detail" href="{{ url_for('show_discuss', group_id=group_id, discuss_id=discuss.discuss_id) }}">details</a>
-
-                        {% if role == '2' %}
-                            <a class="discuss-delete" victim="{{discuss.discuss_id}}">delete</a>
-                        {% endif %}
-
-                        <span>from user {{discuss.username}}</span>
-                    </li>
-                {% endfor %}
                 </ul>
-                <div id="create_discuss_div">
-                    <p>Here we can insert new discussions.</p>
-                    <form action="{{ url_for('create_discussion',group_id=group_data.group_id) }}" method="POST">
-                        <label for="title">title:</label>
-                        <input type="text" name="title"><br>
-                        <label for="content">content:</label>
-                        <input type="text" name="content"><br>
-                        <button type="submit">submit</button>
-                    </form>
-                </div>
             </div>
             {% endif %}
 
