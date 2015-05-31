@@ -31,7 +31,6 @@ def index():
     message1 = session.get('message1')
     attendedGroupsList = []
     ownGroupsList = []
-
     html = 'index.html'
     members = None
     leader = None
@@ -182,7 +181,7 @@ def quit_group():
     return jsonify(status=status)
 
 @app.route('/_delete_group')
-def delete():
+def deleteGroup():
     user_id = session.get('user_id')
     group_id = str(request.args.get('group_id', 0, type=int))
     user = User(user_id=user_id)
@@ -204,31 +203,6 @@ def delete_group_admin():
     admin = Admin(user_id=user_id)
     return jsonify(success=admin.delete_group(group_id))
 
-# @app.route('/group/',methods=['GET', 'POST'])  # maybe no methods here? 
-# def groupOverview():
-#     is_login = session.get('islogin')
-#     if(is_login == 0):                       #please login first!
-#         return make_response(redirect('/'))
-
-#     name = session.get('username')
-#     user = User(name=name)
-
-#     attendedGroups, ownGroups = user.get_groups()
-
-#     attendedGroupsList = []
-#     ownGroupsList = []
-
-#     for i in attendedGroups:
-#         attendedGroupsList += [Group(i).get_data()]
-#     for i in ownGroups:
-#         ownGroupsList += [Group(i).get_data()]
-
-#     overviewList = None     # A overview on group activities.
-
-#     return render_template('group.html', overview=1, username=name,\
-#                             ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
-
-
 @app.route('/group/', methods=['GET', 'POST'])
 def myGroups():
     try:
@@ -248,8 +222,8 @@ def myGroups():
         print ownGroupsList
     except Exception, e:
         name = '!none!'
-        ownGroups = ['none']
-        attendedGroups = ['none']
+        ownGroupList = ['none']
+        attendedGroupList = ['none']
         print 1234, e
     return render_template('group.html', user_id=user_id,\
                            username=name, ownGroups=ownGroupsList, \
@@ -300,6 +274,26 @@ def groupDetail(group_id):
     abort(404)
                            #non-exist
 
+
+@app.route('/group/gp<int:group_id>/dis<int:discuss_id>',methods=['GET','POST'])
+def show_discuss(group_id,discuss_id):
+    is_login = session.get('islogin')
+    if(is_login == 0):                       #please login first!
+        return make_response(redirect('/'))
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    if(user.check_id() == 0):                #user not exist?
+        session.clear()
+        return make_response(redirect('/'))
+    user_data = user.get_data_by_id()
+    group = Group(group_id)
+    discuss = Discussion(discuss_id)
+    discuss_data = discuss.get_data()
+    reply = discuss.get_reply()
+    return render_template('discussion.html',username=user_data['username'],\
+                            discuss=discuss_data,reply=reply)
+
+
 @app.route('/discussion', methods=['GET', 'POST'])
 def discussion_operation():
     ### Verify it's already login first!!
@@ -315,9 +309,8 @@ def discussion_operation():
         discussionList[group_id] = group.get_discussions()
     return render_template('discussion.html', attendedGroups=attendedGroupsList, discussionList = discussionList)
 
-@app.route('/_create_discussion', methods=['POST'])
-def create_discussion():
-    group_id = request.form.get('group_id')
+@app.route('/_create_discussion/<int:group_id>', methods=['POST'])
+def create_discussion(group_id):
     title = request.form.get('title')
     content = request.form.get('content')
     user_id = session.get('user_id')
@@ -327,14 +320,19 @@ def create_discussion():
     group = Group(group_id)
     group.create_discussion(user_id, title, content)
 
-    return redirect('/discussion')
+    return redirect('/group/gp'+str(group_id))
 
-@app.route('/_delete_discussion/<discuss_id>')
-def delete_discussion(discuss_id):
+@app.route('/_delete_discussion')
+def deleteDiscussion():
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    discuss_id = str(request.args.get('discuss_id', 0, type=int))
+    return jsonify(success=user.delete_discussion(discuss_id))
+
     # make some protections here!
     discuss = Discussion(discuss_id)
     discuss.delete_discussion()
-    return redirect('/discussion')
+    return redirect('/group/gp'+str(group_id))
 
 @app.route('/_reply_discussion/<discuss_id>', methods=['POST'])
 def reply_discussion(discuss_id):
@@ -364,11 +362,11 @@ def page_not_found(error):
 def admin():
     #未判断是否为admin
     is_login = session.get('islogin')
-    if(is_login == 0):                       #please login first!
+    if(is_login == '0'):                       #please login first!
         return make_response(redirect('/'))
     user_id = session.get('user_id')
     user = User(user_id=user_id)
-    if(user.check_id() == 1):                #user not exist?
+    if(user.check_id() == '1'):                #user not exist?
         session.clear()
         return make_response(redirect('/'))
 
@@ -383,7 +381,6 @@ def admin():
     # admin1.delete_group(2)
 
 
-
     return render_template('admin.html', username=user.username,groups=groups,users=users)
 
 @app.route('/group/gp<int:group_id>/vote', methods=['GET', 'POST'])
@@ -396,6 +393,8 @@ def raise_a_vote(group_id):
 
 @app.route('/group/gp<int:group_id>/vote/raise-vote/result',methods=['GET','POST'])
 def raise_a_vote_result(group_id):
+    conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='grape', charset='utf8')
+    cursor = conn.cursor()
     if request.method == "GET":
         vote_content = quoteattr(request.args.get('vote-content'))
         endtime_selection = request.args.get('endtime-selection')

@@ -134,16 +134,19 @@
                         </li>
                     </ul>
                 </div>
-
                 <div class="tab-pane fade" id="discussions">
                     <h3>Discussions</h3><hr>
                     <ul class="news list-group">
                         {% for discussion in discussions %}
                             <li class="list-group-item">
-                                <h4><a href="#">{{ discussion['title'] }}</a></h4>
+                                <h4><a href="{{ url_for('show_discuss', group_id=group_id, discuss_id=discussion.discuss_id) }}">{{ discussion['title'] }}</a></h4>
                                 <a class="show-detail" data-toggle="collapse"
                                        data-target="#discussion-{{ discussion['discuss_id'] }}">
                                         details</a>
+                                {% if role == '2' %}
+                                    <a class="discuss-delete" victim="{{discussion.discuss_id}}">delete</a>
+                                {% endif %}
+                                <span>from user {{discussion.username}}</span>
                                 <div id="discussion-{{ discussion['discuss_id'] }}" class="collapse">
                                     <ul class="gp-detail">
                                         <li class="gp-detail-topic">
@@ -158,14 +161,22 @@
                         {% else %}
                             <li class="list-group-item">
                                 <h4>Oops! There are no discussions in your group!</h4>
-                                {% if role == '1' %}
-                                    <h5>Click "Find Groups" to find one!</h5>
-                                {% endif %}
                             </li>
                         {% endfor %}
                     </ul>
+                    <div id="create_discuss_div">
+                        <p>Here we can insert new discussions.</p>
+                        <form action="{{ url_for('create_discussion',group_id=group_data.group_id) }}" method="POST">
+                            <label for="title">title:</label>
+                            <input type="text" name="title"><br>
+                            <label for="content">content:</label>
+                            <input type="text" name="content"><br>
+                            <button type="submit">submit</button>
+                        </form>
+                    </div>
                 </div>
-
+                </ul>
+            </div>
             {% endif %}
 
             {% if role == '1' %}

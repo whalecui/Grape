@@ -13,7 +13,7 @@ $(function(){
             {group_id: group_id},
             function(data){
                 if(data.success == '0'){
-                    alert('failed!');
+                    alert('failed');
                 }else{
                     $(div).remove();
                     alert('succeeded!');

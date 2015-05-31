@@ -1,0 +1,25 @@
+
+
+
+#discuss_div 
+{
+	width: 80%;
+	margin: auto;
+	min-height: 200px;
+}
+
+#discuss_title
+{
+	text-align: center;
+	margin: 30px auto;
+}
+
+#discuss_content
+{
+	font-size: 20px;
+}
+
+#reply 
+{
+	margin-top: 100px;
+}
