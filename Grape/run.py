@@ -29,7 +29,6 @@ def index():
     islogin = session.get('islogin')
     user_id = session.get('user_id')
     message1 = session.get('message1')
-    message2 = session.get('message2')
     attendedGroupsList = []
     ownGroupsList = []
 
@@ -87,7 +86,7 @@ def index():
         username = u'请先登录'
 
     return render_template(html, user_id=user_id, username=username, islogin=islogin,\
-                            message1=message1, message2=message2,\
+                            message1=message1, \
                             attend=attendedGroupsList, own=ownGroupsList, \
                             members=members, leader=leader)
 
@@ -121,34 +120,29 @@ def register():
     else:
         return render_template('index.html')
 
-@app.route('/login/', methods=['GET', 'POST'])
+@app.route('/_login/', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        session.clear()
-        email = request.form.get('email')
-        password = request.form.get('password')
-        response = make_response(redirect('/'))
-        session['islogin'] = '0'
-        if(email == '' or password == ''):
-            session['message2'] = 'fuck!'
-            return response
-        user = User(email=email)
-        state = user.login(password)
-        if state == 1:
-            data = user.get_data_by_email()
-            session['user_id'] = data['user_id']
-            session['islogin'] = '1'
-            #session['email'] = email
-            return response
-        if state == 0:
-            session['message2'] = "Wrong password!"
-            return response
-        if state == -1:
-            session['message2'] = "Email not used!"
-            return response
-    else:
-      session['islogin'] = '0'
-      return redirect('/login')
+    session.clear()
+    email = str(request.args.get('email', 0, type=str))
+    password = str(request.args.get('pw', 0, type=str))
+    session['islogin'] = '0'
+    if(email == '' or password == ''):
+        status = 'Please enter email and password!'
+        return jsonify(status=status)
+    user = User(email=email)
+    state = user.login(password)
+    if state == 1:
+        data = user.get_data_by_email()
+        session['user_id'] = data['user_id']
+        session['islogin'] = '1'
+        status = 'success'
+        return jsonify(status=status)
+    if state == 0:
+        status = "Wrong password!"
+        return jsonify(status=status)
+    if state == -1:
+        status = "Email not used!"
+        return jsonify(status=status)
 
 @app.route('/logout')
 def logout():
