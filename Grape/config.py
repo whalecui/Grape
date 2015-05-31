@@ -12,8 +12,8 @@ PORT = 8000
 
 db_config={
     "db_host":'127.0.0.1',
-    "db_user":'root',
-    "db_passwd":'1234',
+    "db_user":'1234',
+    "db_passwd":'root',
     "db_port":3306,
     'db_name':'Grape'
 }
