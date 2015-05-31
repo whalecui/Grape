@@ -20,3 +20,13 @@
 {
     display: none;
 }
+
+label
+{
+    float: left;
+}
+
+i.fa-check, i.fa-times
+{
+    float: right;
+}

@@ -12,13 +12,16 @@ class User:
                 data = self.get_data_by_id()
                 self.username = data['username']
                 self.email = data['email']
+                self.role = data['role']
             except Exception, e:
-                print 'init', e
-            return
+                print 'initUser', e
         else:
             self.username = name
             self.email = email
-            data = self.get_data_by_name()
+            if(not self.check_e()):
+                data = self.get_data_by_email()
+                # print data
+                self.role = data['role']
 
     def get_data_by_id(self):
         #if(self.check_id()):
@@ -254,7 +257,7 @@ class Admin(User):
             print 'deleted group successfully :', group_id
             return True
         conn.close()
-        print 'failed to delete group :', group_id
+        print 'admin failed to delete group :', group_id
         return False
 
     def show_all_groups(self):
@@ -303,6 +306,7 @@ class Admin(User):
             conn.close()
             print 'deleted user successfully :', user_id
             return True
+        return False
 
 class Group:
 
@@ -348,6 +352,7 @@ class Group:
             discuss['username'] = user.username
             discuss['reply'] = discuss_item.get_reply()
         conn.close()
+        print "discussions: ",discussions
         return discussions
 
     def create_discussion(self, user, title, content):

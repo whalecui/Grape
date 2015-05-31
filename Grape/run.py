@@ -30,17 +30,24 @@ def index():
     if islogin == '1':
         html = 'index-log.html'
         #get groups
+<<<<<<< HEAD
         print user_id
         user = User(user_id=user_id)
         username = user.username
         attendedGroups, ownGroups = user.get_groups()
+=======
+        User1 = User(user_id=user_id)
+        username = User1.username
+        role = User1.role
+        if(role==1):
+            return redirect('/admin')
+        attendedGroups, ownGroups = User1.get_groups()
+>>>>>>> 25731d86292efa201df354a2569eace024e30598
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
         for i in attendedGroups:
             if i not in ownGroups:
                 attendedGroupsList += [Group(i).get_data()]
-
-        User1=User(user_id=user_id)
 
         if request.method == 'GET':
             #Find group by group_id
@@ -163,6 +170,48 @@ def deleteGroup():
     user = User(user_id=user_id)
     return jsonify(success=user.delete_group(group_id))
 
+<<<<<<< HEAD
+=======
+@app.route('/_delete_user')
+def delete_user():
+    user_id = session.get('user_id')
+    user_id_to_be_deleted = str(request.args.get('user_id', 0, type=int))
+    print 'del user',user_id_to_be_deleted
+    admin = Admin(user_id=user_id)
+    return jsonify(success=admin.delete_user(user_id_to_be_deleted))
+@app.route('/_delete_group_admin')
+def delete_group_admin():
+    user_id = session.get('user_id')
+    print 233
+    group_id = str(request.args.get('group_id', 0, type=int))
+    admin = Admin(user_id=user_id)
+    return jsonify(success=admin.delete_group(group_id))
+
+# @app.route('/group/',methods=['GET', 'POST'])  # maybe no methods here? 
+# def groupOverview():
+#     is_login = session.get('islogin')
+#     if(is_login == 0):                       #please login first!
+#         return make_response(redirect('/'))
+
+#     name = session.get('username')
+#     user = User(name=name)
+
+#     attendedGroups, ownGroups = user.get_groups()
+
+#     attendedGroupsList = []
+#     ownGroupsList = []
+
+#     for i in attendedGroups:
+#         attendedGroupsList += [Group(i).get_data()]
+#     for i in ownGroups:
+#         ownGroupsList += [Group(i).get_data()]
+
+#     overviewList = None     # A overview on group activities.
+
+#     return render_template('group.html', overview=1, username=name,\
+#                             ownGroups=ownGroupsList, attendedGroups=attendedGroupsList)
+
+>>>>>>> 25731d86292efa201df354a2569eace024e30598
 
 @app.route('/group/', methods=['GET', 'POST'])
 def myGroups():
@@ -190,7 +239,7 @@ def myGroups():
                            username=name, ownGroups=ownGroupsList, \
                            attendedGroups=attendedGroupsList)
 
-@app.route('/group/gp<int:group_id>')
+@app.route('/group/gp<int:group_id>', methods=['GET', 'POST'])
 def groupDetail(group_id):
     is_login = session.get('islogin')
     if(is_login == 0):                       #please login first!
@@ -205,10 +254,32 @@ def groupDetail(group_id):
     group = Group(group_id)
     group_data = group.get_data()
     if(group.exist_group()):
+
+        # if(str(user_id) == str(group.leader_id)):
+        #     role = '2'
+        # elif(str(user_id) in group.get_members()):
+        #     role='1'
+        group_data = group.get_data()
+        discussions = group.get_discussions()
+        members = group.get_members()
+        if request.method == 'POST':
+            title = request.form.get('title')
+            content = request.form.get('content')
+            if title and content:
+                # print name,topic,confirmMessage,1235543
+                group.create_discussion(user=user_id, title=title, content=content)
+            return redirect(url_for('groupDetail', group_id=group_id))
+
         if(str(user_id) == str(group.leader_id)):
-            role = '2'
-        elif(str(user_id) in group.get_members()):
-            role='1'
+            return render_template('group_id.html', group_id=group_id,\
+                                   group_data=group_data, discussions=discussions,\
+                                   username=user_data['username'], role='2')
+                                   #leader
+        if({'member_id': user_id} in members):
+            return render_template('group_id.html', group_id=group_id,\
+                                   group_data=group_data, discussions=discussions,\
+                                   username=user_data['username'], role='1')
+                                   #member
         #to be continued
         else:
             role='0'
@@ -303,16 +374,32 @@ def page_not_found(error):
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     #未判断是否为admin
+    is_login = session.get('islogin')
+    if(is_login == 0):                       #please login first!
+        return make_response(redirect('/'))
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    if(user.check_id() == 1):                #user not exist?
+        session.clear()
+        return make_response(redirect('/'))
 
-    admin1=Admin(user_id=3)
+    if(user.role!=1):
+        abort(404)
+
+    admin1=Admin(user_id=user_id)
     groups=admin1.show_all_groups()
     users=admin1.show_all_users()
 
     # admin1.delete_user(2)
-    admin1.delete_group(2)
+    # admin1.delete_group(2)
 
 
+<<<<<<< HEAD
     return render_template('admin.html', groups=groups,users=users)
+=======
+
+    return render_template('admin.html', username=user.username,groups=groups,users=users)
+>>>>>>> 25731d86292efa201df354a2569eace024e30598
 
 if __name__ == '__main__':
     app.run(debug=True, host=HOST, port=PORT)
