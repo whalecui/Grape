@@ -1,0 +1,201 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="../static/css/index-log.css">
+    <link rel="stylesheet" href="../static/css/group-id.css">
+    <script src="../static/js/group-id.js"></script>
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+{% endblock %}
+
+{% block navbar %}
+    <ul class="nav navbar-nav">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle"
+                data-toggle="dropdown">
+                {{ username }}
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="{{url_for('myGroups')}}">My Groups</a></li>
+                <li><a href="#">Contact with Admin</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Settings</a></li>
+                <li class="divider"></li>
+                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <div class="group-details">
+        <div class="tab-group">
+            <ul class="list-group">
+                {% if role == '0' %}
+                    <li><a class="list-group-item" href="#groupInfo" data-toggle="tab">
+                        Group Information</a></li>
+                {% endif %}
+                {% if role == '1' or role == '2' %}
+                    <li><a class="list-group-item" href="#news" data-toggle="tab">
+                        News</a></li>
+                    <li><a class="list-group-item" href="#groupInfo" data-toggle="tab">
+                        Group Information</a></li>
+                    <hr>
+                    <li><a class="list-group-item" href="#votes" data-toggle="tab">
+                        Votes</a></li>
+                    <li><a class="list-group-item" href="#discussions" data-toggle="tab">
+                        Discussions</a></li>
+                    <hr>
+                    {% if role == '2' %}
+                    <li><a class="list-group-item" href="#newVote" data-toggle="tab">
+                        New Vote</a></li>
+                    {% endif %}
+                    {% if role == '1' %}
+                    <li><a class="list-group-item" href="#newDiscussion" data-toggle="tab">
+                        New Discussion</a></li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </div>
+
+        <div id="tab-content-main" class="tab-content tab-content-main">
+
+            {% if role == '0' %}
+            <div class="tab-pane fade in active" id="groupInfo">
+                <h3>Group Information</h3><hr>
+                <table class="table table-hover">
+                    <tbody>
+                        <tr>
+                            <td>Group Name</td>
+                            <td>{{ group_data['name'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Group ID</td>
+                            <td>{{ group_data['group_id'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Topic</td>
+                            <td>{{ group_data['topic'] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="confirm">I know the confirm message for this group</label>
+                        <input id="confirm" class="form-control" name="confirm" placeholder="Confirm message">
+                    </div>
+                </form>
+                    <button id="join" class="btn btn-default">Join!</button>
+            </div>
+            {% else %}
+            <div class="tab-pane fade" id="groupInfo">
+                <h3 id="group-info-title">Group Information</h3>
+                <hr>
+                <table class="table table-hover">
+                    <tbody>
+                        <tr>
+                            <td>Group Name</td>
+                            <td>{{ group_data['name'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Group ID</td>
+                            <td>{{ group_data['group_id'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Topic</td>
+                            <td>{{ group_data['topic'] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% if role == '1' %}
+                    <button id="quit" class="btn btn-default">quit</button>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if role == '1' or role == '2' %}
+                <div class="tab-pane fade in active" id="news">
+                    <h3>News</h3><hr>
+                    <ul class="news list-group">
+                        <li class="list-group-item">
+                            <h4>News 1</h4>
+                            <p>details</p>
+                        </li>
+                        <li class="list-group-item">
+                            <h4>News 2</h4>
+                            <p>details</p>
+                        </li>
+                        <li class="list-group-item">
+                            <h4>News 3</h4>
+                            <p>details</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-pane fade" id="discussions">
+                    <h3>Discussions</h3><hr>
+                    <ul class="news list-group">
+                        {% for discussion in discussions %}
+                            <li class="list-group-item">
+                                <h4><a href="{{ url_for('show_discuss', group_id=group_id, discuss_id=discussion.discuss_id) }}">{{ discussion['title'] }}</a></h4>
+                                <a class="show-detail" data-toggle="collapse"
+                                       data-target="#discussion-{{ discussion['discuss_id'] }}">
+                                        details</a>
+                                {% if role == '2' %}
+                                    <a class="discuss-delete" victim="{{discussion.discuss_id}}">delete</a>
+                                {% endif %}
+                                <span>from user {{discussion.username}}</span>
+                                <div id="discussion-{{ discussion['discuss_id'] }}" class="collapse">
+                                    <ul class="gp-detail">
+                                        <li class="gp-detail-topic">
+                                            Creator:{{ discussion['user_id'] }}
+                                        </li>
+                                        <li class="gp-detail-leader">
+                                            Content:{{ discussion['content'] }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">
+                                <h4>Oops! There are no discussions in your group!</h4>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div id="create_discuss_div">
+                        <p>Here we can insert new discussions.</p>
+                        <form action="{{ url_for('create_discussion',group_id=group_data.group_id) }}" method="POST">
+                            <label for="title">title:</label>
+                            <input type="text" name="title"><br>
+                            <label for="content">content:</label>
+                            <input type="text" name="content"><br>
+                            <button type="submit">submit</button>
+                        </form>
+                    </div>
+                </div>
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if role == '1' %}
+                <div class="tab-pane fade" id="newDiscussion">
+                    <h3>New Discussion</h3><hr>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input class="form-control" name="title" placeholder="Enter Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Topic</label>
+                            <input class="form-control" name="content" placeholder="Enter Content">
+                        </div>
+                        <button type="submit" class="btn btn-default">Create</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,33 +1,51 @@
-<div>
-	<p>Here is the search results for discussion</p>
-	{% for group in attendedGroups %}
-		<hr>
-		<p>from group: {{group.name}}</p>
-		{% for item in discussionList[group.group_id] %}
-			<p>dicussion title: {{item.title}} </p>
-			<p>dicussion content: {{item.content}} </p>
-			<a href="{{ url_for('delete_discussion',discuss_id=item.discuss_id) }}">delete</a>
-			<p>&nbsp;&nbsp;The reply is in below:</p>
-			{% for reply in item.reply %}
-				<p>{{reply}}</p>
+{% extends "layout.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/discussion.css') }}">
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+{% endblock %}
+
+{% block navbar %}
+    <ul class="nav navbar-nav">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle"
+                data-toggle="dropdown">
+                {{ username }}
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="{{url_for('myGroups')}}">My Groups</a></li>
+                <li><a href="#">Contact with Admin</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Settings</a></li>
+                <li class="divider"></li>
+                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+	<div id="discuss_div">
+		<h2 id="discuss_title">{{discuss.title}}</h2>
+		<p id="discuss_content">{{discuss.content}}</p>
+		<div class="tab-pane" id="reply">
+            <h4>Here's reply:</h4><hr>
+            <ul class="replies list-group">
+			{% for item in reply %}
+                <li class="list-group-item">
+                	<p>from user {{item.username}}:
+                		<span>{{item.content}}</span>
+                	</p>
+                    
+                </li>
 			{% endfor %}
-			<form action="{{ url_for('reply_discussion', discuss_id=item.discuss_id) }}" method="POST">
-				<label for="content">Reply content:</label>
-				<input type="text" name="content"><br>
-				<button type="submit">reply</button>
-			</form>
-		{% endfor %}
-	<div>
-		<p>Here we can insert new discussions.</p>
-		<form action="{{ url_for('create_discussion') }}" method="POST">
-			<input type="hidden" name="group_id" value="{{group.group_id}}">
-			<label for="title">title:</label>
-			<input type="text" name="title"><br>
-			<label for="content">content:</label>
-			<input type="text" name="content"><br>
-			<button type="submit">submit</button>
-		</form>
+            </ul>
+        </div>
+        {{reply}}
 	</div>
-	{% endfor %}
-	<hr>
-</div>
+
+{% endblock %}

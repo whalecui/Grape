@@ -4,6 +4,7 @@
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index.css">
     <script src="../static/js/login_check.js"></script>
+    <script src="../static/js/index.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
@@ -39,7 +40,7 @@
 						    Log In</h4>
 					</div>
 					<div class="modal-body">
-						<form class="login" action="{{ url_for('login') }}" method="post">
+						<form class="login" id="login-form" >
 							<div class="form-group">
 								<label for="emailL">Email address</label>
 								<input class="form-control email" name="email"
@@ -50,11 +51,9 @@
 								<input type="password" class="form-control password"
                                        id="passwordL" placeholder="Password" name="password">
 							</div>
-							<button type="submit" class="btn btn-default">Submit</button>
+						    <button class="btn btn-default">Login</button>
 						</form>
-                        {% if message2 %}
-                            <p>{{ message2 }}</p>
-                        {% endif %}
+
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" 

@@ -15,13 +15,13 @@ class User:
                 self.role = data['role']
             except Exception, e:
                 print 'initUser', e
-
         else:
             self.username = name
             self.email = email
-            data = self.get_data_by_email()
-            # print data
-            self.role = data['role']
+            if(not self.check_e()):
+                data = self.get_data_by_email()
+                # print data
+                self.role = data['role']
 
     def get_data_by_id(self):
         #if(self.check_id()):
@@ -113,38 +113,42 @@ class User:
         return attendedGroupsName, ownGroupsName
     #注意！！这里的返回值是所有的小组id组成的list，不是字典的list！！！
 
-    def join_group(self, group_id):
+    def join_group(self, group_id, confirm):
         group_id=str(group_id)
+        group = Group(group_id=group_id)
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select name from groups where group_id='"+str(group_id)+"';")
-        exist = cursor.fetchall()
-        if(exist):
+        if(group.exist_group()):
             cursor.execute("select member_id from groupMemberAssosiation where group_id='"+str(group_id)+"';")
             member_list = cursor.fetchall()
             if(str(self.user_id) in member_list):
                 print 'already joined', group_id
-                return True
-            cursor.execute("insert into groupMemberAssosiation(group_id,member_id) values(%s,%s) ;", (group_id, self.user_id) )
-            conn.commit()
-            conn.close()
-            print 'joined group successfully :', group_id
-            return True
+                return 'joined'
+            if(confirm == group.confirmMessage):
+                cursor.execute("insert into groupMemberAssosiation(group_id,member_id) values(%s,%s) ;", (group_id, self.user_id) )
+                conn.commit()
+                conn.close()
+                print 'joined group successfully :', group_id
+                return 'success'
+            else:
+                conn.close()
+                print 'failed to join group :', group_id
+                return 'fail'
         conn.close()
-        print 'failed to join group :', group_id
-        return False
+        print 'group :', group_id, 'does not exist'
+        return 'non-ex'
 
     def quit_group(self,group_id):
         group_id=str(group_id)
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select * from groupMemberAssosiation where member_id='"+self.user_id+"' and group_id='"+group_id+"';")
+        cursor.execute("select * from groupMemberAssosiation where member_id='"+str(self.user_id)+"' and group_id='"+group_id+"';")
         exist = cursor.fetchall()
         if(exist):
-            cursor.execute("delete from groupMemberAssosiation where member_id='"+self.user_id+"' and group_id='"+group_id+"';")
+            cursor.execute("delete from groupMemberAssosiation where member_id='"+str(self.user_id)+"' and group_id='"+group_id+"';")
             conn.commit()
             #whether he's leader
-            cursor.execute("select name from groups where group_id='"+group_id+"' and leader_id='"+self.user_id+"';")
+            cursor.execute("select name from groups where group_id='"+group_id+"' and leader_id='"+str(self.user_id)+"';")
             isLeader=cursor.fetchall()  
             if(isLeader):
                 print "the user trying to quit is LEADER!"
@@ -153,10 +157,10 @@ class User:
 
             conn.close()
             print 'quit group successfully :',group_id
-            return True
+            return 1
         print 'failed to quit group :',group_id
         conn.close()
-        return False
+        return 0
 
     def search_group(self, group_id):
         group_id=str(group_id)
@@ -188,14 +192,15 @@ class User:
                 return 0
         return 1
     #返回0表示存在此用户
+    # Revised by Hunter: return 1 if the user exists.
     def check_id(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute('select * from user')
         for row in cursor.fetchall():
             if row['user_id'] == self.user_id:
-                return 0
-        return 1
+                return 1
+        return 0
 
     def login(self, pw):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
@@ -220,6 +225,21 @@ class User:
         result = cursor.fetchall()[0]
         return result
 
+    def delete_discussion(self,discuss_id):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        discuss = Discussion(discuss_id)
+        if(discuss.user_id == self.user_id):
+            print "Arrive here",discuss.user_id
+            sql = "delete from discussion where discuss_id = %s;" % discuss_id
+            cursor.execute(sql)
+            conn.commit()
+            conn.close()
+            return True
+        conn.close()
+        return False
 
 class Admin(User):
     def __init__(self, user_id):
@@ -292,9 +312,6 @@ class Admin(User):
             return True
         return False
 
-
-
-
 class Group:
 
     def __init__(self, group_id):
@@ -333,11 +350,13 @@ class Group:
         sql = "select * from discussion where group_id = %s ;" % self.group_id
         cursor.execute(sql)
         discussions=cursor.fetchall()
-        print "discussions: ",discussions
         for discuss in discussions:
             discuss_item = Discussion(discuss['discuss_id'])
+            user = User(user_id=discuss["user_id"])
+            discuss['username'] = user.username
             discuss['reply'] = discuss_item.get_reply()
         conn.close()
+        #print "discussions: ",discussions
         return discussions
 
     def create_discussion(self, user, title, content):
@@ -360,11 +379,10 @@ class Group:
         cursor.execute(sql)
         data = cursor.fetchall()
 
-        sql = "select * from discussion where group_id="+self.group_id+";"
-        cursor.execute(sql)
-        discuss_list = cursor.fetchall()
-        # print discuss_list
+        # get discussion data, including reply.
+        discuss_list = self.get_discussions()
         data[0]['discuss_list'] = discuss_list
+
         conn.close()
         # append some other lists
         leader = User(user_id=int(data[0]['leader_id']))
@@ -397,18 +415,11 @@ class Discussion:
         sql = "select * from discussion where discuss_id="+str(self.discuss_id)+";"
         cursor.execute(sql)
         item = cursor.fetchone()
+        user = User(user_id=item["user_id"])
+        item["username"] = user.username
         conn.close()
         return item
 
-    def delete_discussion(self):
-        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
-                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
-                             db=db_config["db_name"],charset="utf8")
-        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = "delete from discussion where discuss_id = %s;" % self.discuss_id
-        cursor.execute(sql)
-        conn.commit()
-        conn.close()
 
     def add_reply(self,user_id,content):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
@@ -429,6 +440,9 @@ class Discussion:
         sql = "select reply_id,user_id,content from reply_discuss where discuss_id = %d;" % self.discuss_id
         cursor.execute(sql)
         reply = cursor.fetchall()
+        for item in reply:
+            user = User(user_id=item['user_id'])
+            item['username'] = user.username
         conn.close()
         return reply
 
