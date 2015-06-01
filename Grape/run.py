@@ -16,7 +16,7 @@ py.sign_in('NoListen','ueixigh6gr') # API KEY
 
 app.secret_key = '\xbc\x98B\x95\x0f\x1e\xcdr\xf8\xb0\xc1\x1a\xd3H\xdd\x86T\xff\xfdg\x80\x8b\x95\xf7'
 
-conn = MySQLdb.connect(user='root', passwd='1234', host='127.0.0.1', db='grape', charset='utf8')
+conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='grape', charset='utf8')
 cursor = conn.cursor()
 
 open_event_scheduler ="SET GLOBAL event_scheduler = 1;"
@@ -41,7 +41,7 @@ def index():
         User1 = User(user_id=user_id)
         username = User1.username
         role = User1.role
-        if(role==1):
+        if(role == 1):
             return redirect('/admin')
         attendedGroups, ownGroups = User1.get_groups()
         for i in ownGroups:
@@ -125,6 +125,7 @@ def login():
     email = str(request.args.get('email', 0, type=str))
     password = str(request.args.get('pw', 0, type=str))
     session['islogin'] = '0'
+    # print "Come here!"
     if(email == '' or password == ''):
         status = 'Please enter email and password!'
         return jsonify(status=status)
