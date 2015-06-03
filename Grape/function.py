@@ -18,7 +18,7 @@ class User:
         else:
             self.username = name
             self.email = email
-            if(not self.check_e()):
+            if self.check_e():
                 data = self.get_data_by_email()
                 # print data
                 self.role = data['role']
@@ -34,7 +34,7 @@ class User:
         return data[0]
 
     def get_data_by_email(self):
-        if(self.check_e()):
+        if not self.check_e():
             return {}
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
@@ -44,7 +44,7 @@ class User:
         return data[0]
 
     def get_data_by_name(self):
-        if(self.check_u()):
+        if not self.check_u():
             return {}
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
@@ -177,41 +177,42 @@ class User:
     def check_u(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute('select * from user')
-        for row in cursor.fetchall():
-            if row['username'] == self.username:
-                return 0
-        return 1
+        cursor.execute("select * from user where username='" + str(self.username) + "';")
+        exist = cursor.fetchall()
+        if exist:
+                return 1
+        return 0
 
     def check_e(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute('select * from user')
-        for row in cursor.fetchall():
-            if row['email'] == self.email:
-                return 0
-        return 1
-    #返回0表示存在此用户
+        cursor.execute("select * from user where email='" + str(self.email) + "';")
+        exist = cursor.fetchall()
+        if exist:
+                return 1
+        return 0
+
     # Revised by Hunter: return 1 if the user exists.
     def check_id(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute('select * from user')
-        for row in cursor.fetchall():
-            if row['user_id'] == self.user_id:
+        cursor.execute("select * from user where user_id='" + str(self.user_id) + "';")
+        exist = cursor.fetchall()
+        if exist:
                 return 1
         return 0
 
     def login(self, pw):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute('select * from user')
-        for row in cursor.fetchall():
-            if row['email'] == self.email:
-                if row['password'] == pw:
-                    return 1    #匹配成功
-                else:
-                    return 0    #密码错误
+        cursor.execute("select * from user where email='" + str(self.email) + "';")
+        exist = cursor.fetchall()
+        print exist
+        if exist:
+            if exist[0]['password'] == pw:
+                return 1    #匹配成功
+            else:
+                return 0    #密码错误
         return -1               #邮箱不存在
 
     def register(self, password):
@@ -402,11 +403,12 @@ class Group:
 class Discussion:
     def __init__(self,discuss_id):
         self.discuss_id = int(discuss_id)
-        data = self.get_data()
-        self.group_id = data['group_id']
-        self.user_id = data['user_id']
-        self.title = data['title']
-        self.content = data['content']
+        if self.exist():
+            data = self.get_data()
+            self.group_id = data['group_id']
+            self.user_id = data['user_id']
+            self.title = data['title']
+            self.content = data['content']
 
     def get_data(self):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
@@ -420,7 +422,6 @@ class Discussion:
         item["username"] = user.username
         conn.close()
         return item
-
 
     def add_reply(self,user_id,content):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
@@ -448,3 +449,15 @@ class Discussion:
         conn.close()
         return reply
 
+    def exist(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from discussion where discuss_id="+str(self.discuss_id)+";"
+        cursor.execute(sql)
+        exist = cursor.fetchall()
+        conn.close()
+        if exist:
+            return 1    #exist
+        return 0        #non-ex

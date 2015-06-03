@@ -21,7 +21,7 @@ $(function(){
             $.getJSON($SCRIPT_ROOT + '/_check_email',
                 {email: input},
                 function (data) {
-                    if (data.valid == '0') {
+                    if (data.exist == '1') {
                         check[0] = 0;
                         btn.attr('disabled', 'disabled');
                         if(tmp){ $(tmp).remove(); }
@@ -53,7 +53,7 @@ $(function(){
             $.getJSON($SCRIPT_ROOT + '/_check_users',
                 {username: input},
                 function (data) {
-                    if (data.valid == '0') {
+                    if (data.exist == '1') {
                         check[1] = 0;
                         btn.attr('disabled', 'disabled');
                         if(tmp){ $(tmp).remove(); }

@@ -3,6 +3,7 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/discussion.css') }}">
+    <script src="../static/js/discussion.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
@@ -35,12 +36,6 @@
     		<p id="discuss_content">{{discuss.content}}</p>
     	</div>
         <div class="tab-pane" id="reply">
-            <h4>Submit your reply:</h4><hr>
-            <form method="POST" action="{{ url_for('reply_discussion', discuss_id=discuss.discuss_id) }}">
-                <label for="content">content:</label>
-                <input type="text" name="content"><br>
-                <button type="submit">submit</button>
-            </form>
             <h4>Here's reply:</h4><hr>
             <ul class="replies list-group">
             {% for item in reply %}
@@ -49,8 +44,20 @@
                         <span>{{item.content}}</span>
                     </p>
                 </li>
+            {% else %}
+                <li class="list-group-item">
+                    <p>
+                        This discussion has not been replied yet!
+                    </p>
+                </li>
             {% endfor %}
             </ul>
+            <h4>Submit your reply:</h4><hr>
+            <form action="" id="reply-form">
+                <label for="content">content:</label>
+                <input type="text" name="content" id="reply_content"><br>
+                <button type="submit">submit</button>
+            </form>
         </div>
     </div>
 
