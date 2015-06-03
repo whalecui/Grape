@@ -3,7 +3,7 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/discussion.css') }}">
-    <script src="../static/js/discussion.js"></script>
+    <script type=text/javascript src="../static/js/discussion.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
@@ -54,9 +54,11 @@
             </ul>
             <h4>Submit your reply:</h4><hr>
             <form action="" id="reply-form">
-                <label for="content">content:</label>
-                <input type="text" name="content" id="reply_content"><br>
-                <button type="submit">submit</button>
+                <div class="form-group">
+                    <label for="content">content:</label>
+                    <input class="form-control" type="text" name="content" id="reply-content"><br>
+                </div>
+                <button type="submit" class="btn btn-default">submit</button>
             </form>
         </div>
     </div>

@@ -10,9 +10,10 @@ $(function(){
             $.getJSON($SCRIPT_ROOT + '/_login',
                 {email: email, pw: pw},
                 function (data) {
-                    alert(data.status);
                     if (data.status == 'success') {
                         location.reload();
+                    }else{
+                        alert(data.status);
                     }
                 });
         }

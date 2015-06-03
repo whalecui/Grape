@@ -292,7 +292,7 @@ def groupDetail(group_id):
                            #non-exist
 
 
-@app.route('/discussion/dis<int:discuss_id>',methods=['GET','POST'])
+@app.route('/discussion/dis<int:discuss_id>')
 def show_discuss(discuss_id):
     is_login = session.get('islogin')
     if(is_login == 0):                       #please login first!
@@ -309,7 +309,7 @@ def show_discuss(discuss_id):
     if discuss.exist():
         discuss_data = discuss.get_data()
         reply = discuss.get_reply()
-        group_id = discuss.discuss_id
+        group_id = discuss.group_id
         group = Group(group_id=group_id)
         if group.exist_group():
             members = group.get_members()
