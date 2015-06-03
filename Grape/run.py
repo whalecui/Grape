@@ -6,7 +6,7 @@ from flask import jsonify
 from config import *
 from function import *
 import plotly.plotly as py  #easy_install plotly
-from xml.sax.saxutils import escape,quoteattr  # transfer ' to \' to escape error in mysql
+from xml.sax.saxutils import quoteattr  # transfer ' to \' to escape error in mysql
 from plotly.graph_objs import *
 import string
 
@@ -223,8 +223,8 @@ def myGroups():
         print ownGroupsList
     except Exception, e:
         name = '!none!'
-        ownGroupList = ['none']
-        attendedGroupList = ['none']
+        ownGroupsList = ['none']
+        attendedGroupsList = ['none']
         print 1234, e
     return render_template('group.html', user_id=user_id,\
                            username=name, ownGroups=ownGroupsList, \
@@ -236,8 +236,9 @@ def groupDetail(group_id):
     if(is_login == '0'):                       #please login first!
         return make_response(redirect('/'))
     user_id = session.get('user_id')
+    print user_id,'id'
     user = User(user_id=user_id)
-    if(user.check_id() == '1'):                #user not exist?
+    if(user.check_id() == 0):                #user not exist?
         session.clear()
         return make_response(redirect('/'))
     user_data = user.get_data_by_id()
@@ -287,6 +288,8 @@ def show_discuss(discuss_id):
         session.clear()
         return make_response(redirect('/'))
     user_data = user.get_data_by_id()
+
+    # group = Group(group_id) not used-morning
     discuss = Discussion(discuss_id)
     discuss_data = discuss.get_data()
     reply = discuss.get_reply()
@@ -358,13 +361,12 @@ def page_not_found(error):
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    #未判断是否为admin
     is_login = session.get('islogin')
     if(is_login == '0'):                       #please login first!
         return make_response(redirect('/'))
     user_id = session.get('user_id')
     user = User(user_id=user_id)
-    if(user.check_id() == '1'):                #user not exist?
+    if(user.check_id() == 0):                #user not exist?
         session.clear()
         return make_response(redirect('/'))
 
