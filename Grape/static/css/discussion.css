@@ -2,25 +2,30 @@
 #discuss_body
 {
 	width: 80%;
-	margin: auto;
+	margin: 3% auto;
 }
 
-#discuss_div 
+.new-reply
 {
-	min-height: 200px;
+    width:70%;
 }
 
-#discuss_title
+ol.breadcrumb
 {
-	margin: 1.5% auto;
+    margin: 0;
 }
 
-#discuss_content
+.reply
 {
-	font-size: 20px;
+    font-size: 16px;
 }
 
-#reply 
+.dis-content
 {
-	margin-top: 4%;
+    font-size: 17px;
+}
+
+p
+{
+    margin: 1% auto;
 }

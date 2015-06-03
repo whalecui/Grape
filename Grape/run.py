@@ -312,19 +312,20 @@ def show_discuss(discuss_id):
         group_id = discuss.group_id
         group = Group(group_id=group_id)
         if group.exist_group():
+            group_name = group.name
             members = group.get_members()
             if(str(user_id) == str(group.leader_id)):
                 return render_template('discussion.html', group_id=group_id,\
-                                       discuss=discuss_data,reply=reply,\
+                                       discuss=discuss_data,reply=reply,group_name=group_name,\
                                        username=user_data['username'], role='2')
                                        #leader
             if({'member_id': user_id} in members):
                 return render_template('discussion.html', group_id=group_id,\
-                                       discuss=discuss_data,reply=reply,\
+                                       discuss=discuss_data,reply=reply,group_name=group_name,\
                                        username=user_data['username'], role='1')
                                        #member
             return render_template('discussion.html', group_id=group_id,\
-                                   discuss=discuss_data,\
+                                   discuss=discuss_data,group_name=group_name,\
                                    username=user_data['username'], role='0')
     abort(404)
 
@@ -387,7 +388,7 @@ def deleteDiscussion():
 def reply_discussion(discuss_id):
     # discuss_id = request.form.get('discuss_id')
     print "from reply_discussion:", discuss_id
-    reply_content = request.args.get('request', 0, type=str)
+    reply_content = request.args.get('content', 0, type=str)
     if(reply_content == ''):
         return jsonify(status='fail')
     user_id = session.get('user_id')

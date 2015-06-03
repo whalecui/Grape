@@ -4,7 +4,7 @@ $(function(){
         var content = $('#reply-content').val();
         var url = window.location.href;
         var patt = /dis+[0-9]*/g;
-        url = url.match(patt)[0];
+        url = url.match(patt)[1];
         patt = /[^0-9]/g;
         var dis_id = url.replace(patt, '');
         if(content == ''){
@@ -13,9 +13,10 @@ $(function(){
             $.getJSON($SCRIPT_ROOT + '/_reply_discussion/' + dis_id,
                 {content: content},
                 function (data) {
-                    alert(data.status);
                     if (data.status == 'success') {
                         location.reload();
+                    }else{
+                        alert(data.status);
                     }
                 });
         }
