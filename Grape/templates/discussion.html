@@ -29,23 +29,29 @@
 {% endblock %}
 
 {% block content %}
-	<div id="discuss_div">
-		<h2 id="discuss_title">{{discuss.title}}</h2>
-		<p id="discuss_content">{{discuss.content}}</p>
-		<div class="tab-pane" id="reply">
+    <div id="discuss_body">
+    	<div id="discuss_div">
+    		<h2 id="discuss_title">{{discuss.title}}</h2>
+    		<p id="discuss_content">{{discuss.content}}</p>
+    	</div>
+        <div class="tab-pane" id="reply">
+            <h4>Submit your reply:</h4><hr>
+            <form method="POST" action="{{ url_for('reply_discussion', discuss_id=discuss.discuss_id) }}">
+                <label for="content">content:</label>
+                <input type="text" name="content"><br>
+                <button type="submit">submit</button>
+            </form>
             <h4>Here's reply:</h4><hr>
             <ul class="replies list-group">
-			{% for item in reply %}
+            {% for item in reply %}
                 <li class="list-group-item">
-                	<p>from user {{item.username}}:
-                		<span>{{item.content}}</span>
-                	</p>
-                    
+                    <p>from user {{item.username}}:
+                        <span>{{item.content}}</span>
+                    </p>
                 </li>
-			{% endfor %}
+            {% endfor %}
             </ul>
         </div>
-        {{reply}}
-	</div>
+    </div>
 
 {% endblock %}

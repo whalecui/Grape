@@ -347,7 +347,8 @@ class Group:
                              db=db_config["db_name"],charset="utf8")
 
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = "select * from discussion where group_id = %s ;" % self.group_id
+        sql = "select * from discussion where group_id = %s \
+               order by discuss_id desc;" % self.group_id
         cursor.execute(sql)
         discussions=cursor.fetchall()
         for discuss in discussions:
@@ -437,7 +438,8 @@ class Discussion:
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = "select reply_id,user_id,content from reply_discuss where discuss_id = %d;" % self.discuss_id
+        sql = "select reply_id,user_id,content from reply_discuss where discuss_id = %d\
+               order by reply_id desc;" % self.discuss_id
         cursor.execute(sql)
         reply = cursor.fetchall()
         for item in reply:

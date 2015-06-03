@@ -1,10 +1,12 @@
 
-
-
-#discuss_div 
+#discuss_body
 {
 	width: 80%;
 	margin: auto;
+}
+
+#discuss_div 
+{
 	min-height: 200px;
 }
 

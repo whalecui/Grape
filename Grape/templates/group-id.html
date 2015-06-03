@@ -139,7 +139,7 @@
                     <ul class="news list-group">
                         {% for discussion in discussions %}
                             <li class="list-group-item">
-                                <h4><a href="{{ url_for('show_discuss', group_id=group_id, discuss_id=discussion.discuss_id) }}">{{ discussion['title'] }}</a></h4>
+                                <h4><a href="{{ url_for('show_discuss', discuss_id=discussion.discuss_id) }}">{{ discussion['title'] }}</a></h4>
                                 <a class="show-detail" data-toggle="collapse"
                                        data-target="#discussion-{{ discussion['discuss_id'] }}">
                                         details</a>

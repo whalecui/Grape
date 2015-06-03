@@ -233,11 +233,11 @@ def myGroups():
 @app.route('/group/gp<int:group_id>', methods=['GET', 'POST'])
 def groupDetail(group_id):
     is_login = session.get('islogin')
-    if(is_login == 0):                       #please login first!
+    if(is_login == '0'):                       #please login first!
         return make_response(redirect('/'))
     user_id = session.get('user_id')
     user = User(user_id=user_id)
-    if(user.check_id() == 1):                #user not exist?
+    if(user.check_id() == '1'):                #user not exist?
         session.clear()
         return make_response(redirect('/'))
     user_data = user.get_data_by_id()
@@ -276,8 +276,8 @@ def groupDetail(group_id):
                            #non-exist
 
 
-@app.route('/group/gp<int:group_id>/dis<int:discuss_id>',methods=['GET','POST'])
-def show_discuss(group_id,discuss_id):
+@app.route('/discussion/dis<int:discuss_id>',methods=['GET','POST'])
+def show_discuss(discuss_id):
     is_login = session.get('islogin')
     if(is_login == 0):                       #please login first!
         return make_response(redirect('/'))
@@ -287,7 +287,6 @@ def show_discuss(group_id,discuss_id):
         session.clear()
         return make_response(redirect('/'))
     user_data = user.get_data_by_id()
-    group = Group(group_id)
     discuss = Discussion(discuss_id)
     discuss_data = discuss.get_data()
     reply = discuss.get_reply()
@@ -338,15 +337,13 @@ def deleteDiscussion():
 @app.route('/_reply_discussion/<discuss_id>', methods=['POST'])
 def reply_discussion(discuss_id):
     # discuss_id = request.form.get('discuss_id')
-    print "from reply_discussion", discuss_id
+    print "from reply_discussion:", discuss_id
     reply_content =request.form.get('content')
     user_id = session.get('user_id')
-    #seems not used?
-    #user = User(user_id=user_id)
-
     discuss = Discussion(discuss_id)
     discuss.add_reply(user_id,reply_content)
-    return redirect('/discussion')
+    html = '/discussion/dis%s' % discuss_id
+    return redirect(html)
 
 @app.errorhandler(404)
 def page_not_found(error):
