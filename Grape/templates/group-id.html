@@ -8,6 +8,13 @@
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
+    <link type="text/css" href="/static/css/jquery-ui-1.8.17.custom.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/jquery-ui-timepicker-addon.css" rel="stylesheet" />
+    <script type="text/javascript" src="/static/js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-ui-1.8.17.custom.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-ui-timepicker-zh-CN.js"></script>
+
 {% endblock %}
 
 {% block navbar %}
@@ -19,7 +26,6 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="{{url_for('myGroups')}}">My Groups</a></li>
                 <li><a href="#">Contact with Admin</a></li>
                 <li class="divider"></li>
                 <li><a href="#">Settings</a></li>
@@ -117,6 +123,45 @@
             {% endif %}
 
             {% if role == '1' or role == '2' %}
+                <div class="tab-pane fade" id="votes">
+                    <ul id="tab-sub-votes" class="nav nav-tabs">
+                        <li class="active">
+                        <a href="#voting" data-toggle="tab">Attended Groups</a>
+                        </li>
+                        <li><a href="#end" data-toggle="tab">Owned Groups</a></li>
+                    </ul>
+                    <div id="tab-sub-content-votes" class="tab-content tab-content-votes">
+                        <div class="tab-pane fade in active" id="voting">
+                            <ul class="voting-votes-list list-group">
+                            {% for vote_pair in votes_list_voting %}
+                                <li class="list-group-item">
+                                    <a href="{{ url_for('vote_operation',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a><br>
+                                </li>
+                            {% else %}
+                                <li class="list-group-item">
+                                    <h4>Oops! There aren't any voting votes!</h4>
+                                    <h5>Click "New vote" to create one!</h5>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade" id="end">
+                            <ul class="ended-votes-group list-group">
+                            {% for vote_pair in votes_list_end %}
+                                <li class="list-group-item">
+                                    <a href="{{ url_for('view_votes_result',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a><br>
+                                </li>
+                            {% else %}
+                                <li class="list-group-item">
+                                    <h4>Oops! There aren't any ended votes!</h4>
+                                    <h5>Click "New vote" to create one!</h5>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="tab-pane fade in active" id="news">
                     <h3>News</h3><hr>
                     <ul class="news list-group">
@@ -134,6 +179,7 @@
                         </li>
                     </ul>
                 </div>
+
                 <div class="tab-pane fade" id="discussions">
                     <h3>Discussions</h3><hr>
                     <ul class="news list-group">
@@ -168,15 +214,13 @@
                         <p>Here we can insert new discussions.</p>
                         <form action="{{ url_for('create_discussion',group_id=group_data.group_id) }}" method="POST">
                             <label for="title">title:</label>
-                            <input type="text" name="title"><br>
+                            <input type="text" name="title" id="title"><br>
                             <label for="content">content:</label>
-                            <input type="text" name="content"><br>
+                            <input type="text" name="content" id="context"><br>
                             <button type="submit">submit</button>
                         </form>
                     </div>
                 </div>
-                </ul>
-            </div>
             {% endif %}
 
             {% if role == '1' %}
@@ -192,6 +236,28 @@
                             <input class="form-control" name="content" placeholder="Enter Content">
                         </div>
                         <button type="submit" class="btn btn-default">Create</button>
+                    </form>
+                </div>
+            {% endif %}
+
+
+            {% if role == '2' %}
+                <div class="tab-pane fade" id="newVote">
+                    <h3>New Vote</h3><hr>
+                    <form action="{{ url_for('raise_a_vote_result',group_id=group_id) }}" method="get" id="vote-add-form">
+                        <label for="vote-content">Title of the vote</label>
+                        <input class="form-control" type="text" name="vote-content" id="vote-content"/>
+                        <input class="form-control" type="text" name="vote-options-num" id="vote-options-num" style="display:none;" value="0"/>
+                        <br>
+                        <input type="button" class="addOption btn btn-default" id="vote-add-button" value="Add new choices"/>
+                        <br><br>
+                        <input type="button" class="changeTimeSet btn btn-default"  id="change-time-set-button" value="timeset"/>
+                        <br><br>
+                        <input class="form-control" type="text" id="endtime-selection" name="endtime-selection" value = "2" style="display:none"/>
+                        <input type="text" id="timeinterval" name="timeinterval"    class="countdown_timepicker form-control" value="00:00:00" style="display:none;"/>
+                        <input type="text" id="datetime" name="datetime" class="ui_timepicker form-control" value=""/>
+                        <br>
+                        <button type="submit" class="btn btn-default">let's vote!</button>
                     </form>
                 </div>
             {% endif %}

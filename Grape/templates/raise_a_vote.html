@@ -10,32 +10,32 @@
     <script type="text/javascript" src="/static/js/jquery-ui-timepicker-zh-CN.js"></script>
     <script type="text/javascript">
     	$(function () {
-        $(".countdown_timepicker").datetimepicker({
-            //showOn: "button",
-            //buttonImage: "./css/images/icon_calendar.gif",
-            //buttonImageOnly: true,
-            showButtonPanel: false,
-            timeOnly: true,
-            showSecond: true,
-            timeFormat: 'hh:mm:ss',
-            stepHour: 1,
-            stepMinute: 1,
-            stepSecond: 1
-        })
+            $(".countdown_timepicker").datetimepicker({
+                //showOn: "button",
+                //buttonImage: "./css/images/icon_calendar.gif",
+                //buttonImageOnly: true,
+                showButtonPanel: false,
+                timeOnly: true,
+                showSecond: true,
+                timeFormat: 'hh:mm:ss',
+                stepHour: 1,
+                stepMinute: 1,
+                stepSecond: 1
+            });
 
-        $(".ui_timepicker").datetimepicker({
-            //showOn: "button",
-            //buttonImage: "./css/images/icon_calendar.gif",
-            //buttonImageOnly: true,
-            //showButtonPanel: false,
-            //timeOnly: true,
-            showSecond: true,
-            timeFormat: 'hh:mm:ss',
-            stepHour: 1,
-            stepMinute: 1,
-            stepSecond: 1
-        })  
-    })
+            $(".ui_timepicker").datetimepicker({
+                //showOn: "button",
+                //buttonImage: "./css/images/icon_calendar.gif",
+                //buttonImageOnly: true,
+                //showButtonPanel: false,
+                //timeOnly: true,
+                showSecond: true,
+                timeFormat: 'hh:mm:ss',
+                stepHour: 1,
+                stepMinute: 1,
+                stepSecond: 1
+            });
+        });
     </script>
 	<style>
 		input.vote-option-content {border:1px solid #fff;background:#fff; font-size:14px;
@@ -55,7 +55,7 @@
 <body>
 
 	<p>我要去投票</p>
-	<form action="{{current_path}}/result" method="get" id="vote-add-form">
+	<form action="{{ url_for('raise_a_vote_result',group_id=group_id) }}" method="get" id="vote-add-form">
 		<input type="text" name="vote-content"/>
 		<input type="text" name="vote-options-num" id="vote-options-num" style="display:none;" value="0"/>
 		<br>

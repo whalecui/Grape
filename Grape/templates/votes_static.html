@@ -1,9 +1,36 @@
-<html>
-	<head>
-		<meta http-equiv=Content-Type content="text/html;charset=utf-8">
-	</head>
-	<body>
-		<iframe width="800" height="600" frameborder="0" seamless="seamless" scrolling="no" src="{{plot_url}}"></iframe>
-	</body>
-</html>
+{% extends "layout.html" %}
+
+{% block head %}
+    {{ super() }}
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        var username = "{{ username }}";
+    </script>
+{% endblock %}
+
+{% block navbar %}
+    <ul class="nav navbar-nav">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle"
+                data-toggle="dropdown">
+                {{ username }}
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#">Contact with Admin</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Settings</a></li>
+                <li class="divider"></li>
+                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <div class="vote-results">
+	    <iframe width="800" height="600" frameborder="0" seamless="seamless" scrolling="no" src="{{plot_url}}"></iframe>
+    </div>
+{% endblock %}
+
 <!-- https://plot.ly/~abhishek.mitra.963/1/.embed?width=800&height=600 -->

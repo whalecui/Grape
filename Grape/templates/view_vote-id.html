@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    {{ super() }}
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        var username = "{{ username }}";
+    </script>
+{% endblock %}
+
+{% block navbar %}
+    <ul class="nav navbar-nav">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle"
+                data-toggle="dropdown">
+                {{ username }}
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#">Contact with Admin</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Settings</a></li>
+                <li class="divider"></li>
+                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <div class="vote-details">
+        {% set options = 0 %}
+		{% if is_voted == 0 %}
+            <form action="{{ url_for('vote_operation_result',vote_id=vote_id) }}" method="get" id="vote-operate-form">
+                <p>{{vote_content}}</p>
+                <br>
+                {% for vote_option in vote_options_list %}
+                    {% set options = 1 + options %}
+                    <label>{{options}}.
+                        {% if is_voted == 0 %}
+                            <input type="radio" name="vote-option" value="{{options}}"/>
+                        {% endif %}
+                        {{vote_option}}
+                    </label>
+                {% endfor %}
+                    <input type="submit"/>
+            </form>
+        {% else %}
+            <p>{{vote_content}}</p>
+                <br>
+                {% for vote_option in vote_options_list %}
+                    {% set options = 1 + options %}
+                        {{options}}.{{vote_option}}
+                {% endfor %}
+            <h2>You have voted for {{option_voted}}</h2>
+        {% endif %}
+    </div>
+{% endblock %}

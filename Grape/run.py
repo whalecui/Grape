@@ -244,53 +244,6 @@ def myGroups():
                            attendedGroups=attendedGroupsList)
 
 
-@app.route('/group/gp<int:group_id>', methods=['GET', 'POST'])
-def groupDetail(group_id):
-    is_login = session.get('islogin')
-    if(is_login == '0'):                       #please login first!
-        return make_response(redirect('/'))
-    user_id = session.get('user_id')
-    print user_id,'id'
-    user = User(user_id=user_id)
-    if(user.check_id() == 0):                #user not exist?
-        session.clear()
-        return make_response(redirect('/'))
-    user_data = user.get_data_by_id()
-    #code above checks user data
-    group = Group(group_id)
-    if(group.exist_group()):
-        group_data = group.get_data()
-        discussions = group.get_discussions()
-        members = group.get_members()
-        #to be rewritten by ajax
-        if request.method == 'POST':
-            title = request.form.get('title')
-            content = request.form.get('content')
-            if title and content:
-                # print name,topic,confirmMessage,1235543
-                group.create_discussion(user=user_id, title=title, content=content)
-            return redirect(url_for('groupDetail', group_id=group_id))
-
-        if str(user_id) == str(group.leader_id):
-            return render_template('group-id.html', group_id=group_id,\
-                                   group_data=group_data, discussions=discussions,\
-                                   username=user_data['username'], role='2')
-                                   #leader
-        if {'member_id': user_id} in members :
-            return render_template('group-id.html', group_id=group_id,\
-                                   group_data=group_data, discussions=discussions,\
-                                   username=user_data['username'], role='1')
-                                   #member
-        #to be continued
-        return render_template('group-id.html', group_id=group_id,\
-                               group_data=group_data,\
-                               username=user_data['username'], role='0')
-                                   #other
-    #return render_template('group-id.html', group_id=group_id,\
-    #                       username=user_data['username'], role='-1')
-    abort(404)
-                           #non-exist
-
 
 @app.route('/discussion/dis<int:discuss_id>')
 def show_discuss(discuss_id):
@@ -437,6 +390,68 @@ def admin():
 
     return render_template('admin.html', username=user.username,groups=groups,users=users)
 
+
+
+
+@app.route('/group/gp<int:group_id>', methods=['GET', 'POST'])
+def groupDetail(group_id):
+    is_login = session.get('islogin')
+    if(is_login == '0'):                       #please login first!
+        return make_response(redirect('/'))
+    user_id = session.get('user_id')
+    print user_id,'id'
+    user = User(user_id=user_id)
+    if(user.check_id() == 0):                #user not exist?
+        session.clear()
+        return make_response(redirect('/'))
+    user_data = user.get_data_by_id()
+    #code above checks user data
+    group = Group(group_id)
+    if(group.exist_group()):
+        group_data = group.get_data()
+        discussions = group.get_discussions()
+        votes_list_voting = group.get_votes_voting()
+        votes_list_end = group.get_votes_expired()
+        members = group.get_members()
+        #to be rewritten by ajax
+        if request.method == 'POST':
+            title = request.form.get('title')
+            content = request.form.get('content')
+            if title and content:
+                # print name,topic,confirmMessage,1235543
+                group.create_discussion(user=user_id, title=title, content=content)
+            return redirect(url_for('groupDetail', group_id=group_id))
+
+        if str(user_id) == str(group.leader_id):
+            return render_template('group-id.html', group_id=group_id,\
+                                   group_data=group_data, discussions=discussions,\
+                                   votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
+                                   username=user_data['username'], role='2')
+                                   #leader
+        if {'member_id': user_id} in members :
+            return render_template('group-id.html', group_id=group_id,\
+                                   group_data=group_data, discussions=discussions,\
+                                   votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
+                                   username=user_data['username'], role='1')
+                                   #member
+        #to be continued
+        return render_template('group-id.html', group_id=group_id,\
+                               group_data=group_data,\
+                               username=user_data['username'], role='0')
+                                   #other
+    #return render_template('group-id.html', group_id=group_id,\
+    #                       username=user_data['username'], role='-1')
+    abort(404)
+                           #non-exist
+
+@app.route('/group/gp<int:group_id>/vote/view-votes')
+def view_votes(group_id):
+    group = Group(group_id)
+    votes_list_voting = group.get_votes_voting()
+    votes_list_end = group.get_votes_expired()
+    return render_template('view_the_votes.html',votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,current_path=request.path) # add status
+
+
 @app.route('/group/gp<int:group_id>/vote', methods=['GET', 'POST'])
 def vote(group_id):
     return render_template('vote_index.html',current_path=request.path)
@@ -446,9 +461,7 @@ def vote(group_id):
 def raise_a_vote(group_id):
     return render_template('raise_a_vote.html',current_path=request.path)
 
-# URL 改成和 韬韬一样 ？
-#@app.route('/_create_vote/<int:group_id>',methods=['GET','POST'])
-@app.route('/group/gp<int:group_id>/vote/raise-vote/result',methods=['GET','POST'])
+@app.route('/_create_vote/<int:group_id>',methods=['GET','POST'])
 def raise_a_vote_result(group_id):
     user_id = session.get('user_id')
     if request.method == "GET":
@@ -465,65 +478,66 @@ def raise_a_vote_result(group_id):
     return redirect("/group/gp%d/vote" % group_id)
 
 
-@app.route('/group/gp<int:group_id>/vote/view-votes')
-def view_votes(group_id):
-    group = Group(group_id)
-    
-    votes_list_voting = group.get_votes_voting()
-    votes_list_end = group.get_votes_expired()
-    return render_template('view_the_votes.html',votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,current_path=request.path) # add status
-
-
-@app.route('/group/gp<int:group_id>/vote/view-votes/voting<vote_id>')
-#@app.route('/vote/voting<vote_id>') #正在投票
-def vote_operation(group_id,vote_id): # use groupid to verify the vote
+@app.route('/vote/voting<vote_id>') #正在投票
+def vote_operation(vote_id): # use groupid to verify the vote
     user_id = session.get('user_id')
     vote = Vote(vote_id,user_id)
     # ensure the vote has not voted before 
     # if the user change the status to submit it
+    try:
+        user = User(user_id=user_id)
+        username = user.username
+        group_id = vote.group_id
+        vote_options_list = vote.vote_options
+        vote_content = vote.vote_content
+        is_voted = vote.is_voted
+        option_voted = vote.option_voted
+        # the option the user has voted for
+        #0 means not yet
+        return render_template('view_vote-id.html',vote_options_list=vote_options_list,\
+                               vote_content=vote_content,vote_id=vote_id,is_voted=is_voted,\
+                               username=username,\
+                               option_voted=option_voted,current_path=request.path)
+    except Exception, e:
+        abort(404)
 
-
-    vote_options_list = vote.vote_options
-    vote_content = vote.vote_content
-    is_voted = vote.is_voted
-    option_voted = vote.option_voted 
-    # the option the user has voted for 
-    #0 means not yet
-
-    return render_template('view_the_vote_options.html',vote_options_list=vote_options_list,vote_content=vote_content,vote_id=vote_id,is_voted=is_voted,option_voted=option_voted,current_path=request.path)
-
-
-@app.route('/group/gp<int:group_id>/vote/view-votes/voting<vote_id>/vote-operation-result',methods=['GET','POST'])
-#@app.route('/_vote_op/voting<vote_id>',methods=['GET','POST']) #进行投票
-def vote_operation_result(group_id,vote_id):
+@app.route('/_vote_op/voting<vote_id>',methods=['GET','POST']) #进行投票
+def vote_operation_result(vote_id):
     if request.method == 'GET':
+        try:
+            user_id = session.get('user_id')
+            vote_option = request.args.get('vote-option')
+            #vote_id = request.args.get('vote-id')
+
+            vote = Vote(vote_id,user_id)
+            if vote.is_voted != 0:
+                return "You have been voted"
+            group_id = vote.group_id
+            vote.vote_op(user_id,vote_option)
+            return redirect(url_for('vote_operation', vote_id=vote_id))
+        except Exception, e:
+            abort(404)
+    return redirect(url_for('vote_operation', vote_id=vote_id))
+
+
+@app.route('/vote/rs<int:vote_id>',methods=['GET','POST']) #vote result
+#@app.route('/group/gp<int:group_id>/vote/view-votes/rs<vote_id>',methods=['GET','POST'])
+def view_votes_result(vote_id):
+    try:
         user_id = session.get('user_id')
-        vote_option = request.args.get('vote-option')
-        vote_id = request.args.get('vote-id')
 
         vote = Vote(vote_id,user_id)
-        if vote.is_voted != 0:
-            return "You have been voted"
-
-        vote.vote_op(user_id,vote_option)
-    return redirect('/group/gp%d/vote' % group_id)
-
-
-@app.route('/vote/rs<vote_id>',methods=['GET','POST']) #vote result
-#@app.route('/group/gp<int:group_id>/vote/view-votes/rs<vote_id>',methods=['GET','POST'])
-def view_votes_result(group_id,vote_id):
-    groupname ="grape"
-    user_id = session.get('user_id')
-    vote = Vote(vote_id,user_id)
-    vote_options_list,votes_distribution = vote.votes_distribution()
-    data = Data([
-        Bar(
-            x=vote_options_list,
-            y=votes_distribution
-        )
-    ])
-    plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
-    return render_template('votes_static.html',plot_url=plot_url)
+        vote_options_list,votes_distribution = vote.votes_distribution()
+        data = Data([
+            Bar(
+                x=vote_options_list,
+                y=votes_distribution
+            )
+        ])
+        plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
+        return render_template('votes_static.html',plot_url=plot_url)
+    except Exception, e:
+        abort(404)
 
 
 if __name__ == '__main__':
