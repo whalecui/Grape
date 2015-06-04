@@ -31,32 +31,39 @@
 
 {% block content %}
     <div id="discuss_body">
-    	<div id="discuss_div">
-    		<h2 id="discuss_title">{{discuss.title}}</h2>
-    		<p id="discuss_content">{{discuss.content}}</p>
+    	<div id="discuss_div" class="panel panel-default">
+            <div class="panel-heading"><h4>{{discuss.title}}</h4></div>
+            <div class="panel-body"><p class="dis-content">{{discuss.content}}</p></div>
+            <div class="panel-footer">
+                <ol class="breadcrumb">
+                    <li><a href="{{ url_for('index') }}">Grape</a></li>
+                    <li><a href="{{ url_for('groupDetail', group_id=group_id) }}">{{ group_name }}</a></li>
+                    <li class="active">{{ discuss.title }}</li>
+                </ol>
+            </div>
     	</div>
-        <div class="tab-pane" id="reply">
-            <h4>Here's reply:</h4><hr>
+        <div id="discuss_div" class="panel panel-default">
+            <div class="panel-heading"><h4>Replies:</h4></div>
             <ul class="replies list-group">
             {% for item in reply %}
                 <li class="list-group-item">
-                    <p>from user {{item.username}}:
-                        <span>{{item.content}}</span>
-                    </p>
+                    <p class="reply">{{item.content}}</p>
+                    <p class="from">from: {{item.username}}</p>
                 </li>
             {% else %}
                 <li class="list-group-item">
-                    <p>
-                        This discussion has not been replied yet!
-                    </p>
+                    <p class="reply">This discussion has not been replied yet!</p>
                 </li>
             {% endfor %}
             </ul>
-            <h4>Submit your reply:</h4><hr>
+        </div><hr>
+        <div class="new-reply">
+            <h4>Submit your reply:</h4>
             <form action="" id="reply-form">
                 <div class="form-group">
                     <label for="content">content:</label>
-                    <input class="form-control" type="text" name="content" id="reply-content"><br>
+                    <textarea class="form-control" rows="4"name="content" id="reply-content"></textarea>
+                    <br>
                 </div>
                 <button type="submit" class="btn btn-default">submit</button>
             </form>

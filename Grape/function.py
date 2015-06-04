@@ -373,6 +373,76 @@ class Group:
         conn.close()
         return True
 
+    def create_vote(self,user,vote_content,time2end,timeinterval2end,selection,options,vote_options):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        if (selection == "2"):
+            endtime = "'%s'" % time2end
+        else:
+            time_split = timeinterval2end.split(":")
+            endtime = "current_timestamp + interval %s hour + interval %s minute + interval %s second" % (time_split[0],time_split[1],time_split[2])
+
+        sql = """insert into votes (user_id,group_id,vote_content,voting,endtime) values (%s,"%s",%s,1,%s)""" % (user,self.group_id,vote_content,endtime)
+        cursor.execute(sql)
+        conn.commit()
+
+        cursor.execute("select LAST_INSERT_ID() from votes where group_id='%s'" % (self.group_id))
+
+        """
+        mid =  cursor.fetchall()
+        print mid,"#########"
+        voteid = mid[0][0]
+        """
+
+        voteid = cursor.fetchone()['LAST_INSERT_ID()']
+
+        sql = """ CREATE EVENT event_%s ON SCHEDULE AT %s  ENABLE DO update votes set voting=0 where vote_id=%d;""" % (voteid,endtime,voteid)
+        cursor.execute(sql)
+        conn.commit()
+
+        for i in range (1,options+1):
+            sql = """insert into vote_detail(vote_id,option_order,vote_option,votes) values (%d,%d,%s,0)""" % (voteid,i,vote_options[i-1])
+            cursor.execute(sql)
+            conn.commit()
+        conn.close()
+        return True
+
+    def get_votes_voting(self):
+        votes_list_voting = []
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from votes where group_id = %s and voting = 1" % self.group_id
+        cursor.execute(sql)
+        votes_data = cursor.fetchall()
+        for vote in votes_data:
+            vote_pair = (vote['vote_id'],vote['vote_content'])
+            votes_list_voting.append(vote_pair)
+
+        conn.close()
+        return votes_list_voting
+
+
+    def get_votes_expired(self):
+        votes_list_end = []
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from votes where group_id = %s and voting = 0" % self.group_id
+        cursor.execute(sql);
+        votes_data = cursor.fetchall()
+        for vote in votes_data:
+            vote_pair = (vote['vote_id'],vote['vote_content'])
+            votes_list_end.append(vote_pair)
+
+        conn.close()
+        return votes_list_end
+
+
+
+
+
+
     ## renew to be done!
     def get_data(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
@@ -461,3 +531,108 @@ class Discussion:
         if exist:
             return 1    #exist
         return 0        #non-ex
+
+
+class Vote:
+    def __init__(self,vote_id,user_id):
+        self.vote_id = int(vote_id)
+        if self.exist():
+            data = self.get_data(user_id)
+            self.user_id = data['user_id']
+            self.group_id = data['user_id']
+            self.vote_content = data['vote_content']
+            self.vote_options = data['vote_options']
+            # array
+            self.is_voted = data['is_voted']
+            # 0 not voted
+            self.option_voted = data['option_voted']
+            # 0 not voted 
+
+    def get_data(self,user_id):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+
+        sql="select * from votes where vote_id = %s" % self.vote_id;
+        cursor.execute(sql)
+        item = cursor.fetchone()
+
+        sql = "select * from vote_detail where vote_id = %s" % self.vote_id;
+        cursor.execute(sql)
+        vote_options_data = cursor.fetchall()
+        item['vote_options'] = []
+        for vote_option in vote_options_data: 
+            item['vote_options'].append(vote_option['vote_option'])
+
+        sql = "select * from vote_user_map where vote_id = '%s' and user_id = '%s'" % (self.vote_id,user_id)
+        cursor.execute(sql)
+        item['option_voted'] = 0
+
+        map = cursor.fetchall()
+        if (len(map) == 0):
+            item['is_voted'] = 0;
+        else:
+            item['is_voted'] = 1;
+            item['option_voted'] = map[0]['votefor']
+
+        user = User(user_id = item["user_id"]) # the leader
+        item["username"] = user.username
+        conn.close()
+        return item
+
+    def vote_op(self,user_id,vote_option):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select votes from vote_detail where option_order='%s' and vote_id='%s'" % (vote_option,self.vote_id)
+        cursor.execute(sql)
+        votes = cursor.fetchone()['votes']
+        sql = "update vote_detail set votes=%d where option_order='%s' and vote_id='%s'" % (votes+1,vote_option,self.vote_id)
+        cursor.execute(sql)
+        conn.commit()
+
+        sql = "insert into vote_user_map(vote_id,user_id,votefor) values('%s','%s','%s')" % (self.vote_id,user_id,vote_option)
+        cursor.execute(sql)
+        conn.commit()
+        conn.close()
+
+    def votes_distribution(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from vote_detail where vote_id='%s'" % self.vote_id
+        cursor.execute(sql)
+        votes_static = cursor.fetchall()
+        vote_options_list = []
+        votes_distribution = []
+
+
+        option = 0;
+        for vote_item in votes_static:
+            vote_options_list.append('%s.' % (chr(65+option)) + '%s' % vote_item['vote_option'])
+            votes_distribution.append(vote_item['votes'])
+            option+=1
+
+        conn.close()
+        return vote_options_list,votes_distribution
+
+
+
+
+    def exist(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                     user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                     db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from votes where vote_id=%d;" % self.vote_id
+        cursor.execute(sql)
+        exist = cursor.fetchall()
+        conn.close()
+        if exist:
+            return 1    #exist
+        return 0        #non-ex
+
+
