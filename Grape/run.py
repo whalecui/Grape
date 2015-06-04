@@ -351,9 +351,6 @@ def create_discussion(group_id):
     title = request.form.get('title')
     content = request.form.get('content')
     user_id = session.get('user_id')
-    user = User(user_id=user_id)
-    user_id = user.user_id
-
     group = Group(group_id)
     group.create_discussion(user_id, title, content)
 
@@ -440,7 +437,6 @@ def admin():
 
     return render_template('admin.html', username=user.username,groups=groups,users=users)
 
-
 @app.route('/group/gp<int:group_id>/vote', methods=['GET', 'POST'])
 def vote(group_id):
     return render_template('vote_index.html',current_path=request.path)
@@ -450,138 +446,76 @@ def vote(group_id):
 def raise_a_vote(group_id):
     return render_template('raise_a_vote.html',current_path=request.path)
 
-
+# URL 改成和 韬韬一样 ？
+#@app.route('/_create_vote/<int:group_id>',methods=['GET','POST'])
 @app.route('/group/gp<int:group_id>/vote/raise-vote/result',methods=['GET','POST'])
 def raise_a_vote_result(group_id):
-    conn = MySQLdb.connect(user='root', passwd='', host='127.0.0.1', db='grape', charset='utf8')
-    cursor = conn.cursor()
+    user_id = session.get('user_id')
     if request.method == "GET":
         vote_content = quoteattr(request.args.get('vote-content'))
         endtime_selection = request.args.get('endtime-selection')
-        if (endtime_selection == "2"):
-            endtime = request.args.get('datetime')
-            endtime = "'%s'" % endtime
-        else:
-            time_split = request.args.get('timeinterval').split(':')
-            endtime = "current_timestamp + interval %s hour + interval %s minute + interval %s second" % (time_split[0],time_split[1],time_split[2])
-        sql = """insert into votes (group_id,vote_content,voting,endtime) values ("%s",%s,1,%s)""" % (group_id,vote_content,endtime)
-        cursor.execute(sql)
-        conn.commit()
-
-        # need to add something here later
-        
-        cursor.execute("select LAST_INSERT_ID() from votes where group_id='%s'" % (group_id))
-
-        voteid = cursor.fetchall()[0][0]
-
-        sql = """ CREATE EVENT event_%s ON SCHEDULE AT %s  ENABLE DO update votes set voting=0 where vote_id=%d;""" % (voteid,endtime,voteid)
-        cursor.execute(sql)
-        conn.commit()
-
+        time2end = request.args.get('datetime')
+        timeinterval2end = request.args.get('timeinterval')
         options = string.atoi(request.args.get('vote-options-num'))
-        for i in range (1,options+1):
-            sql = """insert into vote_detail(vote_id,option_order,vote_option,votes) values (%d,%d,%s,0)""" % (voteid,i,quoteattr(request.args.get('vote-option-content-%s'% str(i))).encode('utf-8'))
-            cursor.execute(sql)
-        conn.commit()
-        return redirect("/group/gp%d/vote" % group_id)
+        vote_options = []
+        for i in range(1,options+1):
+            vote_options.append(quoteattr(request.args.get('vote-option-content-%s'% str(i))).encode('utf-8'))
+        group = Group(group_id)
+        group.create_vote(user_id,vote_content,time2end,timeinterval2end,endtime_selection,options,vote_options)
+    return redirect("/group/gp%d/vote" % group_id)
 
 
 @app.route('/group/gp<int:group_id>/vote/view-votes')
 def view_votes(group_id):
-
-    votes_list_voting = []
-    votes_list_end = []
-
-    sql = "select * from votes where group_id = %d and voting = 1" % group_id
-    cursor.execute(sql)
-    votes_data = cursor.fetchall()
-
-    for vote in votes_data:
-        vote_pair = (vote[0],vote[2]) # id and the contents of the question
-        votes_list_voting.append(vote_pair)
-
-    sql = "select * from votes where group_id = %d and voting = 0" % group_id
-    cursor.execute(sql);
-
-    votes_data = cursor.fetchall()
-    for vote in votes_data:
-        vote_pair = (vote[0],vote[2])
-        votes_list_end.append(vote_pair)
-
+    group = Group(group_id)
+    
+    votes_list_voting = group.get_votes_voting()
+    votes_list_end = group.get_votes_expired()
     return render_template('view_the_votes.html',votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,current_path=request.path) # add status
 
 
 @app.route('/group/gp<int:group_id>/vote/view-votes/voting<vote_id>')
+#@app.route('/vote/voting<vote_id>') #正在投票
 def vote_operation(group_id,vote_id): # use groupid to verify the vote
     user_id = session.get('user_id')
-
+    vote = Vote(vote_id,user_id)
     # ensure the vote has not voted before 
     # if the user change the status to submit it
-    sql = "select * from vote_user_map where vote_id = '%s' and user_id = '%s'" % (vote_id,user_id)
-    cursor.execute(sql)
-    voted_status = cursor.fetchall() # it is possible the user has voted before
-    is_voted = len(voted_status)
-    option_voted = 0
-    if is_voted != 0:
-        option_voted = voted_status[0][3] # votefor
 
-    sql = "select * from votes where vote_id = '%s'" % vote_id
-    cursor.execute(sql)
-    vote_content = cursor.fetchall()[0][2]
-    sql = "select * from vote_detail where vote_id = '%s'" % vote_id
-    cursor.execute(sql)
-    vote_options_list = []
-    vote_options_data = cursor.fetchall()
-    for vote_option in vote_options_data: 
-        vote_options_list.append(vote_option[3])
+
+    vote_options_list = vote.vote_options
+    vote_content = vote.vote_content
+    is_voted = vote.is_voted
+    option_voted = vote.option_voted 
+    # the option the user has voted for 
+    #0 means not yet
 
     return render_template('view_the_vote_options.html',vote_options_list=vote_options_list,vote_content=vote_content,vote_id=vote_id,is_voted=is_voted,option_voted=option_voted,current_path=request.path)
 
 
 @app.route('/group/gp<int:group_id>/vote/view-votes/voting<vote_id>/vote-operation-result',methods=['GET','POST'])
+#@app.route('/_vote_op/voting<vote_id>',methods=['GET','POST']) #进行投票
 def vote_operation_result(group_id,vote_id):
     if request.method == 'GET':
         user_id = session.get('user_id')
         vote_option = request.args.get('vote-option')
         vote_id = request.args.get('vote-id')
 
-        sql = "select * from vote_user_map where vote_id = '%s' and user_id = '%s'" % (vote_id,user_id)
-        cursor.execute(sql)
-        voted_status = cursor.fetchall() # it is possible the user has voted before
-        is_voted = len(voted_status)
-        if is_voted != 0:
-            return "you have voted before" 
+        vote = Vote(vote_id,user_id)
+        if vote.is_voted != 0:
+            return "You have been voted"
 
-        sql = "select votes from vote_detail where option_order='%s' and vote_id='%s'" % (vote_option,vote_id)
-        cursor.execute(sql)
-        votes = cursor.fetchall()[0][0]
-        sql = "update vote_detail set votes=%d where option_order='%s' and vote_id='%s'" % (votes+1,vote_option,vote_id)
-        cursor.execute(sql)
-        conn.commit()
-
-        sql = "insert into vote_user_map(vote_id,user_id,votefor) values('%s','%s','%s')" % (vote_id,user_id,vote_option)
-        cursor.execute(sql)
-        conn.commit()
+        vote.vote_op(user_id,vote_option)
     return redirect('/group/gp%d/vote' % group_id)
 
 
-@app.route('/group/gp<int:group_id>/vote/view-votes/rs<vote_id>',methods=['GET','POST'])
+@app.route('/vote/rs<vote_id>',methods=['GET','POST']) #vote result
+#@app.route('/group/gp<int:group_id>/vote/view-votes/rs<vote_id>',methods=['GET','POST'])
 def view_votes_result(group_id,vote_id):
     groupname ="grape"
-
-    sql = "select * from vote_detail where vote_id='%s'" % vote_id
-    cursor.execute(sql)
-    votes_static = cursor.fetchall()
-    vote_options_list = []
-    votes_distribution = []
-
-
-    option = 0;
-    for vote_item in votes_static:
-        vote_options_list.append('%s.' % (chr(65+option)) + '%s' % vote_item[3])
-        votes_distribution.append(vote_item[4])
-        option+=1
-
+    user_id = session.get('user_id')
+    vote = Vote(vote_id,user_id)
+    vote_options_list,votes_distribution = vote.votes_distribution()
     data = Data([
         Bar(
             x=vote_options_list,
