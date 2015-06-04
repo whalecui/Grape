@@ -526,7 +526,8 @@ def vote_operation_result(vote_id):
 def view_votes_result(vote_id):
     try:
         user_id = session.get('user_id')
-
+		user = User(user_id = user_id)
+		username = user.username
         vote = Vote(vote_id,user_id)
         vote_options_list,votes_distribution = vote.votes_distribution()
         data = Data([
@@ -536,7 +537,7 @@ def view_votes_result(vote_id):
             )
         ])
         plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
-        return render_template('votes_static.html',plot_url=plot_url)
+        return render_template('votes_static.html',plot_url=plot_url,username=username)
     except Exception, e:
         abort(404)
 
