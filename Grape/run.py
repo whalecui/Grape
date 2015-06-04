@@ -67,12 +67,12 @@ def index():
         if request.method == 'POST':
             #create new group
             
-            name=request.form.get('name')
-            topic=request.form.get('topic')
-            confirmMessage=request.form.get('confirmMessage')
-            if name and topic and confirmMessage:
+            # name=request.form.get('name')
+            # topic=request.form.get('topic')
+            # confirmMessage=request.form.get('confirmMessage')
+            # if name and topic and confirmMessage:
                 # print name,topic,confirmMessage,1235543
-                success=User1.create_group(name, topic, confirmMessage)
+                # success=User1.create_group(name, topic, confirmMessage)
 
             #del group
             delname=request.form.get('delname')
@@ -175,7 +175,7 @@ def join_group():
     user_id = session.get('user_id')
     group_id = str(request.args.get('group_id', 0, type=int))
     confirm = str(request.args.get('confirm', 0, type=str))
-    group = Group(group_id=group_id)
+    # group = Group(group_id=group_id)
     user = User(user_id=user_id)
     status=user.join_group(group_id=group_id, confirm=confirm)
     return jsonify(status=status)
@@ -185,7 +185,7 @@ def join_group():
 def quit_group():
     user_id = session.get('user_id')
     group_id = str(request.args.get('group_id', 0, type=str))
-    group = Group(group_id=group_id)
+    # group = Group(group_id=group_id)
     user = User(user_id=user_id)
     status=user.quit_group(group_id=group_id)
     return jsonify(status=status)
@@ -226,14 +226,15 @@ def myGroups():
         attendedGroups, ownGroups = User1.get_groups()
         attendedGroupsList = []
         ownGroupsList = []
-        print 'att=', attendedGroups
-        print 'own=', ownGroups
+        # print 'att=', attendedGroups
+        # print 'own=', ownGroups
     ###把group对象存到了两个list中
         for i in attendedGroups:
-            attendedGroupsList += [Group(i).get_data()]
+            if i not in ownGroups:
+                attendedGroupsList += [Group(i).get_data()]
         for i in ownGroups:
             ownGroupsList += [Group(i).get_data()]
-        print ownGroupsList
+        # print ownGroupsList
     except Exception, e:
         name = '!none!'
         ownGroupsList = ['none']
@@ -390,11 +391,11 @@ def reply_discussion(discuss_id):
         return jsonify(status='fail')
     user_id = session.get('user_id')
     try:
-        user = User(user_id=user_id)
-        username = user.username
+        # user = User(user_id=user_id)
+        # username = user.username
         discuss = Discussion(discuss_id)
         discuss.add_reply(user_id,reply_content)
-        html = '/discussion/dis%s' % discuss_id
+        # html = '/discussion/dis%s' % discuss_id
         return jsonify(status='success')
     except Exception, e:
         print 'reply error:', e
@@ -512,7 +513,6 @@ def vote_operation_result(group_id,vote_id):
 @app.route('/vote/rs<vote_id>',methods=['GET','POST']) #vote result
 #@app.route('/group/gp<int:group_id>/vote/view-votes/rs<vote_id>',methods=['GET','POST'])
 def view_votes_result(group_id,vote_id):
-    groupname ="grape"
     user_id = session.get('user_id')
     vote = Vote(vote_id,user_id)
     vote_options_list,votes_distribution = vote.votes_distribution()
