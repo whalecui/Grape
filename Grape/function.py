@@ -12,7 +12,7 @@ class User:
                 data = self.get_data_by_id()
                 self.username = data['username']
                 self.email = data['email']
-                self.role = data['role']
+                self.role = data['role'] #admin or user?
             except Exception, e:
                 print 'initUser', e
         else:
@@ -180,7 +180,7 @@ class User:
         cursor.execute("select * from user where username='" + str(self.username) + "';")
         exist = cursor.fetchall()
         if exist:
-                return 1
+            return 1
         return 0
 
     def check_e(self):
@@ -189,7 +189,7 @@ class User:
         cursor.execute("select * from user where email='" + str(self.email) + "';")
         exist = cursor.fetchall()
         if exist:
-                return 1
+            return 1
         return 0
 
     # Revised by Hunter: return 1 if the user exists.
@@ -199,7 +199,7 @@ class User:
         cursor.execute("select * from user where user_id='" + str(self.user_id) + "';")
         exist = cursor.fetchall()
         if exist:
-                return 1
+            return 1
         return 0
 
     def login(self, pw):
@@ -340,7 +340,7 @@ class Group:
         members=cursor.fetchall()
         conn.close()
         return members
-        #返回值是member的id！！！
+        #返回值是member的id dictionary！！！
 
     def get_discussions(self):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
@@ -556,23 +556,23 @@ class Vote:
         sql="select * from votes where vote_id = %s" % self.vote_id;
         cursor.execute(sql)
         item = cursor.fetchone()
-
+        ##########################
         sql = "select * from vote_detail where vote_id = %s" % self.vote_id;
         cursor.execute(sql)
         vote_options_data = cursor.fetchall()
         item['vote_options'] = []
         for vote_option in vote_options_data: 
             item['vote_options'].append(vote_option['vote_option'])
-
+       ###########################
         sql = "select * from vote_user_map where vote_id = '%s' and user_id = '%s'" % (self.vote_id,user_id)
         cursor.execute(sql)
         item['option_voted'] = 0
 
         map = cursor.fetchall()
         if (len(map) == 0):
-            item['is_voted'] = 0;
+            item['is_voted'] = 0
         else:
-            item['is_voted'] = 1;
+            item['is_voted'] = 1
             item['option_voted'] = map[0]['votefor']
 
         user = User(user_id = item["user_id"]) # the leader
