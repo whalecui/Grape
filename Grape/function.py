@@ -383,7 +383,6 @@ class Group:
         else:
             time_split = timeinterval2end.split(":")
             endtime = "current_timestamp + interval %s hour + interval %s minute + interval %s second" % (time_split[0],time_split[1],time_split[2])
-
         sql = """insert into votes (user_id,group_id,vote_content,voting,endtime) values (%s,"%s",%s,1,%s)""" % (user,self.group_id,vote_content,endtime)
         cursor.execute(sql)
         conn.commit()
@@ -539,7 +538,7 @@ class Vote:
         if self.exist():
             data = self.get_data(user_id)
             self.user_id = data['user_id']
-            self.group_id = data['user_id']
+            self.group_id = data['group_id']
             self.vote_content = data['vote_content']
             self.vote_options = data['vote_options']
             # array

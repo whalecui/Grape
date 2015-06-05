@@ -42,14 +42,16 @@
                         <br>
                         {% for vote_option in vote_options_list %}
                             {% set options = 1 + options %}
-                            <label>{{options}}.
-                                {% if is_voted == 0 %}
-                                    <input type="radio" name="vote-option" value="{{options}}"/>
-                                {% endif %}
-                                {{vote_option}}
-                            </label>
+                            <div class="radio">
+                                <label>
+                                    {% if vote.is_voted == 0 %}
+                                        <input id="ratio-{{ options }}" type="radio" name="vote-option" value="{{options}}"/>
+                                    {% endif %}
+                                    {{vote_option}}
+                                </label>
+                            </div>
                         {% endfor %}
-                            <input type="submit"/>
+                            <button type="submit" class="btn btn-default">Submit</button>
                     </form>
                 {% else %}
                         <br>

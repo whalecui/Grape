@@ -495,7 +495,7 @@ def vote_operation(vote_id): # use groupid to verify the vote
         # the option the user has voted for
         #0 means not yet
         return render_template('view_vote-id.html',vote_options_list=vote_options_list,\
-                               vote=vote,group = Group(group_id=group_id),\
+                               vote=vote,group=Group(group_id=group_id),\
                                username=username,creator=User(user_id=vote.user_id),\
                                current_path=request.path)
     except Exception, e:
