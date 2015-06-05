@@ -80,9 +80,20 @@ CREATE TABLE `votes` (
   PRIMARY KEY (`vote_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE `vote_detail` (`option_id` bigint(20) NOT NULL AUTO_INCREMENT,`vote_id` bigint(20) DEFAULT NULL,`option_order` int(11) DEFAULT NULL,`vote_option` text,`votes` int(11) DEFAULT NULL,PRIMARY KEY (`option_id`)
+CREATE TABLE `vote_detail` (
+`option_id` bigint(20) NOT NULL AUTO_INCREMENT,
+`vote_id` bigint(20) DEFAULT NULL,
+`option_order` int(11) DEFAULT NULL,
+`vote_option` text,
+`votes` int(11) DEFAULT NULL,
+PRIMARY KEY (`option_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
-CREATE TABLE `vote_user_map` (`map_id` bigint(20) NOT NULL AUTO_INCREMENT,`vote_id` bigint(20) DEFAULT NULL,`user_id` int(11) DEFAULT NULL,`votefor` int(11) DEFAULT NULL,PRIMARY KEY (`map_id`)
+CREATE TABLE `vote_user_map` (
+`map_id` bigint(20) NOT NULL AUTO_INCREMENT,
+`vote_id` bigint(20) DEFAULT NULL,
+`user_id` int(11) DEFAULT NULL,
+`votefor` int(11) DEFAULT NULL,
+PRIMARY KEY (`map_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 

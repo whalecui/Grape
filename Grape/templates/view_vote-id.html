@@ -38,7 +38,7 @@
             <div class="panel-body">
                 {% set options = 0 %}
                 {% if vote.is_voted == 0 %}
-                    <form action="{{ url_for('vote_operation_result',vote_id=vote_id) }}" method="get" id="vote-operate-form">
+                    <form action="{{ url_for('vote_operation_result',vote_id=vote.vote_id) }}" method="get" id="vote-operate-form">
                         <br>
                         {% for vote_option in vote_options_list %}
                             {% set options = 1 + options %}

@@ -67,12 +67,12 @@ def index():
         if request.method == 'POST':
             #create new group
             
-            # name=request.form.get('name')
-            # topic=request.form.get('topic')
-            # confirmMessage=request.form.get('confirmMessage')
-            # if name and topic and confirmMessage:
-                # print name,topic,confirmMessage,1235543
-                # success=User1.create_group(name, topic, confirmMessage)
+            name=request.form.get('name')
+            topic=request.form.get('topic')
+            confirmMessage=request.form.get('confirmMessage')
+            if name and topic and confirmMessage:
+                print name,topic,confirmMessage,1235543
+                success=User1.create_group(name, topic, confirmMessage)
 
             #del group
             delname=request.form.get('delname')
@@ -502,14 +502,14 @@ def vote_operation(vote_id): # use groupid to verify the vote
         print e
         abort(404)
 
-@app.route('/_vote_op/voting<vote_id>',methods=['GET','POST']) #进行投票
+@app.route('/_vote_op/voting<int:vote_id>',methods=['GET','POST']) #进行投票
 def vote_operation_result(vote_id):
     if request.method == 'GET':
         try:
             user_id = session.get('user_id')
+            print user_id
             vote_option = request.args.get('vote-option')
             #vote_id = request.args.get('vote-id')
-
             vote = Vote(vote_id,user_id)
             if vote.is_voted != 0:
                 return "You have been voted"
@@ -517,6 +517,7 @@ def vote_operation_result(vote_id):
             vote.vote_op(user_id,vote_option)
             return redirect(url_for('vote_operation', vote_id=vote_id))
         except Exception, e:
+            print e
             abort(404)
     return redirect(url_for('vote_operation', vote_id=vote_id))
 
