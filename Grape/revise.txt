@@ -24,9 +24,11 @@ Birdy:
 2.	share files.
 	
 Hunter:
-1.	elaboration for discussion: add time, read_num, reply_num
+1.	elaboration for discussion: read_num
 2.	set up machines!
 3.	add news function.
+6.	Q: delete discussion should belong to which class?
+7.	need to refresh twice in order to get the result in group_id.html?
 
 For all:
 1.	convert all id to name.

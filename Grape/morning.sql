@@ -42,14 +42,16 @@ insert into user(username, password, email) values('123','123','123@123.com');
 insert into user(username, password, email) values('myn','myn','myn@123.com');
 insert into user(username, password, email,role) values('admin','admin','admin@123.com',1);
 
-
 Drop Table if exists discussion;
 Create Table discussion(
 discuss_id int not null primary key AUTO_INCREMENT,
 user_id int not null,
 group_id int not null,
+create_time timestamp not null default CURRENT_TIMESTAMP,
 title varchar(256) not null,
-content varchar(256) not null
+content varchar(1024) not null, -- more reasonable than using TEXT.
+read_num int not null default 0,
+reply_num int not null default 0
 );
 
 insert into discussion(user_id, group_id, title, content) values('1','1','discussion1','This is discussion 1');
@@ -61,7 +63,8 @@ Create Table reply_discuss(
 reply_id int not null primary key AUTO_INCREMENT,
 discuss_id int not null,
 user_id int not null,
-content varchar(256) not null,
+reply_time timestamp not null default CURRENT_TIMESTAMP,
+content varchar(512) not null,
 foreign key (discuss_id) references discussion(discuss_id) on delete cascade
 );
 

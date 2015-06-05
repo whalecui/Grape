@@ -193,6 +193,9 @@
                                     <a class="discuss-delete" victim="{{discussion.discuss_id}}">delete</a>
                                 {% endif %}
                                 <span>from user {{discussion.username}}</span>
+                                <span>create date: {{discussion.create_time}}</span>
+                                <span>reply_num: {{discussion.reply_num}}</span>
+                                <span>read_num: {{discussion.read_num}}</span>
                                 <div id="discussion-{{ discussion['discuss_id'] }}" class="collapse">
                                     <ul class="gp-detail">
                                         <li class="gp-detail-topic">

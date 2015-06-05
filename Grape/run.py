@@ -266,39 +266,26 @@ def show_discuss(discuss_id):
         group_id = discuss.group_id
         group = Group(group_id=group_id)
         if group.exist_group():
+            discuss.increase_read_num()
             group_name = group.name
             members = group.get_members()
             if(str(user_id) == str(group.leader_id)):
                 return render_template('discussion.html', group_id=group_id,\
                                        discuss=discuss_data,reply=reply,group_name=group_name,\
-                                       username=user_data['username'], role='2')
+                                       username=user_data['username'], role='2',\
+                                       user_id=user_id)
                                        #leader
             if({'member_id': user_id} in members):
                 return render_template('discussion.html', group_id=group_id,\
                                        discuss=discuss_data,reply=reply,group_name=group_name,\
-                                       username=user_data['username'], role='1')
+                                       username=user_data['username'], role='1',\
+                                       user_id=user_id)
                                        #member
             return render_template('discussion.html', group_id=group_id,\
                                    discuss=discuss_data,group_name=group_name,\
-                                   username=user_data['username'], role='0')
+                                   username=user_data['username'], role='0',\
+                                   user_id=user_id)
     abort(404)
-
-
-# @app.route('/discussion', methods=['GET', 'POST'])
-# def discussion_operation():
-#     ### Verify it's already login first!!
-#     user_id = session.get('user_id')
-#     user = User(user_id=user_id)
-#     attendedGroups, ownGroups = user.get_groups()
-#     attendedGroupsList = []
-#     for i in attendedGroups:
-#         attendedGroupsList += [Group(i).get_data()]
-#     discussionList = {}
-#     for group_id in attendedGroups:
-#         group = Group(group_id)
-#         discussionList[group_id] = group.get_discussions()
-#     return render_template('discussion.html', attendedGroups=attendedGroupsList, discussionList = discussionList)
-
 
 @app.route('/_create_discussion/<int:group_id>', methods=['POST'])
 def create_discussion(group_id):
@@ -318,28 +305,11 @@ def deleteDiscussion():
     discuss_id = str(request.args.get('discuss_id', 0, type=int))
     return jsonify(success=user.delete_discussion(discuss_id))
 
-    # make some protections here!
-    discuss = Discussion(discuss_id)
-    discuss.delete_discussion()
-    return redirect(url_for('groupDetail',group_id=group_id))
-
-# @app.route('/_reply_discussion/<discuss_id>', methods=['POST'])
-# def reply_discussion(discuss_id):
-#     # discuss_id = request.form.get('discuss_id')
-#     print "from reply_discussion:", discuss_id
-#     reply_content =request.form.get('content')
-#     user_id = session.get('user_id')
-#     discuss = Discussion(discuss_id)
-#     discuss.add_reply(user_id,reply_content)
-#     html = '/discussion/dis%s' % discuss_id
-#     return redirect(html)
-
 
 @app.route('/_reply_discussion/<discuss_id>')
 def reply_discussion(discuss_id):
     # discuss_id = request.form.get('discuss_id')
-    print "from reply_discussion:", discuss_id
-    reply_content = request.args.get('content', 0, type=str)
+    reply_content = request.args.get('content')
     if(reply_content == ''):
         return jsonify(status='fail')
     user_id = session.get('user_id')
@@ -347,12 +317,19 @@ def reply_discussion(discuss_id):
         # user = User(user_id=user_id)
         # username = user.username
         discuss = Discussion(discuss_id)
-        discuss.add_reply(user_id,reply_content)
+        discuss.add_reply(user_id,reply_content.encode('utf8'))
         # html = '/discussion/dis%s' % discuss_id
         return jsonify(status='success')
     except Exception, e:
         print 'reply error:', e
         return jsonify(status='fail')
+
+@app.route('/_delete_reply')
+def deleteReply():
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    reply_id = str(request.args.get('reply_id', 0, type=int))
+    return jsonify(success=user.delete_reply(reply_id))
 
 
 @app.errorhandler(404)

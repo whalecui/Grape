@@ -22,3 +22,23 @@ $(function(){
         }
     });
 });
+
+
+
+$(function(){
+    $('.reply-delete').click(function(){
+        var reply_id = Number($(this).attr('victim'));
+        var div = $(this).parent();
+        console.log(reply_id);
+        $.getJSON($SCRIPT_ROOT + '/_delete_reply',
+            {reply_id: reply_id},
+            function(data){
+                if(data.success == '0'){
+                    alert('failed');
+                }else{
+                    $(div).remove();
+                    alert('succeeded!');
+                }
+        });
+    });
+});

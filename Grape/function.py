@@ -242,6 +242,24 @@ class User:
         conn.close()
         return False
 
+    def delete_reply(self,reply_id):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        reply = Reply(reply_id)
+        if(reply.user_id == self.user_id):
+            sql = "delete from reply_discuss where reply_id = %s;" % reply_id
+            cursor.execute(sql)
+            sql = "update discussion set reply_num = reply_num - 1\
+                   where discussion.discuss_id = %d;" % reply.discuss_id
+            cursor.execute(sql)
+            conn.commit()
+            conn.close()
+            return True
+        conn.close()
+        return False
+
 class Admin(User):
     def __init__(self, user_id):
         User.__init__(self,user_id=user_id)
@@ -349,14 +367,14 @@ class Group:
 
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         sql = "select * from discussion where group_id = %s \
-               order by discuss_id desc;" % self.group_id
+               order by create_time desc;" % self.group_id
         cursor.execute(sql)
         discussions=cursor.fetchall()
+
         for discuss in discussions:
-            discuss_item = Discussion(discuss['discuss_id'])
             user = User(user_id=discuss["user_id"])
             discuss['username'] = user.username
-            discuss['reply'] = discuss_item.get_reply()
+
         conn.close()
         #print "discussions: ",discussions
         return discussions
@@ -492,6 +510,17 @@ class Discussion:
         conn.close()
         return item
 
+    def increase_read_num(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "update discussion set read_num = read_num + 1 \
+               where discussion.discuss_id = %d;" % self.discuss_id
+        cursor.execute(sql)
+        conn.commit()
+        conn.close()
+
     def add_reply(self,user_id,content):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
@@ -499,6 +528,9 @@ class Discussion:
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         sql = "insert into reply_discuss(discuss_id, user_id, content) values(%d,%d,'%s');"\
               % (self.discuss_id, user_id, content)
+        cursor.execute(sql)
+        sql = "update discussion set reply_num = reply_num + 1 \
+               where discussion.discuss_id = %d;" % self.discuss_id
         cursor.execute(sql)
         conn.commit()
         conn.close()
@@ -524,6 +556,40 @@ class Discussion:
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         sql = "select * from discussion where discuss_id="+str(self.discuss_id)+";"
+        cursor.execute(sql)
+        exist = cursor.fetchall()
+        conn.close()
+        if exist:
+            return 1    #exist
+        return 0        #non-ex
+
+
+class Reply:
+    def __init__(self,reply_id):
+        self.reply_id = int(reply_id)
+        if self.exist():
+            data = self.get_data()
+            self.user_id = data['user_id']
+            self.discuss_id = data['discuss_id']
+            self.content = data['content']
+
+    def get_data(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from reply_discuss where reply_id="+str(self.reply_id)+";"
+        cursor.execute(sql)
+        item = cursor.fetchone()
+        conn.close()
+        return item
+
+    def exist(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                     user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                     db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from reply_discuss where reply_id = %d;" % self.reply_id
         cursor.execute(sql)
         exist = cursor.fetchall()
         conn.close()
@@ -618,9 +684,6 @@ class Vote:
         conn.close()
         return vote_options_list,votes_distribution
 
-
-
-
     def exist(self):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                      user=db_config["db_user"],passwd=db_config["db_passwd"],\
@@ -633,5 +696,3 @@ class Vote:
         if exist:
             return 1    #exist
         return 0        #non-ex
-
-
