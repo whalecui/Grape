@@ -6,25 +6,32 @@
 
 		<p>我要去投票</p>
 		{% set options = 0 %}
-		<form action="{{current_path}}/vote-operation-result" method="get" id="vote-operate-form">
-			<input style="display:none" name="vote-id" value="{{vote_id}}"/>
-			<p>{{vote_content}}</p>
-			<br>
-			{% for vote_option in vote_options_list %}
-				{% set options = 1 + options %}
-				<label>{{options}}.
-					{% if is_voted == 0 %}
-						<input type="radio" name="vote-option" value="{{options}}"/>
-					{% endif %}
-					{{vote_option}}
-				</label>
-			{% endfor %}
-			{% if is_voted == 0 %}
-				<input type="submit"/>
-			{% else %}
-				<h2>You have voted for {{option_voted}}</h2>
-			{% endif %}
-		</form>
+		{% if is_voted == 0 %}
+            <form action="{{current_path}}/vote-operation-result" method="get" id="vote-operate-form">
+                <input style="display:none" name="vote-id" value="{{vote_id}}"/>
+                <p>{{vote_content}}</p>
+                <br>
+                {% for vote_option in vote_options_list %}
+                    {% set options = 1 + options %}
+                    <label>{{options}}.
+                        {% if is_voted == 0 %}
+                            <input type="radio" name="vote-option" value="{{options}}"/>
+                        {% endif %}
+                        {{vote_option}}
+                    </label>
+                {% endfor %}
+                    <input type="submit"/>
+            </form>
+        {% else %}
+            <p>{{vote_content}}</p>
+                <br>
+                {% for vote_option in vote_options_list %}
+                    {% set options = 1 + options %}
+                        {{options}}.{{vote_option}}
+                    </label>
+                {% endfor %}
+            <h2>You have voted for {{option_voted}}</h2>
+        {% endif %}
 		
 	</body>
 <!--  同去  -->
