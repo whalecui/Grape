@@ -59,7 +59,7 @@
                     <li><a class="list-group-item" href="#newVote" data-toggle="tab">
                         New Vote</a></li>
                     {% endif %}
-                    {% if role == '1' %}
+                    {% if role == '1' or role == '2' %}
                     <li><a class="list-group-item" href="#newDiscussion" data-toggle="tab">
                         New Discussion</a></li>
                     {% endif %}
@@ -126,9 +126,9 @@
                 <div class="tab-pane fade" id="votes">
                     <ul id="tab-sub-votes" class="nav nav-tabs">
                         <li class="active">
-                        <a href="#voting" data-toggle="tab">Attended Groups</a>
+                        <a href="#voting" data-toggle="tab">Voting</a>
                         </li>
-                        <li><a href="#end" data-toggle="tab">Owned Groups</a></li>
+                        <li><a href="#end" data-toggle="tab">Ended</a></li>
                     </ul>
                     <div id="tab-sub-content-votes" class="tab-content tab-content-votes">
                         <div class="tab-pane fade in active" id="voting">
@@ -210,20 +210,10 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    <div id="create_discuss_div">
-                        <p>Here we can insert new discussions.</p>
-                        <form action="{{ url_for('create_discussion',group_id=group_data.group_id) }}" method="POST">
-                            <label for="title">title:</label>
-                            <input type="text" name="title" id="title"><br>
-                            <label for="content">content:</label>
-                            <input type="text" name="content" id="context"><br>
-                            <button type="submit">submit</button>
-                        </form>
-                    </div>
                 </div>
             {% endif %}
 
-            {% if role == '1' %}
+            {% if role == '1' or role == '2' %}
                 <div class="tab-pane fade" id="newDiscussion">
                     <h3>New Discussion</h3><hr>
                     <form action="" method="post" enctype="multipart/form-data">

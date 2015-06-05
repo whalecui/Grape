@@ -2,6 +2,7 @@
 
 {% block head %}
     {{ super() }}
+    <link rel="stylesheet" href="../static/css/view_vote-id.css">
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         var username = "{{ username }}";
@@ -29,30 +30,43 @@
 
 {% block content %}
     <div class="vote-details">
-        {% set options = 0 %}
-		{% if is_voted == 0 %}
-            <form action="{{ url_for('vote_operation_result',vote_id=vote_id) }}" method="get" id="vote-operate-form">
-                <p>{{vote_content}}</p>
-                <br>
-                {% for vote_option in vote_options_list %}
-                    {% set options = 1 + options %}
-                    <label>{{options}}.
-                        {% if is_voted == 0 %}
-                            <input type="radio" name="vote-option" value="{{options}}"/>
-                        {% endif %}
-                        {{vote_option}}
-                    </label>
-                {% endfor %}
-                    <input type="submit"/>
-            </form>
-        {% else %}
-            <p>{{vote_content}}</p>
-                <br>
-                {% for vote_option in vote_options_list %}
-                    {% set options = 1 + options %}
-                        {{options}}.{{vote_option}}
-                {% endfor %}
-            <h2>You have voted for {{option_voted}}</h2>
-        {% endif %}
+        <div id="discuss_div" class="panel panel-default">
+            <div class="panel-heading">
+                <h4>{{vote.vote_content}}</h4>
+                created by {{ creator.username }}
+            </div>
+            <div class="panel-body">
+                {% set options = 0 %}
+                {% if vote.is_voted == 0 %}
+                    <form action="{{ url_for('vote_operation_result',vote_id=vote_id) }}" method="get" id="vote-operate-form">
+                        <br>
+                        {% for vote_option in vote_options_list %}
+                            {% set options = 1 + options %}
+                            <label>{{options}}.
+                                {% if is_voted == 0 %}
+                                    <input type="radio" name="vote-option" value="{{options}}"/>
+                                {% endif %}
+                                {{vote_option}}
+                            </label>
+                        {% endfor %}
+                            <input type="submit"/>
+                    </form>
+                {% else %}
+                        <br>
+                        {% for vote_option in vote_options_list %}
+                            {% set options = 1 + options %}
+                                {{options}}.{{vote_option}}<br>
+                        {% endfor %}
+                    <h2>You have voted for {{vote.option_voted}}</h2>
+                {% endif %}
+            </div>
+            <div class="panel-footer">
+                <ol class="breadcrumb">
+                    <li><a href="{{ url_for('index') }}">Grape</a></li>
+                    <li><a href="{{ url_for('groupDetail', group_id=vote.group_id) }}">{{ group.name }}</a></li>
+                    <li class="active">{{ vote.vote_content }}</li>
+                </ol>
+            </div>
+    	</div>
     </div>
 {% endblock %}

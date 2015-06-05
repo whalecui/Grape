@@ -308,7 +308,7 @@ def create_discussion(group_id):
     group = Group(group_id)
     group.create_discussion(user_id, title, content)
 
-    return redirect('/group/gp'+str(group_id))
+    return redirect(url_for('groupDetail',group_id=group_id))
 
 
 @app.route('/_delete_discussion')
@@ -321,7 +321,7 @@ def deleteDiscussion():
     # make some protections here!
     discuss = Discussion(discuss_id)
     discuss.delete_discussion()
-    return redirect('/group/gp'+str(group_id))
+    return redirect(url_for('groupDetail',group_id=group_id))
 
 # @app.route('/_reply_discussion/<discuss_id>', methods=['POST'])
 # def reply_discussion(discuss_id):
@@ -389,9 +389,8 @@ def admin():
     # admin1.delete_group(2)
 
 
-    return render_template('admin.html', username=user.username,groups=groups,users=users)
-
-
+    return render_template('admin.html', username=user.username,\
+                           groups=groups,users=users)
 
 
 @app.route('/group/gp<int:group_id>', methods=['GET', 'POST'])
@@ -476,10 +475,10 @@ def raise_a_vote_result(group_id):
             vote_options.append(quoteattr(request.args.get('vote-option-content-%s'% str(i))).encode('utf-8'))
         group = Group(group_id)
         group.create_vote(user_id,vote_content,time2end,timeinterval2end,endtime_selection,options,vote_options)
-    return redirect("/group/gp%d/vote" % group_id)
+    return redirect(url_for('groupDetail',group_id=group_id))
 
 
-@app.route('/vote/voting<vote_id>') #正在投票
+@app.route('/vote/voting<vote_id>') #查看正在进行的投票
 def vote_operation(vote_id): # use groupid to verify the vote
     user_id = session.get('user_id')
     vote = Vote(vote_id,user_id)
@@ -496,10 +495,11 @@ def vote_operation(vote_id): # use groupid to verify the vote
         # the option the user has voted for
         #0 means not yet
         return render_template('view_vote-id.html',vote_options_list=vote_options_list,\
-                               vote_content=vote_content,vote_id=vote_id,is_voted=is_voted,\
-                               username=username,\
-                               option_voted=option_voted,current_path=request.path)
+                               vote=vote,group = Group(group_id=group_id),\
+                               username=username,creator=User(user_id=vote.user_id),\
+                               current_path=request.path)
     except Exception, e:
+        print e
         abort(404)
 
 @app.route('/_vote_op/voting<vote_id>',methods=['GET','POST']) #进行投票
@@ -521,14 +521,16 @@ def vote_operation_result(vote_id):
     return redirect(url_for('vote_operation', vote_id=vote_id))
 
 
-@app.route('/vote/rs<int:vote_id>',methods=['GET','POST']) #vote result
+@app.route('/vote/rs<int:vote_id>',methods=['GET','POST']) #查看已完成的投票
 #@app.route('/group/gp<int:group_id>/vote/view-votes/rs<vote_id>',methods=['GET','POST'])
 def view_votes_result(vote_id):
     try:
         user_id = session.get('user_id')
-		user = User(user_id = user_id)
-		username = user.username
+        user = User(user_id = user_id)
         vote = Vote(vote_id,user_id)
+        group = Group(group_id=vote.group_id)
+        creator_id = vote.user_id
+        creator = User(user_id = creator_id)
         vote_options_list,votes_distribution = vote.votes_distribution()
         data = Data([
             Bar(
@@ -537,7 +539,9 @@ def view_votes_result(vote_id):
             )
         ])
         plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
-        return render_template('votes_static.html',plot_url=plot_url,username=username)
+        return render_template('votes_static.html',plot_url=plot_url,\
+                               user=user,creator=creator,\
+                               group=group,vote=vote)
     except Exception, e:
         abort(404)
 
