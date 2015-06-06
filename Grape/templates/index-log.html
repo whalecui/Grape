@@ -140,7 +140,7 @@
                                             Topic:{{ group['topic'] }}
                                         </li>
                                         <li class="gp-detail-leader">
-                                            Leader_id:{{ group['leader_id'] }}
+                                            Group_id:{{ group['group_id'] }}
                                         </li>
                                         <li class="gp-detail-leader">
                                             confirmMessage:{{ group['confirmMessage'] }}
@@ -187,15 +187,19 @@
                 <form action="" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="name">Group Name</label>
-                        <input class="form-control" name="name" placeholder="Enter Group Name">
+                        <input class="form-control" name="name" placeholder="this is the name of your group">
                     </div>
                     <div class="form-group">
                         <label for="topic">Topic</label>
-                        <input class="form-control" name="topic" placeholder="Enter Topic">
+                        <input class="form-control" name="topic" placeholder="which topic is your group about">
+                    </div>
+                    <div class="form-group">
+                        <label for="desc">Description</label>
+                        <input class="form-control" name="desc" placeholder="a description of your group">
                     </div>
                     <div class="form-group">
                         <label for="confirm">Confirm Message</label>
-                        <input class="form-control" name="confirmMessage" placeholder="Enter Confirm Message">
+                        <input class="form-control" name="confirmMessage" placeholder="a message that the people who want to join must know">
                     </div>
                     <button type="submit" class="btn btn-default">Create</button>
                 </form>

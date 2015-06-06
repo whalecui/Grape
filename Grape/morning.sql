@@ -7,6 +7,8 @@ Create Table groups(
 group_id int not null primary key AUTO_INCREMENT,
 name varchar(30) not null,
 topic varchar(20) not null,
+description varchar(90) not null default "this is my group!",
+create_time timestamp not null default CURRENT_TIMESTAMP,
 -- groupCapacity int not null,
 confirmMessage varchar(30) not null,
 leader_id int not null

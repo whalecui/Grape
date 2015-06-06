@@ -85,6 +85,14 @@
                             <td>Topic</td>
                             <td>{{ group_data['topic'] }}</td>
                         </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td>{{ group_data['description'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Create Time</td>
+                            <td>{{ group_data['create_time'] }}</td>
+                        </tr>
                     </tbody>
                 </table>
                 <form action="" method="post" enctype="multipart/form-data">
@@ -112,6 +120,22 @@
                         <tr>
                             <td>Topic</td>
                             <td>{{ group_data['topic'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td>{{ group_data['description'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Group Members</td>
+                            <td>
+                                {% for name in memberNames%}
+                                {{ name}} &nbsp
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Create Time</td>
+                            <td>{{ group_data['create_time'] }}</td>
                         </tr>
                     </tbody>
                 </table>

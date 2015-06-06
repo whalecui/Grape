@@ -32,6 +32,7 @@ class User:
         cursor.execute("select * from user where user_id='" + str(self.user_id) + "';")
         data = cursor.fetchall()
         conn.close()
+
         return data[0]
 
     def get_data_by_email(self):
@@ -54,7 +55,7 @@ class User:
         conn.close()
         return data[0]
 
-    def create_group(self, groupname, topic, confirmMessage):
+    def create_group(self, groupname, topic, desc,confirmMessage):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         #判断是否存在
@@ -63,8 +64,8 @@ class User:
         if(exist):
             print 'failed to create group :', groupname
             return False
-        cursor.execute("insert into groups(name,topic,confirmMessage,leader_id) values(%s,%s,%s,%s);",\
-            (groupname, topic, confirmMessage, self.user_id))
+        cursor.execute("insert into groups(name,topic,confirmMessage,description,leader_id) values(%s,%s,%s,%s,%s);",\
+            (groupname, topic, confirmMessage, desc,self.user_id))
         conn.commit()
 
         cursor.execute("select group_id from groups where name='"+groupname+"';")
@@ -298,16 +299,36 @@ class Admin(User):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)  
         cursor.execute("select * from user;")
-        users=cursor.fetchall()
-        # print groups
-        conn.close()
+        users_info=cursor.fetchall()
 
+        users=[]
+        for user in users_info:
+            attendedGroupsList=[]
+            ownGroupsList=[]
+            User1=User(user_id=user['user_id'])
+            attendedGroups, ownGroups = User1.get_groups()
+
+            for i in ownGroups:
+                ownGroupsList += [Group(i).get_data()]
+            for i in attendedGroups:
+                if i not in ownGroups:
+                    attendedGroupsList += [Group(i).get_data()]
+            users+=[  [user,attendedGroupsList,ownGroupsList]  ]
+        for user in users:
+            print user
+            print 
+            print 
+            print 
+        conn.close() 
         return users
     def delete_user(self,user_id):
         user_id=str(user_id)
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 
+        if user_id==self.user_id:
+            print "cannot delete yourself!"
+            return False
         cursor.execute("select user_id from user where user_id='"+user_id+"';")
         right=cursor.fetchall()
         if(right):
@@ -343,6 +364,9 @@ class Group:
             self.topic = data['topic']
             self.confirmMessage = data['confirmMessage']
             self.leader_id = data['leader_id']
+            #NEW ITEM
+            self.description=data['description']
+            self.create_time=data['create_time']
         #这里leader的标识也变成id了，注意！！！
 
     def exist_group(self):
@@ -497,7 +521,6 @@ class Group:
         sql = "select * from groups where group_id="+self.group_id+";"
         cursor.execute(sql)
         data = cursor.fetchall()
-
         # get discussion data, including reply.
         discuss_list = self.get_discussions()
         data[0]['discuss_list'] = discuss_list

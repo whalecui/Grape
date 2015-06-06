@@ -70,9 +70,13 @@ def index():
             name=request.form.get('name')
             topic=request.form.get('topic')
             confirmMessage=request.form.get('confirmMessage')
+            desc=request.form.get('desc')
             if name and topic and confirmMessage:
-                print name,topic,confirmMessage,1235543
-                success=User1.create_group(name, topic, confirmMessage)
+                print name,topic,confirmMessage,desc,1235543
+                if not desc:
+                    desc="this is my group"
+                success=User1.create_group(name, topic, desc,confirmMessage)
+
 
             #del group
             delname=request.form.get('delname')
@@ -390,6 +394,12 @@ def groupDetail(group_id):
         votes_list_voting = group.get_votes_voting()
         votes_list_end = group.get_votes_expired()
         members = group.get_members()
+
+        memberNames=[]
+        for member in members:
+            user=User(user_id=member['member_id'])
+            memberNames+=[user.username]
+        print memberNames,555
         #to be rewritten by ajax
         if request.method == 'POST':
             title = request.form.get('title')
@@ -403,13 +413,13 @@ def groupDetail(group_id):
             return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\
                                    votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
-                                   username=user_data['username'], role='2')
+                                   username=user_data['username'], memberNames=memberNames,role='2')
                                    #leader
         if {'member_id': user_id} in members :
             return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\
                                    votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
-                                   username=user_data['username'], role='1')
+                                   username=user_data['username'], memberNames=memberNames,role='1')
                                    #member
         #to be continued
         return render_template('group-id.html', group_id=group_id,\
