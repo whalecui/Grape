@@ -502,26 +502,26 @@ def vote_operation_result(vote_id):
 @app.route('/vote/rs<int:vote_id>',methods=['GET','POST']) #查看已完成的投票
 #@app.route('/group/gp<int:group_id>/vote/view-votes/rs<vote_id>',methods=['GET','POST'])
 def view_votes_result(vote_id):
-    try:
-        user_id = session.get('user_id')
-        user = User(user_id = user_id)
-        vote = Vote(vote_id,user_id)
-        group = Group(group_id=vote.group_id)
-        creator_id = vote.user_id
-        creator = User(user_id = creator_id)
-        vote_options_list,votes_distribution = vote.votes_distribution()
-        data = Data([
-            Bar(
-                x=vote_options_list,
-                y=votes_distribution
-            )
-        ])
-        plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
-        return render_template('votes_static.html',plot_url=plot_url,\
-                               user=user,creator=creator,\
-                               group=group,vote=vote)
-    except Exception, e:
-        abort(404)
+
+    user_id = session.get('user_id')
+    user = User(user_id = user_id)
+    vote = Vote(vote_id,user_id)
+    group = Group(group_id=vote.group_id)
+    creator_id = vote.user_id
+    creator = User(user_id = creator_id)
+    vote_options_list,votes_distribution = vote.votes_distribution()
+    print vote_options_list,votes_distribution
+    data = Data([
+        Bar(
+            x=vote_options_list,
+            y=votes_distribution
+        )
+    ])
+    plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
+    return render_template('votes_static.html',plot_url=plot_url,\
+                           user=user,creator=creator,\
+                           group=group,vote=vote)
+
 
 
 if __name__ == '__main__':
