@@ -705,7 +705,7 @@ class Vote:
     def get_recent_voted_record(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = "select * from vote_user_map where group_id = %s order by vote_time desc limit 5" % self.group_id
+        sql = "select * from vote_user_map where vote_id = %s order by vote_time desc limit 5" % self.vote_id
         cursor.execute(sql)
 
         vote_record = []
