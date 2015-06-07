@@ -100,8 +100,7 @@
                         {% for group in attend %}
                             <li class="list-group-item">
                                 <h4><a href="{{ url_for('groupDetail', group_id=group['group_id']) }}">{{ group['name'] }}</a></h4>
-                                <a class="show-detail" data-toggle="collapse"
-                                   data-target="#attend-group-{{ group['group_id'] }}">
+                                <a class="show-detail" data-target="#attend-group-{{ group['group_id'] }}">
                                     details</a>
                                 <div id="attend-group-{{ group['group_id'] }}" class="collapse">
                                     <ul class="gp-detail">
@@ -130,8 +129,7 @@
                         {% for group in own %}
                             <li class="list-group-item">
                                 <h4><a href="{{ url_for('groupDetail', group_id=group['group_id']) }}">{{ group['name'] }}</a></h4>
-                                <a class="show-detail" data-toggle="collapse"
-                                   data-target="#own-group-{{ group['group_id'] }}">
+                                <a class="show-detail" data-target="#own-group-{{ group['group_id'] }}">
                                     details</a>
                                 <a class="group-delete" victim="{{ group['group_id'] }}">delete</a>
                                 <div id="own-group-{{ group['group_id'] }}" class="collapse">

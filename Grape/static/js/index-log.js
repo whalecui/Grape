@@ -15,8 +15,9 @@ $(function(){
                 if(data.success == '0'){
                     alert('failed');
                 }else{
-                    $(div).remove();
-                    alert('succeeded!');
+                    //$(div).remove();
+                    //alert('succeeded!');
+                    location.reload();
                 }
         });
     });
@@ -33,8 +34,9 @@ $(function(){
                 if(data.success == '0'){
                     alert('failed!');
                 }else{
-                    $(div).remove();
-                    alert('succeeded!');
+                    //$(div).remove();
+                    //alert('succeeded!');
+                    location.reload();
                 }
         });
     });
@@ -51,8 +53,9 @@ $(function(){
                 if(data.success == '0'){
                     alert('failed!');
                 }else{
-                    $(div).remove();
-                    alert('succeeded!');
+                    //$(div).remove();
+                    //alert('succeeded!');
+                    location.reload();
                 }
         });
     });
@@ -110,5 +113,15 @@ $(function(){
                     }
             });
         }
+    });
+});
+
+//detail.js
+$(function(){
+    $('.show-detail').click(function(){
+        var target = $($(this).attr('data-target'));
+        $(target).animate(
+            {height:'toggle'}
+        );
     });
 });
