@@ -110,3 +110,4 @@ PRIMARY KEY (`map_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 alter table vote_user_map add column vote_time timestamp;
+

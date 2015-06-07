@@ -57,3 +57,58 @@ $(function(){
         });
     });
 });
+
+$(function(){
+    $('#create-group').submit(function(e){
+        var error = '<i class="fa fa-times"></i>';
+        var flag = true;
+        e.preventDefault();
+        var name = $('#group-name').val();
+        var topic = $('#group-topic').val();
+        var desc = $('#group-desc').val();
+        var confirm = $('#group-confirm').val();
+        if(name == ''){
+            flag = false;
+            var tmp = $('#group-name').parent().find('i')[0];
+            if(tmp){ $(tmp).remove(); }
+            $('#group-name').before(error);
+        }else{
+            var tmp = $('#group-name').parent().find('i')[0];
+            if(tmp){ $(tmp).remove(); }
+        }
+        if(topic == ''){
+            flag = false;
+            var tmp = $('#group-topic').parent().find('i')[0];
+            if(tmp){ $(tmp).remove(); }
+            $('#group-topic').before(error);
+        }else{
+            var tmp = $('#group-topic').parent().find('i')[0];
+            if(tmp){ $(tmp).remove(); }
+        }
+        if(confirm == ''){
+            flag = false;
+            var tmp = $('#group-confirm').parent().find('i')[0];
+            if(tmp){ $(tmp).remove(); }
+            $('#group-confirm').before(error);
+        }else{
+            var tmp = $('#group-confirm').parent().find('i')[0];
+            if(tmp){ $(tmp).remove(); }
+        }
+        if(flag){
+            $.getJSON($SCRIPT_ROOT + '/_new_group',
+                {name: name, topic: topic, desc: desc, confirm: confirm},
+                function(data){
+                    if(data.status == 'exist'){
+                        alert('This group name is already used!');
+                        var tmp = $('#group-name').parent().find('i')[0];
+                        if(tmp){ $(tmp).remove(); }
+                        $('#group-name').before(error);
+                    }else if(data.status == 'success'){
+                        location.reload();
+                    }else{
+                        alert('please input valid ' + data.status);
+                    }
+            });
+        }
+    });
+});
