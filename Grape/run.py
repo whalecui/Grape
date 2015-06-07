@@ -65,19 +65,6 @@ def index():
                 return redirect(url_for('groupDetail', group_id=group_id))
 
         if request.method == 'POST':
-            #create new group
-            
-            name=request.form.get('name')
-            topic=request.form.get('topic')
-            confirmMessage=request.form.get('confirmMessage')
-            desc=request.form.get('desc')
-            if name and topic and confirmMessage:
-                print name,topic,confirmMessage,desc,1235543
-                if not desc:
-                    desc="this is my group"
-                success=User1.create_group(name, topic, desc,confirmMessage)
-
-
             #del group
             delname=request.form.get('delname')
             if delname:
@@ -172,6 +159,28 @@ def check_email():
     email = request.args.get('email', 0, type=str)
     user = User(email=email)
     return jsonify(exist=user.check_e())
+
+#create new group
+@app.route('/_new_group')
+def new_group():
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    name=request.args.get('name', '', type=str)
+    topic=request.args.get('topic', '', type=str)
+    confirmMessage=request.args.get('confirm', '', type=str)
+    desc=request.args.get('desc', '', type=str)
+    if name and topic and confirmMessage:
+        print name,topic,confirmMessage,desc,1235543
+        if not desc:
+            desc="this is my group"
+        status=user.create_group(name, topic, desc, confirmMessage)
+    elif name == '':
+        status = 'name'
+    elif topic == '':
+        status = 'topic'
+    elif confirmMessage == '':
+        status = 'confirm message'
+    return jsonify(status=status)
 
 
 @app.route('/_join_group')

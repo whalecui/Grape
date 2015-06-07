@@ -184,22 +184,22 @@
 
             <div class="tab-pane fade" id="newGroup">
                 <h3>New Group</h3><hr>
-                <form action="" method="post" enctype="multipart/form-data">
+                <form id="create-group" action="" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="name">Group Name</label>
-                        <input class="form-control" name="name" placeholder="this is the name of your group">
+                        <input class="form-control" name="name" id="group-name" placeholder="this is the name of your group">
                     </div>
                     <div class="form-group">
                         <label for="topic">Topic</label>
-                        <input class="form-control" name="topic" placeholder="which topic is your group about">
+                        <input class="form-control" name="topic" id="group-topic" placeholder="which topic is your group about">
                     </div>
                     <div class="form-group">
                         <label for="desc">Description</label>
-                        <input class="form-control" name="desc" placeholder="a description of your group">
+                        <input class="form-control" name="desc" id="group-desc" placeholder="a description for your group">
                     </div>
                     <div class="form-group">
                         <label for="confirm">Confirm Message</label>
-                        <input class="form-control" name="confirmMessage" placeholder="a message that the people who want to join must know">
+                        <input class="form-control" name="confirmMessage" id="group-confirm" placeholder="a message that the people who want to join must know">
                     </div>
                     <button type="submit" class="btn btn-default">Create</button>
                 </form>
