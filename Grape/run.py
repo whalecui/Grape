@@ -66,15 +66,6 @@ def index():
                 return redirect(url_for('groupDetail', group_id=group_id))
 
         if request.method == 'POST':
-            #create new group
-            
-            name=request.form.get('name')
-            topic=request.form.get('topic')
-            confirmMessage=request.form.get('confirmMessage')
-            if name and topic and confirmMessage:
-                print name,topic,confirmMessage,1235543
-                success=User1.create_group(name, topic, confirmMessage)
-
             #del group
             delname=request.form.get('delname')
             if delname:
@@ -169,6 +160,28 @@ def check_email():
     email = request.args.get('email', 0, type=str)
     user = User(email=email)
     return jsonify(exist=user.check_e())
+
+#create new group
+@app.route('/_new_group')
+def new_group():
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    name=request.args.get('name', '', type=str)
+    topic=request.args.get('topic', '', type=str)
+    confirmMessage=request.args.get('confirm', '', type=str)
+    desc=request.args.get('desc', '', type=str)
+    if name and topic and confirmMessage:
+        print name,topic,confirmMessage,desc,1235543
+        if not desc:
+            desc="this is my group"
+        status=user.create_group(name, topic, desc, confirmMessage)
+    elif name == '':
+        status = 'name'
+    elif topic == '':
+        status = 'topic'
+    elif confirmMessage == '':
+        status = 'confirm message'
+    return jsonify(status=status)
 
 
 @app.route('/_join_group')
@@ -377,7 +390,6 @@ def groupDetail(group_id):
     if(is_login == '0'):                       #please login first!
         return make_response(redirect('/'))
     user_id = session.get('user_id')
-    print user_id,'id'
     user = User(user_id=user_id)
     if(user.check_id() == 0):                #user not exist?
         session.clear()
@@ -387,10 +399,16 @@ def groupDetail(group_id):
     group = Group(group_id)
     if(group.exist_group()):
         group_data = group.get_data()
+        group_data['leader_name'] = User(user_id=group.leader_id).username
         discussions = group.get_discussions()
         votes_list_voting = group.get_votes_voting()
         votes_list_end = group.get_votes_expired()
         members = group.get_members()
+        memberNames=[]
+        for member in members:
+            if str(member['member_id']) != str(group.leader_id):
+                user=User(user_id=member['member_id'])
+                memberNames+=[user.username]
         #to be rewritten by ajax
         if request.method == 'POST':
             title = request.form.get('title')
@@ -404,13 +422,13 @@ def groupDetail(group_id):
             return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\
                                    votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
-                                   username=user_data['username'], role='2')
+                                   username=user_data['username'], memberNames=memberNames, role='2')
                                    #leader
         if {'member_id': user_id} in members :
             return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\
                                    votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
-                                   username=user_data['username'], role='1')
+                                   username=user_data['username'], memberNames=memberNames,role='1')
                                    #member
         #to be continued
         return render_template('group-id.html', group_id=group_id,\
@@ -503,26 +521,26 @@ def vote_operation_result(vote_id):
 @app.route('/vote/rs<int:vote_id>',methods=['GET','POST']) #查看已完成的投票
 #@app.route('/group/gp<int:group_id>/vote/view-votes/rs<vote_id>',methods=['GET','POST'])
 def view_votes_result(vote_id):
-    try:
-        user_id = session.get('user_id')
-        user = User(user_id = user_id)
-        vote = Vote(vote_id,user_id)
-        group = Group(group_id=vote.group_id)
-        creator_id = vote.user_id
-        creator = User(user_id = creator_id)
-        vote_options_list,votes_distribution = vote.votes_distribution()
-        data = Data([
-            Bar(
-                x=vote_options_list,
-                y=votes_distribution
-            )
-        ])
-        plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
-        return render_template('votes_static.html',plot_url=plot_url,\
-                               user=user,creator=creator,\
-                               group=group,vote=vote)
-    except Exception, e:
-        abort(404)
+
+    user_id = session.get('user_id')
+    user = User(user_id = user_id)
+    vote = Vote(vote_id,user_id)
+    group = Group(group_id=vote.group_id)
+    creator_id = vote.user_id
+    creator = User(user_id = creator_id)
+    vote_options_list,votes_distribution = vote.votes_distribution()
+    print vote_options_list,votes_distribution
+    data = Data([
+        Bar(
+            x=vote_options_list,
+            y=votes_distribution
+        )
+    ])
+    plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
+    return render_template('votes_static.html',plot_url=plot_url,\
+                           user=user,creator=creator,\
+                           group=group,vote=vote)
+
 
 
 if __name__ == '__main__':

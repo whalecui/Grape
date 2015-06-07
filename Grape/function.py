@@ -1,6 +1,7 @@
 #-*-coding:utf-8-*-
 import MySQLdb
 from config import *
+from datetime import datetime
 
 
 class User:
@@ -31,6 +32,7 @@ class User:
         cursor.execute("select * from user where user_id='" + str(self.user_id) + "';")
         data = cursor.fetchall()
         conn.close()
+
         return data[0]
 
     def get_data_by_email(self):
@@ -63,7 +65,7 @@ class User:
         conn.close()
         return data;
 
-    def create_group(self, groupname, topic, confirmMessage):
+    def create_group(self, groupname, topic, desc,confirmMessage):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         #判断是否存在
@@ -71,19 +73,19 @@ class User:
         exist=cursor.fetchall()
         if(exist):
             print 'failed to create group :', groupname
-            return False
-        cursor.execute("insert into groups(name,topic,confirmMessage,leader_id) values(%s,%s,%s,%s);",\
-            (groupname, topic, confirmMessage, self.user_id))
+            return 'exist'
+        cursor.execute("insert into groups(name,topic,confirmMessage,description,leader_id) values(%s,%s,%s,%s,%s);",\
+            (groupname, topic, confirmMessage, desc, self.user_id))
         conn.commit()
 
         cursor.execute("select group_id from groups where name='"+groupname+"';")
         group_id=cursor.fetchone()['group_id']
-
         cursor.execute("insert into groupMemberAssosiation(group_id,member_id) values(%s,%s);",(group_id,self.user_id))
         conn.commit()
         conn.close()
+
         print 'created group successfully:', groupname
-        return True
+        return 'success'
 
     def delete_group(self,group_id):
         group_id=str(group_id)
@@ -187,7 +189,7 @@ class User:
     def check_u(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select * from user where username='" + str(self.username) + "';")
+        cursor.execute("select * from user where username='" + unicode(self.username) + "';")
         exist = cursor.fetchall()
         if exist:
             return 1
@@ -307,16 +309,36 @@ class Admin(User):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)  
         cursor.execute("select * from user;")
-        users=cursor.fetchall()
-        # print groups
-        conn.close()
+        users_info=cursor.fetchall()
 
+        users=[]
+        for user in users_info:
+            attendedGroupsList=[]
+            ownGroupsList=[]
+            User1=User(user_id=user['user_id'])
+            attendedGroups, ownGroups = User1.get_groups()
+
+            for i in ownGroups:
+                ownGroupsList += [Group(i).get_data()]
+            for i in attendedGroups:
+                if i not in ownGroups:
+                    attendedGroupsList += [Group(i).get_data()]
+            users+=[  [user,attendedGroupsList,ownGroupsList]  ]
+        for user in users:
+            print user
+            print 
+            print 
+            print 
+        conn.close() 
         return users
     def delete_user(self,user_id):
         user_id=str(user_id)
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 
+        if user_id==self.user_id:
+            print "cannot delete yourself!"
+            return False
         cursor.execute("select user_id from user where user_id='"+user_id+"';")
         right=cursor.fetchall()
         if(right):
@@ -352,6 +374,9 @@ class Group:
             self.topic = data['topic']
             self.confirmMessage = data['confirmMessage']
             self.leader_id = data['leader_id']
+            #NEW ITEM
+            self.description=data['description']
+            self.create_time=data['create_time']
         #这里leader的标识也变成id了，注意！！！
 
     def exist_group(self):
@@ -440,30 +465,61 @@ class Group:
         votes_list_voting = []
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = "select * from votes where group_id = %s and voting = 1" % self.group_id
+        sql = "select * from votes where group_id = %s and voting = 1 order by endtime" % self.group_id
         cursor.execute(sql)
         votes_data = cursor.fetchall()
         for vote in votes_data:
-            vote_pair = (vote['vote_id'],vote['vote_content'])
+            sql = "select count(user_id) from vote_user_map where vote_id = %s" % vote['vote_id']
+            cursor.execute(sql)
+            voted_num = cursor.fetchone()['count(user_id)']
+            vote_pair = (vote['vote_id'],vote['vote_content'],voted_num)
             votes_list_voting.append(vote_pair)
 
         conn.close()
         return votes_list_voting
+        # the last is the voted num of person
 
 
     def get_votes_expired(self):
         votes_list_end = []
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = "select * from votes where group_id = %s and voting = 0" % self.group_id
+        sql = "select * from votes where group_id = %s and voting = 0 order by endtime desc" % self.group_id
         cursor.execute(sql);
         votes_data = cursor.fetchall()
         for vote in votes_data:
-            vote_pair = (vote['vote_id'],vote['vote_content'])
+            sql = "select count(user_id) from vote_user_map where vote_id = %s" % vote['vote_id']
+            cursor.execute(sql)
+            voted_num = cursor.fetchone()['count(user_id)']
+            vote_pair = (vote['vote_id'],vote['vote_content'],voted_num)
             votes_list_end.append(vote_pair)
 
         conn.close()
         return votes_list_end
+
+    def get_recent_voted_record(self):
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from vote_user_map where group_id = %s order by vote_time desc limit 5" % self.group_id
+        cursor.execute(sql)
+
+        vote_record = []
+        people_record = cursor.fetchall()
+        sql = "select NOW()"
+        cursor.execute(sql)
+        timenow = cursor.fetchone()['NOW()']
+
+        for vote_op in people_record:
+            vote_time = vote_op['vote_time']
+            dlta = str(timenow - vote_time)
+            user = User(user_id = vote_op['user_id'])
+            vote = Vote(vote_op['vote_id'],vote_op['user_id'])
+            ######## 好像不是很合理 拿投票的人生成Vote对象###
+            vote_op_pair = (user.username,vote.vote_content,dlta)
+            ######用户名 投了哪个 多久之前
+            vote_record.append(vote_op_pair)
+
+        return vote_record
 
     def get_data(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
@@ -471,7 +527,6 @@ class Group:
         sql = "select * from groups where group_id="+self.group_id+";"
         cursor.execute(sql)
         data = cursor.fetchall()
-
         # get discussion data, including reply.
         discuss_list = self.get_discussions()
         data[0]['discuss_list'] = discuss_list
@@ -615,7 +670,11 @@ class Vote:
             self.is_voted = data['is_voted']
             # 0 not voted
             self.option_voted = data['option_voted']
-            # 0 not voted 
+            # 0 not voted
+            self.begintime = data['begintime']
+            self.endtime = data['endtime']
+            self.timedelta = str(self.endtime - self.begintime)
+            self.voted_num = data['voted_num']
 
     def get_data(self,user_id):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
@@ -645,6 +704,11 @@ class Vote:
             item['is_voted'] = 1
             item['option_voted'] = map[0]['votefor']
 
+        sql = "select count(user_id) from vote_user_map where vote_id = %s" % item['vote_id']
+        cursor.execute(sql)
+        item['voted_num'] = cursor.fetchone()['count(user_id)']
+        ####################################################3
+
         user = User(user_id = item["user_id"]) # the leader
         item["username"] = user.username
         conn.close()
@@ -667,6 +731,29 @@ class Vote:
         conn.commit()
         conn.close()
 
+    def get_recent_voted_record(self):
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from vote_user_map where vote_id = %s order by vote_time desc limit 5" % self.vote_id
+        cursor.execute(sql)
+
+        vote_record = []
+        people_record = cursor.fetchall()
+        sql = "select NOW()"
+        cursor.execute(sql)
+        timenow = cursor.fetchone()['NOW()']
+
+        for vote_op in people_record:
+            vote_time = vote_op['vote_time']
+            dlta = str(timenow - vote_time)
+            user = User(user_id = vote_op['user_id'])
+            ######## 好像不是很合理 拿投票的人生成Vote对象###
+            vote_op_pair = (user.username,self.vote_content,dlta)
+            ######用户名 投了哪个 多久之前
+            vote_record.append(vote_op_pair)
+
+        return vote_record
+
     def votes_distribution(self):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
@@ -677,16 +764,14 @@ class Vote:
         votes_static = cursor.fetchall()
         vote_options_list = []
         votes_distribution = []
-
-
         option = 0;
         for vote_item in votes_static:
             vote_options_list.append('%s.' % (chr(65+option)) + '%s' % vote_item['vote_option'])
             votes_distribution.append(vote_item['votes'])
             option+=1
-
         conn.close()
         return vote_options_list,votes_distribution
+
 
     def exist(self):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\

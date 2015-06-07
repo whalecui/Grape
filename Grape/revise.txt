@@ -27,7 +27,7 @@ Hunter:
 2.	set up machines!
 
 6.	Q: delete discussion should belong to which class?
-7.	need to refresh twice in order to get the result in group_id.html?
+7.	need to refresh twice in order to get the newest result in group interface?
 8.	bug: chinese char. not available in discuss & reply.
 9.	how to record that user in the "message" tab?
 
