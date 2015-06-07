@@ -24,11 +24,12 @@ Birdy:
 2.	share files.
 	
 Hunter:
-1.	elaboration for discussion: read_num
 2.	set up machines!
-3.	add news function.
+
 6.	Q: delete discussion should belong to which class?
 7.	need to refresh twice in order to get the result in group_id.html?
+8.	bug: chinese char. not available in discuss & reply.
+9.	how to record that user in the "message" tab?
 
 For all:
 1.	convert all id to name.

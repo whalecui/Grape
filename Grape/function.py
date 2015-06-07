@@ -48,10 +48,20 @@ class User:
             return {}
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        cursor.execute("select * from user where username='" + self.username + "';")
+        sql = 'select * from user where user_id = %d;' % self.user_id
+        cursor.execute(sql)
         data = cursor.fetchall()
         conn.close()
         return data[0]
+
+    def get_messages(self):
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = 'select * from message where receiver = %d;' % self.user_id
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        conn.close()
+        return data;
 
     def create_group(self, groupname, topic, confirmMessage):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
@@ -236,7 +246,6 @@ class User:
             print "Arrive here",discuss.user_id
             sql = "delete from discussion where discuss_id = %s;" % discuss_id
             cursor.execute(sql)
-            conn.commit()
             conn.close()
             return True
         conn.close()
@@ -259,6 +268,7 @@ class User:
             return True
         conn.close()
         return False
+
 
 class Admin(User):
     def __init__(self, user_id):
@@ -455,12 +465,6 @@ class Group:
         conn.close()
         return votes_list_end
 
-
-
-
-
-
-    ## renew to be done!
     def get_data(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
@@ -696,3 +700,4 @@ class Vote:
         if exist:
             return 1    #exist
         return 0        #non-ex
+

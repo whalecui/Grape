@@ -51,6 +51,7 @@ def index():
         for i in attendedGroups:
             if i not in ownGroups:
                 attendedGroupsList += [Group(i).get_data()]
+        messages = User1.get_messages()
 
         if request.method == 'GET':
             #Find group by group_id
@@ -87,7 +88,7 @@ def index():
         username = u'请先登录'
 
     return render_template(html, user_id=user_id, username=username, islogin=islogin,\
-                            message1=message1, \
+                            message1=message1, messages=messages,\
                             attend=attendedGroupsList, own=ownGroupsList, \
                             members=members, leader=leader)
 

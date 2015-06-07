@@ -73,6 +73,7 @@ insert into reply_discuss(discuss_id, user_id, content) values(2, 2, 'This is re
 insert into reply_discuss(discuss_id, user_id, content) values(3, 2, 'This is reply1 for discussion3');
 insert into reply_discuss(discuss_id, user_id, content) values(1, 1, 'This is reply2 for discussion1');
 
+Drop table if exists votes;
 CREATE TABLE `votes` (
   `vote_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL,
@@ -83,6 +84,7 @@ CREATE TABLE `votes` (
   PRIMARY KEY (`vote_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+Drop table if exists vote_detail;
 CREATE TABLE `vote_detail` (
 `option_id` bigint(20) NOT NULL AUTO_INCREMENT,
 `vote_id` bigint(20) DEFAULT NULL,
@@ -92,6 +94,7 @@ CREATE TABLE `vote_detail` (
 PRIMARY KEY (`option_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
+Drop table if exists vote_user_map;
 CREATE TABLE `vote_user_map` (
 `map_id` bigint(20) NOT NULL AUTO_INCREMENT,
 `vote_id` bigint(20) DEFAULT NULL,
@@ -100,3 +103,16 @@ CREATE TABLE `vote_user_map` (
 PRIMARY KEY (`map_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
+Drop table if exists message;
+Create table message (
+message_id int primary key AUTO_INCREMENT,
+type int not null default 0,	  -- 0 = first-time, 1 = delete from group,
+								  -- 2 = delete discuss, 3 = delete reply
+generator int not null default 0, -- note that always the system generate the message, 
+receiver int not null,			  -- but the actual executor of the action is different.
+time timestamp not null default CURRENT_TIMESTAMP,
+content varchar(256) not null,
+viewed tinyint(1) default 0
+);
+
+insert into message(type, generator,receiver, content) values(0,0,2,"test");
