@@ -389,7 +389,6 @@ def groupDetail(group_id):
     if(is_login == '0'):                       #please login first!
         return make_response(redirect('/'))
     user_id = session.get('user_id')
-    print user_id,'id'
     user = User(user_id=user_id)
     if(user.check_id() == 0):                #user not exist?
         session.clear()
@@ -399,16 +398,16 @@ def groupDetail(group_id):
     group = Group(group_id)
     if(group.exist_group()):
         group_data = group.get_data()
+        group_data['leader_name'] = User(user_id=group.leader_id).username
         discussions = group.get_discussions()
         votes_list_voting = group.get_votes_voting()
         votes_list_end = group.get_votes_expired()
         members = group.get_members()
-
         memberNames=[]
         for member in members:
-            user=User(user_id=member['member_id'])
-            memberNames+=[user.username]
-        print memberNames,555
+            if str(member['member_id']) != str(group.leader_id):
+                user=User(user_id=member['member_id'])
+                memberNames+=[user.username]
         #to be rewritten by ajax
         if request.method == 'POST':
             title = request.form.get('title')
@@ -422,7 +421,7 @@ def groupDetail(group_id):
             return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\
                                    votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
-                                   username=user_data['username'], memberNames=memberNames,role='2')
+                                   username=user_data['username'], memberNames=memberNames, role='2')
                                    #leader
         if {'member_id': user_id} in members :
             return render_template('group-id.html', group_id=group_id,\
