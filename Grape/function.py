@@ -760,9 +760,11 @@ class Vote:
         votes_distribution = []
         option = 0;
         for vote_item in votes_static:
-            vote_options_list.append('%s.' % (chr(65+option)) + '%s' % vote_item['vote_option'])
-            votes_distribution.append(vote_item['votes'])
+            #vote_options_list.append(str("%s." % (chr(65+option)) + "%s" % vote_item['vote_option']))
+            vote_options_list.append(str(chr(65+option)))
+            votes_distribution.append(int(vote_item['votes']))
             option+=1
+        print vote_options_list
         conn.close()
         return vote_options_list,votes_distribution
 
