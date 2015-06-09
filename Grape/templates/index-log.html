@@ -4,6 +4,7 @@
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index-log.css">
     <script src="../static/js/index-log.js"></script>
+    <script src="../static/js/anchor.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         var username = "{{ username }}";
@@ -33,21 +34,21 @@
     <div class="group-details">
         <div class="tab-group">
             <ul class="list-group">
-                <li><a class="list-group-item" href="#news" data-toggle="tab">
+                <li><a class="list-group-item tab-main" href="#news" data-toggle="tab">
                     News</a></li>
-                <li><a class="list-group-item" href="#message" data-toggle="tab">
+                <li><a class="list-group-item tab-main" href="#message" data-toggle="tab">
                     Message</a></li>
                 <hr>
-                <li><a class="list-group-item" href="#myGroup" data-toggle="tab">
+                <li><a class="list-group-item tab-main" href="#myGroup" data-toggle="tab">
                     My Group</a></li>
                 <hr>
-                <li><a class="list-group-item" href="#newGroup" data-toggle="tab">
+                <li><a class="list-group-item tab-main" href="#newGroup" data-toggle="tab">
                     New Group</a></li>
                 {#<li><a class="list-group-item" href="#delGroup" data-toggle="tab">
                     Del Group</a></li>
                 <li><a class="list-group-item" href="#quitGroup" data-toggle="tab">
                     Quit Group</a></li>  #}
-                <li><a class="list-group-item" href="#find" data-toggle="tab">
+                <li><a class="list-group-item tab-main" href="#find" data-toggle="tab">
                     Find Group</a></li>
             </ul>
         </div>

@@ -4,13 +4,13 @@
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index-log.css">
     <link rel="stylesheet" href="../static/css/group-id.css">
+    <script src="../static/js/anchor.js"></script>
     <script src="../static/js/group-id.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
     <link type="text/css" href="/static/css/jquery-ui-1.8.17.custom.css" rel="stylesheet" />
     <link type="text/css" href="/static/css/jquery-ui-timepicker-addon.css" rel="stylesheet" />
-    <script type="text/javascript" src="/static/js/jquery-1.7.1.min.js"></script>
 	<script type="text/javascript" src="/static/js/jquery-ui-1.8.17.custom.min.js"></script>
 	<script type="text/javascript" src="/static/js/jquery-ui-timepicker-addon.js"></script>
 
@@ -40,30 +40,30 @@
         <div class="tab-group">
             <ul class="list-group">
                 {% if role == '0' %}
-                    <li><a class="list-group-item" href="#groupInfo" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#groupInfo" data-toggle="tab">
                         Group Information</a></li>
                 {% endif %}
                 {% if role == '1' or role == '2' %}
-                    <li><a class="list-group-item" href="#news" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#news" data-toggle="tab">
                         News</a></li>
-                    <li><a class="list-group-item" href="#groupInfo" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#groupInfo" data-toggle="tab">
                         Group Information</a></li>
                     <hr>
-                    <li><a class="list-group-item" href="#votes" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#votes" data-toggle="tab">
                         Votes</a></li>
-                    <li><a class="list-group-item" href="#discussions" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#discussions" data-toggle="tab">
                         Discussions</a></li>
                     <hr>
                     {% if role == '2' %}
-                    <li><a class="list-group-item" href="#newVote" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#newVote" data-toggle="tab">
                         New Vote</a></li>
                     {% endif %}
                     {% if role == '1' or role == '2' %}
-                    <li><a class="list-group-item" href="#newDiscussion" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#newDiscussion" data-toggle="tab">
                         New Discussion</a></li>
                     {% endif %}
                     <hr>
-                    <li><a class="list-group-item" href="{{ url_for('index') }}" data-toggle="tab">
+                    <li><a class="list-group-item" href="{{ url_for('index') }}">
                         Back to index</a></li>
                 {% endif %}
             </ul>

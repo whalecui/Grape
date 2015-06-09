@@ -116,6 +116,8 @@ $(function(){
     });
 });
 
+
+
 //detail.js
 $(function(){
     $('.show-detail').click(function(){
