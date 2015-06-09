@@ -4,7 +4,7 @@
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index-log.css">
     <link rel="stylesheet" href="../static/css/group-id.css">
-    <script src="../static/js/anchor.js"></script>
+    <script src="../static/js/common.js"></script>
     <script src="../static/js/group-id.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
@@ -151,16 +151,26 @@
                     <tbody>
                         <tr>
                             <td>Leader Name</td>
-                            <td>{{ group_data['leader_name'] }}</td>
+                            <td>
+                                <span class="label label-success">{{ group_data['leader_name'] }}</span>
+                            </td>
                         </tr>
                         <tr>
-                            <td>Group Members({{ memberNames|length() }})</td>
+                            <td>Group Members  <span class="badge">{{ memberNames|length() }}</span></td>
                             <td>
-                                {% for name in memberNames%}
-                                    {{ name}} &nbsp
+                                <a class="show-detail" data-target="#members">
+                                    details</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div id="members">
+                                {% for name in memberNames %}
+                                    <span class="label label-primary">{{ name }}</span>
                                 {% else %}
                                     There's nobody in your group!
                                 {% endfor %}
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -239,7 +249,14 @@
                                        data-target="#discussion-{{ discussion['discuss_id'] }}">
                                         details</a>
                                 {% if role == '2' %}
-                                    <a class="discuss-delete" victim="{{discussion.discuss_id}}">delete</a>
+                                    <a class="popover-options" id="delete-discussion-{{ discussion['discuss_id'] }}"
+                                        title="Are you sure to delete this group?"
+                                        data-container="body" data-toggle="popover"
+                                        data-content='<a class="discuss-delete btn btn-primary" victim="{{discussion.discuss_id}}">yes</a>
+                                        <a class="btn btn-primary popover-close" origin="#delete-discussion-{{ discussion['discuss_id'] }}">no</a>'>
+                                        delete
+                                    </a>
+
                                 {% endif %}
                                 <span>from user {{discussion.username}}</span>
                                 <span>create date: {{discussion.create_time}}</span>

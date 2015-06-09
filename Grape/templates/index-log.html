@@ -4,7 +4,7 @@
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index-log.css">
     <script src="../static/js/index-log.js"></script>
-    <script src="../static/js/anchor.js"></script>
+    <script src="../static/js/common.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         var username = "{{ username }}";
@@ -132,7 +132,13 @@
                                 <h4><a href="{{ url_for('groupDetail', group_id=group['group_id']) }}">{{ group['name'] }}</a></h4>
                                 <a class="show-detail" data-target="#own-group-{{ group['group_id'] }}">
                                     details</a>
-                                <a class="group-delete" victim="{{ group['group_id'] }}">delete</a>
+                                <a class="popover-options" id="delete-group-{{ group['group_id'] }}"
+                                        title="Are you sure to delete this group?"
+                                        data-container="body" data-toggle="popover"
+                                        data-content='<a class="group-delete btn btn-primary" victim="{{ group['group_id'] }}">yes</a>
+                                        <a class="btn btn-primary popover-close" origin="#delete-group-{{ group['group_id'] }}">no</a>'>
+                                        delete
+                                </a>
                                 <div id="own-group-{{ group['group_id'] }}" class="collapse">
                                     <ul class="gp-detail">
                                         <li class="gp-detail-topic">

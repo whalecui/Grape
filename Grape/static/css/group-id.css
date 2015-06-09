@@ -22,3 +22,15 @@ input.vote-option-content-edit
 {
     display: block;
 }
+
+.label
+{
+    font-size: 100%;
+    margin: 1% 2%;
+    display: inline-block;
+}
+
+.btn-primary
+{
+    margin: 0 4%;
+}

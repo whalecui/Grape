@@ -234,7 +234,9 @@ class User:
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         discuss = Discussion(discuss_id)
-        if(discuss.user_id == self.user_id):
+        group_id = discuss.group_id
+        group = Group(group_id=group_id)
+        if(str(discuss.user_id) == str(self.user_id) or str(group.leader_id) == str(self.user_id)):
             print "Arrive here",discuss.user_id
             sql = "delete from discussion where discuss_id = %s;" % discuss_id
             cursor.execute(sql)
