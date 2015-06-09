@@ -538,7 +538,7 @@ def view_votes_result(vote_id):
     plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
     return render_template('votes_static.html',plot_url=plot_url,\
                            user=user,creator=creator,\
-                           group=group,vote=vote)
+                           group=group,vote=vote,vote_options_list=vote_options_list,votes_distribution = votes_distribution)
 
 
 
