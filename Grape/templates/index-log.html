@@ -91,9 +91,9 @@
             <div class="tab-pane fade" id="myGroup">
                 <ul id="tab-sub-group" class="nav nav-tabs">
                     <li class="active">
-                    <a href="#attend" data-toggle="tab">Attended Groups</a>
+                    <a href="#attend" data-toggle="tab">In Groups</a>
                     </li>
-                    <li><a href="#own" data-toggle="tab">Owned Groups</a></li>
+                    <li><a href="#own" data-toggle="tab">Own Groups</a></li>
                 </ul>
                 <div id="tab-sub-content-group" class="tab-content tab-content-group">
                     <div class="tab-pane fade in active" id="attend">
@@ -103,6 +103,13 @@
                                 <h4><a href="{{ url_for('groupDetail', group_id=group['group_id']) }}">{{ group['name'] }}</a></h4>
                                 <a class="show-detail" data-target="#attend-group-{{ group['group_id'] }}">
                                     details</a>
+                                <a class="popover-options" id="quit-group-{{ group['group_id'] }}"
+                                        title="Are you sure to quit this group?"
+                                        data-container="body" data-toggle="popover"
+                                        data-content='<a class="group-quit btn btn-primary" victim="{{ group['group_id'] }}">yes</a>
+                                        <a class="btn btn-primary popover-close" origin="#quit-group-{{ group['group_id'] }}">no</a>'>
+                                        quit
+                                </a>
                                 <div id="attend-group-{{ group['group_id'] }}" class="collapse">
                                     <ul class="gp-detail">
                                         <li class="gp-detail-topic">
@@ -119,8 +126,8 @@
                             </li>
                         {% else %}
                             <li class="list-group-item">
-                                <h4>Oops! You haven't got attended in any groups!</h4>
-                                <h5>Click "Find Groups" to find one!</h5>
+                                <h4>Oops! You haven't joined any groups!</h4>
+                                <h5>Click "Find Group" to find one!</h5>
                             </li>
                         {% endfor %}
                         </ul>

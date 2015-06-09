@@ -4,6 +4,7 @@
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index-log.css">
     <script src="../static/js/index-log.js"></script>
+    <script src="../static/js/common.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         var username = "{{ username }}";
@@ -32,18 +33,12 @@
 	<div class="group-details">
         <div class="tab-group">
             <ul class="list-group">
+                <hr>
                 <li><a class="list-group-item" href="#users" data-toggle="tab">
                     Users</a></li>
                 <li><a class="list-group-item" href="#groups" data-toggle="tab">
                     Groups</a></li>
                 <hr>
-                <li><a class="list-group-item" href="#newGroup" data-toggle="tab">
-                    New Group</a></li>
-                {#<li><a class="list-group-item" href="#delGroup" data-toggle="tab">
-                    Del Group</a></li>
-                <li><a class="list-group-item" href="#quitGroup" data-toggle="tab">
-                    Quit Group</a></li>  #}
-
             </ul>
         </div>
 
@@ -58,7 +53,14 @@
                                 <a class="show-detail" data-toggle="collapse"
                                    data-target="#user-{{ user[0]['user_id'] }}">
                                     details</a>
-                                <a class="user-delete" victim="{{ user[0]['user_id'] }}">delete</a>                                  
+                                <a class="popover-options" id="delete-user-{{ user[0]['user_id'] }}"
+                                        title="Are you sure to delete this user?"
+                                        data-container="body" data-toggle="popover"
+                                        data-content='<a class="user-delete btn btn-primary" victim="{{ user[0]['user_id'] }}">yes</a>
+                                        <a class="btn btn-primary popover-close" origin="#delete-user-{{ user[0]['user_id'] }}">no</a>'>
+                                        delete
+                                </a>
+                <!--                 <a class="user-delete" victim="{{ user[0]['user_id'] }}">delete</a>  -->                                 
                                 <div id="user-{{ user[0]['user_id'] }}" class="collapse">
                                     <ul class="gp-detail">
                                         <li>
@@ -104,7 +106,14 @@
                                 <a class="show-detail" data-toggle="collapse"
                                    data-target="#group-{{ group['group_id'] }}">
                                     details</a>
-                                <a class="group-delete-admin" victim="{{ group['group_id'] }}">delete</a>
+<!--                                 <a class="group-delete-admin" victim="{{ group['group_id'] }}">delete</a> -->
+                                <a class="popover-options" id="delete-group-{{ group['group_id'] }}"
+                                        title="Are you sure to delete this group?"
+                                        data-container="body" data-toggle="popover"
+                                        data-content='<a class="group-delete-admin btn btn-primary" victim="{{ group['group_id'] }}">yes</a>
+                                        <a class="btn btn-primary popover-close" origin="#delete-group-{{ group['group_id'] }}">no</a>'>
+                                        delete
+                                </a>
                                 <div id="group-{{ group['group_id'] }}" class="collapse">
                                     <ul class="gp-detail">
                                         <li class="gp-detail-topic">
@@ -139,24 +148,6 @@
             </div>
 
 
-            <div class="tab-pane fade" id="newGroup">
-                <h3>New Group</h3><hr>
-                <form action="" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="name">Group Name</label>
-                        <input class="form-control" name="name" placeholder="Enter Group Name">
-                    </div>
-                    <div class="form-group">
-                        <label for="topic">Topic</label>
-                        <input class="form-control" name="topic" placeholder="Enter Topic">
-                    </div>
-                    <div class="form-group">
-                        <label for="confirm">Confirm Message</label>
-                        <input class="form-control" name="confirmMessage" placeholder="Enter Confirm Message">
-                    </div>
-                    <button type="submit" class="btn btn-default">Create</button>
-                </form>
-            </div>
 
         </div>
     </div>

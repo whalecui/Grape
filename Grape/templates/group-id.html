@@ -185,9 +185,9 @@
                 <div class="tab-pane fade" id="votes">
                     <ul id="tab-sub-votes" class="nav nav-tabs">
                         <li class="active">
-                        <a href="#voting" data-toggle="tab">Voting</a>
+                        <a href="#voting" data-toggle="tab">Current Votes</a>
                         </li>
-                        <li><a href="#end" data-toggle="tab">Ended</a></li>
+                        <li><a href="#end" data-toggle="tab">Past Votes</a></li>
                     </ul>
                     <div id="tab-sub-content-votes" class="tab-content tab-content-votes">
                         <div class="tab-pane fade in active" id="voting">
@@ -198,7 +198,7 @@
                                 </li>
                             {% else %}
                                 <li class="list-group-item">
-                                    <h4>Oops! There aren't any voting votes!</h4>
+                                    <h4>Oops! Currently there isn't any vote!</h4>
                                     <h5>Click "New vote" to create one!</h5>
                                 </li>
                             {% endfor %}
@@ -212,7 +212,7 @@
                                 </li>
                             {% else %}
                                 <li class="list-group-item">
-                                    <h4>Oops! There aren't any ended votes!</h4>
+                                    <h4>Oops! There isn't any past vote!</h4>
                                     <h5>Click "New vote" to create one!</h5>
                                 </li>
                             {% endfor %}

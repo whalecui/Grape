@@ -63,19 +63,19 @@ class User:
         exist=cursor.fetchall()
         if(exist):
             print 'failed to create group :', groupname
-            return 'exist'
+            return False
         cursor.execute("insert into groups(name,topic,confirmMessage,description,leader_id) values(%s,%s,%s,%s,%s);",\
-            (groupname, topic, confirmMessage, desc, self.user_id))
+            (groupname, topic, confirmMessage, desc,self.user_id))
         conn.commit()
 
         cursor.execute("select group_id from groups where name='"+groupname+"';")
         group_id=cursor.fetchone()['group_id']
+
         cursor.execute("insert into groupMemberAssosiation(group_id,member_id) values(%s,%s);",(group_id,self.user_id))
         conn.commit()
         conn.close()
-
         print 'created group successfully:', groupname
-        return 'success'
+        return True
 
     def delete_group(self,group_id):
         group_id=str(group_id)
@@ -175,6 +175,26 @@ class User:
             Group1=Group(group_id)
             return Group1
         return None
+    def kick_member(self,group_id,user_id):
+        group_id=str(group_id)
+        user_id=str(user_id)
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor.execute("select name from groups where group_id='%s' and leader_id='%s';"),(group_id,self.user_id)
+        exist=cursor.fetchall()
+        if(exist):
+            cursor.execute("select * from groupMemberAssosiation where group_id='%s' and member_id='%s';"),(group_id,user_id)
+            exist=cursor.fetchall()
+            if(exist):
+                cursor.execute("delete from groupMemberAssosiation where group_id='%s' and member_id='%s';"),(group_id,user_id)
+                conn.commit()
+                return True
+            print "Cannot find user_id in the group"
+            return False
+
+        print "Not leader"
+        return False
+
 
     def check_u(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
@@ -234,9 +254,7 @@ class User:
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         discuss = Discussion(discuss_id)
-        group_id = discuss.group_id
-        group = Group(group_id=group_id)
-        if(str(discuss.user_id) == str(self.user_id) or str(group.leader_id) == str(self.user_id)):
+        if(discuss.user_id == self.user_id):
             print "Arrive here",discuss.user_id
             sql = "delete from discussion where discuss_id = %s;" % discuss_id
             cursor.execute(sql)
@@ -316,11 +334,11 @@ class Admin(User):
                 if i not in ownGroups:
                     attendedGroupsList += [Group(i).get_data()]
             users+=[  [user,attendedGroupsList,ownGroupsList]  ]
-        for user in users:
-            print user
-            print 
-            print 
-            print 
+        # for user in users:
+        #     print user
+        #     print 
+        #     print 
+        #     print 
         conn.close() 
         return users
     def delete_user(self,user_id):
@@ -328,7 +346,7 @@ class Admin(User):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 
-        if user_id==self.user_id:
+        if int(user_id)==int(self.user_id):
             print "cannot delete yourself!"
             return False
         cursor.execute("select user_id from user where user_id='"+user_id+"';")
@@ -342,7 +360,7 @@ class Admin(User):
             cursor.execute("select group_id from groups where leader_id='"+user_id+"';")
 
             leadergroups=cursor.fetchall()
-            print 'leadergroups',leadergroups
+            # print 'leadergroups',leadergroups
             if(leadergroups):
                 for i in leadergroups:
                     cursor.execute("delete from groupMemberAssosiation where group_id='"+str(i['group_id'])+"';")
@@ -524,9 +542,11 @@ class Group:
         cursor.execute(sql)
         data = cursor.fetchall()
         # get discussion data, including reply.
-        discuss_list = self.get_discussions()
-        data[0]['discuss_list'] = discuss_list
-
+        try:
+            discuss_list = self.get_discussions()
+            data[0]['discuss_list'] = discuss_list
+        except Exception,e:
+            print 'get discuss:',e
         conn.close()
         # append some other lists
         leader = User(user_id=int(data[0]['leader_id']))
@@ -762,11 +782,9 @@ class Vote:
         votes_distribution = []
         option = 0;
         for vote_item in votes_static:
-            #vote_options_list.append(str("%s." % (chr(65+option)) + "%s" % vote_item['vote_option']))
-            vote_options_list.append(str(chr(65+option)))
-            votes_distribution.append(int(vote_item['votes']))
+            vote_options_list.append('%s.' % (chr(65+option)) + '%s' % vote_item['vote_option'])
+            votes_distribution.append(vote_item['votes'])
             option+=1
-        print vote_options_list
         conn.close()
         return vote_options_list,votes_distribution
 

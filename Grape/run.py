@@ -216,7 +216,6 @@ def deleteGroup():
 def delete_user():
     user_id = session.get('user_id')
     user_id_to_be_deleted = str(request.args.get('user_id', 0, type=int))
-    print 'del user',user_id_to_be_deleted
     admin = Admin(user_id=user_id)
     return jsonify(success=admin.delete_user(user_id_to_be_deleted))
 
@@ -224,7 +223,6 @@ def delete_user():
 @app.route('/_delete_group_admin')
 def delete_group_admin():
     user_id = session.get('user_id')
-    print 233
     group_id = str(request.args.get('group_id', 0, type=int))
     admin = Admin(user_id=user_id)
     return jsonify(success=admin.delete_group(group_id))
