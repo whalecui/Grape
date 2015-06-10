@@ -4,6 +4,7 @@
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index-log.css">
     <script src="../static/js/index-log.js"></script>
+    <script src="../static/js/common.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         var username = "{{ username }}";
@@ -32,22 +33,22 @@
 {% block content %}
     <div class="group-details">
         <div class="tab-group">
-            <ul class="list-group" id="tab-list">
-                <li><a class="list-group-item" href="#news" data-toggle="tab">
+            <ul class="list-group">
+                <li><a class="list-group-item tab-main" href="#news" data-toggle="tab">
                     News</a></li>
-                <li><a class="list-group-item" href="#message" data-toggle="tab">
+                <li><a class="list-group-item tab-main" href="#message" data-toggle="tab">
                     Message</a></li>
                 <hr>
-                <li><a class="list-group-item" href="#myGroup" data-toggle="tab">
+                <li><a class="list-group-item tab-main" href="#myGroup" data-toggle="tab">
                     My Group</a></li>
                 <hr>
-                <li><a class="list-group-item" href="#newGroup" data-toggle="tab">
+                <li><a class="list-group-item tab-main" href="#newGroup" data-toggle="tab">
                     New Group</a></li>
                 {#<li><a class="list-group-item" href="#delGroup" data-toggle="tab">
                     Del Group</a></li>
                 <li><a class="list-group-item" href="#quitGroup" data-toggle="tab">
                     Quit Group</a></li>  #}
-                <li><a class="list-group-item" href="#find" data-toggle="tab">
+                <li><a class="list-group-item tab-main" href="#find" data-toggle="tab">
                     Find Group</a></li>
             </ul>
         </div>
@@ -90,8 +91,10 @@
 
             <div class="tab-pane fade" id="myGroup">
                 <ul id="tab-sub-group" class="nav nav-tabs">
-                    <li  class="active"><a href="#own" data-toggle="tab">Owned Groups</a></li>
-                    <li><a href="#attend" data-toggle="tab">Attended Groups</a></li>
+                    <li class="active">
+                    <a href="#attend" data-toggle="tab">In Groups</a>
+                    </li>
+                    <li><a href="#own" data-toggle="tab">Own Groups</a></li>
                 </ul>
                 <div id="tab-sub-content-group" class="tab-content tab-content-group">
                     <div class="tab-pane fade" id="attend">
@@ -99,9 +102,15 @@
                         {% for group in attend %}
                             <li class="list-group-item">
                                 <h4><a href="{{ url_for('groupDetail', group_id=group['group_id']) }}">{{ group['name'] }}</a></h4>
-                                <a class="show-detail" data-toggle="collapse"
-                                   data-target="#attend-group-{{ group['group_id'] }}">
+                                <a class="show-detail" data-target="#attend-group-{{ group['group_id'] }}">
                                     details</a>
+                                <a class="popover-options" id="quit-group-{{ group['group_id'] }}"
+                                        title="Are you sure to quit this group?"
+                                        data-container="body" data-toggle="popover"
+                                        data-content='<a class="group-quit btn btn-primary" victim="{{ group['group_id'] }}">yes</a>
+                                        <a class="btn btn-primary popover-close" origin="#quit-group-{{ group['group_id'] }}">no</a>'>
+                                        quit
+                                </a>
                                 <div id="attend-group-{{ group['group_id'] }}" class="collapse">
                                     <ul class="gp-detail">
                                         <li class="gp-detail-topic">
@@ -118,8 +127,8 @@
                             </li>
                         {% else %}
                             <li class="list-group-item">
-                                <h4>Oops! You haven't got attended in any groups!</h4>
-                                <h5>Click "Find Groups" to find one!</h5>
+                                <h4>Oops! You haven't joined any groups!</h4>
+                                <h5>Click "Find Group" to find one!</h5>
                             </li>
                         {% endfor %}
                         </ul>
@@ -129,10 +138,15 @@
                         {% for group in own %}
                             <li class="list-group-item">
                                 <h4><a href="{{ url_for('groupDetail', group_id=group['group_id']) }}">{{ group['name'] }}</a></h4>
-                                <a class="show-detail" data-toggle="collapse"
-                                   data-target="#own-group-{{ group['group_id'] }}">
+                                <a class="show-detail" data-target="#own-group-{{ group['group_id'] }}">
                                     details</a>
-                                <a class="group-delete" victim="{{ group['group_id'] }}">delete</a>
+                                <a class="popover-options" id="delete-group-{{ group['group_id'] }}"
+                                        title="Are you sure to delete this group?"
+                                        data-container="body" data-toggle="popover"
+                                        data-content='<a class="group-delete btn btn-primary" victim="{{ group['group_id'] }}">yes</a>
+                                        <a class="btn btn-primary popover-close" origin="#delete-group-{{ group['group_id'] }}">no</a>'>
+                                        delete
+                                </a>
                                 <div id="own-group-{{ group['group_id'] }}" class="collapse">
                                     <ul class="gp-detail">
                                         <li class="gp-detail-topic">

@@ -218,7 +218,6 @@ def deleteGroup():
 def delete_user():
     user_id = session.get('user_id')
     user_id_to_be_deleted = str(request.args.get('user_id', 0, type=int))
-    print 'del user',user_id_to_be_deleted
     admin = Admin(user_id=user_id)
     return jsonify(success=admin.delete_user(user_id_to_be_deleted))
 
@@ -226,7 +225,6 @@ def delete_user():
 @app.route('/_delete_group_admin')
 def delete_group_admin():
     user_id = session.get('user_id')
-    print 233
     group_id = str(request.args.get('group_id', 0, type=int))
     admin = Admin(user_id=user_id)
     return jsonify(success=admin.delete_group(group_id))
@@ -415,7 +413,6 @@ def groupDetail(group_id):
             title = request.form.get('title')
             content = request.form.get('content')
             if title and content:
-                # print name,topic,confirmMessage,1235543
                 group.create_discussion(user=user_id, title=title, content=content)
             return redirect(url_for('groupDetail', group_id=group_id))
 
@@ -423,21 +420,20 @@ def groupDetail(group_id):
             return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\
                                    votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
-                                   username=user_data['username'], memberNames=memberNames, role='2')
+                                   username=user_data['username'], memberNames=memberNames,\
+                                   user_id=user_id, role='2')
                                    #leader
         if {'member_id': user_id} in members :
             return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\
                                    votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
-                                   username=user_data['username'], memberNames=memberNames,role='1')
+                                   username=user_data['username'], memberNames=memberNames,\
+                                   user_id=user_id, role='1')
                                    #member
         #to be continued
         return render_template('group-id.html', group_id=group_id,\
                                group_data=group_data,\
-                               username=user_data['username'], role='0')
-                                   #other
-    #return render_template('group-id.html', group_id=group_id,\
-    #                       username=user_data['username'], role='-1')
+                               username=user_data['username'], role='0', user_id=user_id)
     abort(404)
                            #non-exist
 
@@ -540,7 +536,7 @@ def view_votes_result(vote_id):
     plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
     return render_template('votes_static.html',plot_url=plot_url,\
                            user=user,creator=creator,\
-                           group=group,vote=vote)
+                           group=group,vote=vote,vote_options_list=vote_options_list,votes_distribution = votes_distribution)
 
 
 

@@ -4,13 +4,13 @@
     {{ super() }}
     <link rel="stylesheet" href="../static/css/index-log.css">
     <link rel="stylesheet" href="../static/css/group-id.css">
+    <script src="../static/js/common.js"></script>
     <script src="../static/js/group-id.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
     <link type="text/css" href="/static/css/jquery-ui-1.8.17.custom.css" rel="stylesheet" />
     <link type="text/css" href="/static/css/jquery-ui-timepicker-addon.css" rel="stylesheet" />
-    <script type="text/javascript" src="/static/js/jquery-1.7.1.min.js"></script>
 	<script type="text/javascript" src="/static/js/jquery-ui-1.8.17.custom.min.js"></script>
 	<script type="text/javascript" src="/static/js/jquery-ui-timepicker-addon.js"></script>
 
@@ -40,26 +40,26 @@
         <div class="tab-group">
             <ul class="list-group">
                 {% if role == '0' %}
-                    <li><a class="list-group-item" href="#groupInfo" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#groupInfo" data-toggle="tab">
                         Group Information</a></li>
                 {% endif %}
                 {% if role == '1' or role == '2' %}
-                    <li><a class="list-group-item" href="#news" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#news" data-toggle="tab">
                         News</a></li>
-                    <li><a class="list-group-item" href="#groupInfo" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#groupInfo" data-toggle="tab">
                         Group Information</a></li>
                     <hr>
-                    <li><a class="list-group-item" href="#votes" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#votes" data-toggle="tab">
                         Votes</a></li>
-                    <li><a class="list-group-item" href="#discussions" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#discussions" data-toggle="tab">
                         Discussions</a></li>
                     <hr>
                     {% if role == '2' %}
-                    <li><a class="list-group-item" href="#newVote" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#newVote" data-toggle="tab">
                         New Vote</a></li>
                     {% endif %}
                     {% if role == '1' or role == '2' %}
-                    <li><a class="list-group-item" href="#newDiscussion" data-toggle="tab">
+                    <li><a class="list-group-item tab-main" href="#newDiscussion" data-toggle="tab">
                         New Discussion</a></li>
                     {% endif %}
                     <hr>
@@ -151,16 +151,26 @@
                     <tbody>
                         <tr>
                             <td>Leader Name</td>
-                            <td>{{ group_data['leader_name'] }}</td>
+                            <td>
+                                <span class="label label-success">{{ group_data['leader_name'] }}</span>
+                            </td>
                         </tr>
                         <tr>
-                            <td>Group Members({{ memberNames|length() }})</td>
+                            <td>Group Members  <span class="badge">{{ memberNames|length() }}</span></td>
                             <td>
-                                {% for name in memberNames%}
-                                    {{ name}} &nbsp
+                                <a class="show-detail" data-target="#members">
+                                    details</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div id="members">
+                                {% for name in memberNames %}
+                                    <span class="label label-primary">{{ name }}</span>
                                 {% else %}
                                     There's nobody in your group!
                                 {% endfor %}
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -175,9 +185,9 @@
                 <div class="tab-pane fade" id="votes">
                     <ul id="tab-sub-votes" class="nav nav-tabs">
                         <li class="active">
-                        <a href="#voting" data-toggle="tab">Voting</a>
+                        <a href="#voting" data-toggle="tab">Current Votes</a>
                         </li>
-                        <li><a href="#end" data-toggle="tab">Ended</a></li>
+                        <li><a href="#end" data-toggle="tab">Past Votes</a></li>
                     </ul>
                     <div id="tab-sub-content-votes" class="tab-content tab-content-votes">
                         <div class="tab-pane fade in active" id="voting">
@@ -188,7 +198,7 @@
                                 </li>
                             {% else %}
                                 <li class="list-group-item">
-                                    <h4>Oops! There aren't any voting votes!</h4>
+                                    <h4>Oops! Currently there isn't any vote!</h4>
                                     <h5>Click "New vote" to create one!</h5>
                                 </li>
                             {% endfor %}
@@ -202,7 +212,7 @@
                                 </li>
                             {% else %}
                                 <li class="list-group-item">
-                                    <h4>Oops! There aren't any ended votes!</h4>
+                                    <h4>Oops! There isn't any past vote!</h4>
                                     <h5>Click "New vote" to create one!</h5>
                                 </li>
                             {% endfor %}
@@ -238,8 +248,15 @@
                                 <a class="show-detail" data-toggle="collapse"
                                        data-target="#discussion-{{ discussion['discuss_id'] }}">
                                         details</a>
-                                {% if role == '2' %}
-                                    <a class="discuss-delete" victim="{{discussion.discuss_id}}">delete</a>
+                                {% if role == '2' || discussion.discuss_id == user_id %}
+                                    <a class="popover-options" id="delete-discussion-{{ discussion['discuss_id'] }}"
+                                        title="Are you sure to delete this group?"
+                                        data-container="body" data-toggle="popover"
+                                        data-content='<a class="discuss-delete btn btn-primary" victim="{{discussion.discuss_id}}">yes</a>
+                                        <a class="btn btn-primary popover-close" origin="#delete-discussion-{{ discussion['discuss_id'] }}">no</a>'>
+                                        delete
+                                    </a>
+
                                 {% endif %}
                                 <span>from user {{discussion.username}}</span>
                                 <span>create date: {{discussion.create_time}}</span>

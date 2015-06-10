@@ -3,9 +3,53 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="../static/css/vote_static.css">
+    <SCRIPT src='../static/js/ChartNew.js'></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         var username = "{{ user.username }}";
+
+        var plotdata = {
+            labels : {{vote_options_list | safe}},
+            datasets : [
+            {
+                fillColor : "rgba(255,153,0,0.5)",
+                strokeColor : "rgba(255,153,0,1)",
+                pointColor : "rgba(255,153,0,1)",
+                pointstrokeColor : "orange",
+                data : {{votes_distribution}},
+    //          data : [40],
+
+          title : "2014"
+            }
+        ]
+        }
+
+        var startWithDataset =1;
+        var startWithData =1;
+
+        var opt = {
+              //scaleOverride: true,
+              yAxisMinimumInterval : 1,
+              xAxisMinimumInterval : 1,
+              scaleIntegersOnly: true,
+              animationStartWithDataset : startWithDataset,
+              animationStartWithData : startWithData,
+              animationSteps : 200,
+            //canvasBorders : true,
+              canvasBordersWidth : 3,
+              canvasBordersColor : "black",
+              graphTitle : "{{vote.vote_content}}",
+              legend : true,
+              inGraphDataShow : true,
+              annotateDisplay : true,
+              graphTitleFontSize: 18
+
+        }
+
+        window.onload = function(){
+            var horizonralbar = new Chart(document.getElementById("canvas_HorizontalBar").getContext("2d")).HorizontalBar(plotdata,opt);
+        }
+
     </script>
 {% endblock %}
 
@@ -36,7 +80,7 @@
                 created by {{ creator.username }}
             </div>
             <div class="panel-body">
-                <iframe class="result-graph" frameborder="0" seamless="seamless" scrolling="no" src="{{plot_url}}"></iframe>
+                <canvas id="canvas_HorizontalBar" height="300px" width="600px"></canvas>
             </div>
             <div class="panel-footer">
                 <ol class="breadcrumb">

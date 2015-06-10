@@ -31,6 +31,7 @@ Hunter:
 8.	bug: chinese char. not available in discuss & reply.
 9.	how to record that user in the "message" tab?
 10.	auto jump to the certain group after a group created.
+11.	delete discussion/reply can be done by both the promoter/leader.
 
 For all:
 1.	convert all id to name.
