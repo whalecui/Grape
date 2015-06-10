@@ -32,7 +32,7 @@
 {% block content %}
     <div class="group-details">
         <div class="tab-group">
-            <ul class="list-group">
+            <ul class="list-group" id="tab-list">
                 <li><a class="list-group-item" href="#news" data-toggle="tab">
                     News</a></li>
                 <li><a class="list-group-item" href="#message" data-toggle="tab">
@@ -90,13 +90,11 @@
 
             <div class="tab-pane fade" id="myGroup">
                 <ul id="tab-sub-group" class="nav nav-tabs">
-                    <li class="active">
-                    <a href="#attend" data-toggle="tab">Attended Groups</a>
-                    </li>
-                    <li><a href="#own" data-toggle="tab">Owned Groups</a></li>
+                    <li  class="active"><a href="#own" data-toggle="tab">Owned Groups</a></li>
+                    <li><a href="#attend" data-toggle="tab">Attended Groups</a></li>
                 </ul>
                 <div id="tab-sub-content-group" class="tab-content tab-content-group">
-                    <div class="tab-pane fade in active" id="attend">
+                    <div class="tab-pane fade" id="attend">
                         <ul class="attendedGroup list-group">
                         {% for group in attend %}
                             <li class="list-group-item">
@@ -126,7 +124,7 @@
                         {% endfor %}
                         </ul>
                     </div>
-                    <div class="tab-pane fade" id="own">
+                    <div class="tab-pane fade in active" id="own">
                         <ul class="ownedGroup list-group">
                         {% for group in own %}
                             <li class="list-group-item">

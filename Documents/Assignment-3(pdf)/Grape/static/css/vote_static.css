@@ -1,0 +1,24 @@
+.vote-results
+{
+    height: 100%;
+    width: 80%;
+    margin: 3% auto;
+}
+
+.panel-body
+{
+    width: 80%;
+    margin: auto;
+}
+
+.result-graph
+{
+    height: 500px;
+    width: 100%;
+    margin: auto;
+}
+
+.breadcrumb
+{
+    margin:0;
+}

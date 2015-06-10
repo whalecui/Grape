@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+		<script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+		<link rel="stylesheet" href="../static/css/group-func.css">
+
+	</head>
+	
+	<body>
+		<div class='main'>
+			<nav class="navbar navbar-default">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">
+					LOGO and Project Name</a>
+				</div>
+				<div class="collapse navbar-collapse" 
+					id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav navbar-right">
+						<ul class="nav navbar-nav">
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" 
+									data-toggle="dropdown">
+								{{username}}
+								<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="{{url_for('index')}}">Homepage</a></li>
+									<li><a href="#">Contact with Admin</a></li>
+									<li class="divider"></li>
+									<li><a href="#">Settings</a></li>
+									<li class="divider"></li>
+									<li><a href="{{ url_for('logout') }}">Log Out</a></li>
+								</ul>
+							</li>
+						</ul>
+					</ul>
+				</div>
+			</nav>
+			
+			<div class="content">
+				<div class="group-li">
+					<h4>My Group</h4>
+					<ul class="nav nav-pills nav-stacked">
+						{% for group in ownGroups %}
+						{% if loop.index ==1 %}
+					   <li class="active"><a href="#{{group.name}}">{{group.name}}</a></li>
+					   {% else %}
+					   <li ><a href="#{{group.name}}">{{group.name}}</a></li>
+					   {% endif %}
+						{% endfor %}
+					</ul>
+					<h4>Attended Group</h4>
+					<ul class="nav nav-pills nav-stacked">
+						{% for group in attendedGroups %}
+					   	<li><a href="#{{group.groupname}}">{{group.name}}</a></li>
+					   {% endfor %}
+					</ul>
+				</div>
+				
+				{% for group in ownGroups %}
+				<div class="group-details" id="{{group.name}}">
+					<ul id="myTab" class="nav nav-tabs">
+						<li class="active"><a href="#Info" data-toggle="tab">
+							Group Information</a>
+						</li>
+						<li><a href="#Discussion" data-toggle="tab">Discussion</a></li>
+						<li><a href="#Vote" data-toggle="tab">Vote</a></li>
+						<li><a href="#Share" data-toggle="tab">Share</a></li>
+						<li><a href="#Bulletin" data-toggle="tab">Bulletin</a></li>
+					</ul>
+					<div id="myTabContent" class="tab-content">
+						<div class="tab-pane fade in active" id="Info">
+							<div class="dis">
+								topic:{{group.topic}}
+        						confirmMessage:{{group.confirmMessage}}
+        						leadername:{{group.leadername}}
+        						{{group.discuss_list}}
+							</div>
+						</div>
+						<div class="tab-pane fade" id="Discussion">
+							<div class="test">
+								contents of discussion is here.
+								<br>{{group.topic}}
+								{% for discuss in group.discuss_list %}
+								<!-- <p>discussion: {{discuss}} </p> -->
+								{% endfor %}
+								<p>Here we can insert new questions.</p>
+								<form action="{{ url_for('create_discussion') }}" method="POST">
+									<input type="hidden" name="group_name" value="{{group.group_name}}"><br>
+									<label for="title">title:</label>
+									<input type="text" name="title"><br>
+									<label for="content">content:</label>
+									<input type="text" name="content"><br>
+									<button type="submit">submit</button>
+								</form>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="Vote">
+							<p>
+								contents of vote
+							</p>
+						</div>
+						<div class="tab-pane fade" id="Share">
+							<p>
+								contents of share
+							</p>
+						</div>
+						<div class="tab-pane fade" id="Bulletin">
+							<p>
+								contents of bulletin
+							</p>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+				
+			</div>
+			
+			
+		</div>
+		
+		
+		
+	</body>
+</html>

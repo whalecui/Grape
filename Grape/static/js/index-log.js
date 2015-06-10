@@ -1,3 +1,4 @@
+
 $(function(){
     $('[href="#myGroup"]').click(function(){
         $('#all').addClass('in', 'active');

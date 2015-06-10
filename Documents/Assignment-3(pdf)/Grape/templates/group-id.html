@@ -1,0 +1,309 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="../static/css/index-log.css">
+    <link rel="stylesheet" href="../static/css/group-id.css">
+    <script src="../static/js/group-id.js"></script>
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    <link type="text/css" href="/static/css/jquery-ui-1.8.17.custom.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/jquery-ui-timepicker-addon.css" rel="stylesheet" />
+    <script type="text/javascript" src="/static/js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-ui-1.8.17.custom.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-ui-timepicker-addon.js"></script>
+
+{% endblock %}
+
+{% block navbar %}
+    <ul class="nav navbar-nav">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle"
+                data-toggle="dropdown">
+                {{ username }}
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#">Contact with Admin</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Settings</a></li>
+                <li class="divider"></li>
+                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <div class="group-details">
+        <div class="tab-group">
+            <ul class="list-group">
+                {% if role == '0' %}
+                    <li><a class="list-group-item" href="#groupInfo" data-toggle="tab">
+                        Group Information</a></li>
+                {% endif %}
+                {% if role == '1' or role == '2' %}
+                    <li><a class="list-group-item" href="#news" data-toggle="tab">
+                        News</a></li>
+                    <li><a class="list-group-item" href="#groupInfo" data-toggle="tab">
+                        Group Information</a></li>
+                    <hr>
+                    <li><a class="list-group-item" href="#votes" data-toggle="tab">
+                        Votes</a></li>
+                    <li><a class="list-group-item" href="#discussions" data-toggle="tab">
+                        Discussions</a></li>
+                    <hr>
+                    {% if role == '2' %}
+                    <li><a class="list-group-item" href="#newVote" data-toggle="tab">
+                        New Vote</a></li>
+                    {% endif %}
+                    {% if role == '1' or role == '2' %}
+                    <li><a class="list-group-item" href="#newDiscussion" data-toggle="tab">
+                        New Discussion</a></li>
+                    {% endif %}
+                    <hr>
+                    <li><a class="list-group-item" href="{{ url_for('index') }}" data-toggle="tab">
+                        Back to index</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div id="tab-content-main" class="tab-content tab-content-main">
+
+            {% if role == '0' %}
+            <div class="tab-pane fade in active" id="groupInfo">
+                <h3>Group Information</h3><hr>
+                <table class="table table-hover">
+                    <tbody>
+                        <tr>
+                            <td>Group Name</td>
+                            <td>{{ group_data['name'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Group ID</td>
+                            <td>{{ group_data['group_id'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Topic</td>
+                            <td>{{ group_data['topic'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td>{{ group_data['description'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Create Time</td>
+                            <td>{{ group_data['create_time'] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="confirm">I know the confirm message for this group</label>
+                        <input id="confirm" class="form-control" name="confirm" placeholder="Confirm message">
+                    </div>
+                </form>
+                    <button id="join" class="btn btn-default">Join!</button>
+            </div>
+            {% else %}
+            <div class="tab-pane fade" id="groupInfo">
+                <h3 id="group-info-title">Group Information</h3>
+                <hr>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Basic Information</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Group Name</td>
+                            <td>{{ group_data['name'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Group ID</td>
+                            <td>{{ group_data['group_id'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Topic</td>
+                            <td>{{ group_data['topic'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td>{{ group_data['description'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Create Time</td>
+                            <td>{{ group_data['create_time'] }}</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Member Information</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Leader Name</td>
+                            <td>{{ group_data['leader_name'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Group Members({{ memberNames|length() }})</td>
+                            <td>
+                                {% for name in memberNames%}
+                                    {{ name}} &nbsp
+                                {% else %}
+                                    There's nobody in your group!
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% if role == '1' %}
+                    <button id="quit" class="btn btn-default">quit</button>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if role == '1' or role == '2' %}
+                <div class="tab-pane fade" id="votes">
+                    <ul id="tab-sub-votes" class="nav nav-tabs">
+                        <li class="active">
+                        <a href="#voting" data-toggle="tab">Voting</a>
+                        </li>
+                        <li><a href="#end" data-toggle="tab">Ended</a></li>
+                    </ul>
+                    <div id="tab-sub-content-votes" class="tab-content tab-content-votes">
+                        <div class="tab-pane fade in active" id="voting">
+                            <ul class="voting-votes-list list-group">
+                            {% for vote_pair in votes_list_voting %}
+                                <li class="list-group-item">
+                                    <a href="{{ url_for('vote_operation',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a><br>
+                                </li>
+                            {% else %}
+                                <li class="list-group-item">
+                                    <h4>Oops! There aren't any voting votes!</h4>
+                                    <h5>Click "New vote" to create one!</h5>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade" id="end">
+                            <ul class="ended-votes-group list-group">
+                            {% for vote_pair in votes_list_end %}
+                                <li class="list-group-item">
+                                    <a href="{{ url_for('view_votes_result',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a><br>
+                                </li>
+                            {% else %}
+                                <li class="list-group-item">
+                                    <h4>Oops! There aren't any ended votes!</h4>
+                                    <h5>Click "New vote" to create one!</h5>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade in active" id="news">
+                    <h3>News</h3><hr>
+                    <ul class="news list-group">
+                        <li class="list-group-item">
+                            <h4>News 1</h4>
+                            <p>details</p>
+                        </li>
+                        <li class="list-group-item">
+                            <h4>News 2</h4>
+                            <p>details</p>
+                        </li>
+                        <li class="list-group-item">
+                            <h4>News 3</h4>
+                            <p>details</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-pane fade" id="discussions">
+                    <h3>Discussions</h3><hr>
+                    <ul class="news list-group">
+                        {% for discussion in discussions %}
+                            <li class="list-group-item">
+                                <h4><a href="{{ url_for('show_discuss', discuss_id=discussion.discuss_id) }}">{{ discussion['title'] }}</a></h4>
+                                <a class="show-detail" data-toggle="collapse"
+                                       data-target="#discussion-{{ discussion['discuss_id'] }}">
+                                        details</a>
+                                {% if role == '2' %}
+                                    <a class="discuss-delete" victim="{{discussion.discuss_id}}">delete</a>
+                                {% endif %}
+                                <span>from user {{discussion.username}}</span>
+                                <span>create date: {{discussion.create_time}}</span>
+                                <span>reply_num: {{discussion.reply_num}}</span>
+                                <span>read_num: {{discussion.read_num}}</span>
+                                <div id="discussion-{{ discussion['discuss_id'] }}" class="collapse">
+                                    <ul class="gp-detail">
+                                        <li class="gp-detail-topic">
+                                            Creator:{{ discussion['user_id'] }}
+                                        </li>
+                                        <li class="gp-detail-leader">
+                                            Content:{{ discussion['content'] }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">
+                                <h4>Oops! There are no discussions in your group!</h4>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {% if role == '1' or role == '2' %}
+                <div class="tab-pane fade" id="newDiscussion">
+                    <h3>New Discussion</h3><hr>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input class="form-control" name="title" placeholder="Enter Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Topic</label>
+                            <input class="form-control" name="content" placeholder="Enter Content">
+                        </div>
+                        <button type="submit" class="btn btn-default">Create</button>
+                    </form>
+                </div>
+            {% endif %}
+
+
+            {% if role == '2' %}
+                <div class="tab-pane fade" id="newVote">
+                    <h3>New Vote</h3><hr>
+                    <form action="{{ url_for('raise_a_vote_result',group_id=group_id) }}" method="get" id="vote-add-form">
+                        <label for="vote-content">Title of the vote</label>
+                        <input class="form-control" type="text" name="vote-content" id="vote-content"/>
+                        <input class="form-control" type="text" name="vote-options-num" id="vote-options-num" style="display:none;" value="0"/>
+                        <br>
+                        <input type="button" class="addOption btn btn-default" id="vote-add-button" value="Add new choices"/>
+                        <br><br>
+                        <input type="button" class="changeTimeSet btn btn-default"  id="change-time-set-button" value="timeset"/>
+                        <br><br>
+                        <input class="form-control" type="text" id="endtime-selection" name="endtime-selection" value = "2" style="display:none"/>
+                        <input type="text" id="timeinterval" name="timeinterval"    class="countdown_timepicker form-control" value="00:00:00" style="display:none;"/>
+                        <input type="text" id="datetime" name="datetime" class="ui_timepicker form-control" value=""/>
+                        <br>
+                        <button type="submit" class="btn btn-default">let's vote!</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+{% endblock %}

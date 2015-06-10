@@ -1,0 +1,32 @@
+.grape-index h1
+{
+    font-size: 1500%;
+}
+
+.grape-index p
+{
+    font-size: 300%;
+    float: right;
+}
+
+.grape-index
+{
+    display: block;
+    width: 60%;
+    margin: 10% auto 0 auto;
+}
+
+.hide
+{
+    display: none;
+}
+
+label
+{
+    float: left;
+}
+
+i.fa-check, i.fa-times
+{
+    float: right;
+}

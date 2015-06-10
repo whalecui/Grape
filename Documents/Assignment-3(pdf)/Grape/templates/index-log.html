@@ -1,0 +1,235 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="../static/css/index-log.css">
+    <script src="../static/js/index-log.js"></script>
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        var username = "{{ username }}";
+    </script>
+{% endblock %}
+
+{% block navbar %}
+    <ul class="nav navbar-nav">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle"
+                data-toggle="dropdown">
+                {{ username }}
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#">Contact with Admin</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Settings</a></li>
+                <li class="divider"></li>
+                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <div class="group-details">
+        <div class="tab-group">
+            <ul class="list-group">
+                <li><a class="list-group-item" href="#news" data-toggle="tab">
+                    News</a></li>
+                <li><a class="list-group-item" href="#message" data-toggle="tab">
+                    Message</a></li>
+                <hr>
+                <li><a class="list-group-item" href="#myGroup" data-toggle="tab">
+                    My Group</a></li>
+                <hr>
+                <li><a class="list-group-item" href="#newGroup" data-toggle="tab">
+                    New Group</a></li>
+                {#<li><a class="list-group-item" href="#delGroup" data-toggle="tab">
+                    Del Group</a></li>
+                <li><a class="list-group-item" href="#quitGroup" data-toggle="tab">
+                    Quit Group</a></li>  #}
+                <li><a class="list-group-item" href="#find" data-toggle="tab">
+                    Find Group</a></li>
+            </ul>
+        </div>
+        <div id="tab-content-main" class="tab-content tab-content-main">
+            <div class="tab-pane fade in active" id="news">
+                <h3>News</h3><hr>
+                <ul class="news list-group">
+                    <li class="list-group-item">
+                        <h4>News 1</h4>
+                        <p>details</p>
+                    </li>
+                    <li class="list-group-item">
+                        <h4>News 2</h4>
+                        <p>details</p>
+                    </li>
+                    <li class="list-group-item">
+                        <h4>News 3</h4>
+                        <p>details</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="message">
+                <h3>Messages</h3><hr>
+                {{messages}}
+                <ul class="message list-group">
+                    <li class="list-group-item">
+                        <h4>Message 1</h4>
+                        <p>details</p>
+                    </li>
+                    <li class="list-group-item">
+                        <h4>Message 2</h4>
+                        <p>details</p>
+                    </li>
+                    <li class="list-group-item">
+                        <h4>Message 3</h4>
+                        <p>details</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="tab-pane fade" id="myGroup">
+                <ul id="tab-sub-group" class="nav nav-tabs">
+                    <li class="active">
+                    <a href="#attend" data-toggle="tab">Attended Groups</a>
+                    </li>
+                    <li><a href="#own" data-toggle="tab">Owned Groups</a></li>
+                </ul>
+                <div id="tab-sub-content-group" class="tab-content tab-content-group">
+                    <div class="tab-pane fade in active" id="attend">
+                        <ul class="attendedGroup list-group">
+                        {% for group in attend %}
+                            <li class="list-group-item">
+                                <h4><a href="{{ url_for('groupDetail', group_id=group['group_id']) }}">{{ group['name'] }}</a></h4>
+                                <a class="show-detail" data-toggle="collapse"
+                                   data-target="#attend-group-{{ group['group_id'] }}">
+                                    details</a>
+                                <div id="attend-group-{{ group['group_id'] }}" class="collapse">
+                                    <ul class="gp-detail">
+                                        <li class="gp-detail-topic">
+                                            Topic:{{ group['topic'] }}
+                                        </li>
+                                        <li class="gp-detail-leader">
+                                            Leader_id:{{ group['leader_id'] }}
+                                        </li>
+                                        <li class="gp-detail-leader">
+                                            confirmMessage:{{ group['confirmMessage'] }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">
+                                <h4>Oops! You haven't got attended in any groups!</h4>
+                                <h5>Click "Find Groups" to find one!</h5>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="tab-pane fade" id="own">
+                        <ul class="ownedGroup list-group">
+                        {% for group in own %}
+                            <li class="list-group-item">
+                                <h4><a href="{{ url_for('groupDetail', group_id=group['group_id']) }}">{{ group['name'] }}</a></h4>
+                                <a class="show-detail" data-toggle="collapse"
+                                   data-target="#own-group-{{ group['group_id'] }}">
+                                    details</a>
+                                <a class="group-delete" victim="{{ group['group_id'] }}">delete</a>
+                                <div id="own-group-{{ group['group_id'] }}" class="collapse">
+                                    <ul class="gp-detail">
+                                        <li class="gp-detail-topic">
+                                            Topic:{{ group['topic'] }}
+                                        </li>
+                                        <li class="gp-detail-leader">
+                                            Group_id:{{ group['group_id'] }}
+                                        </li>
+                                        <li class="gp-detail-leader">
+                                            confirmMessage:{{ group['confirmMessage'] }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">
+                                <h4>Oops! You haven't created any groups!</h4>
+                                <h5>Click "Create Groups" to find one!</h5>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            {#
+            <div class="tab-pane fade" id="delGroup">
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="name">Group Name</label>
+                        <input class="form-control" name="delname" placeholder="Enter Group Name you wanna delete">
+                    </div>
+
+                    <button type="submit" class="btn btn-default">Delete</button>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="quitGroup">
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="name">Group Name</label>
+                        <input class="form-control" name="quitname" placeholder="Enter Group Name you wanna quit">
+                    </div>
+
+                    <button type="submit" class="btn btn-default">Quit</button>
+                </form>
+            </div>#}
+
+            <div class="tab-pane fade" id="newGroup">
+                <h3>New Group</h3><hr>
+                <form id="create-group" action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="name">Group Name</label>
+                        <input class="form-control" name="name" id="group-name" placeholder="this is the name of your group">
+                    </div>
+                    <div class="form-group">
+                        <label for="topic">Topic</label>
+                        <input class="form-control" name="topic" id="group-topic" placeholder="which topic is your group about">
+                    </div>
+                    <div class="form-group">
+                        <label for="desc">Description</label>
+                        <input class="form-control" name="desc" id="group-desc" placeholder="a description for your group">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm">Confirm Message</label>
+                        <input class="form-control" name="confirmMessage" id="group-confirm" placeholder="a message that the people who want to join must know">
+                    </div>
+                    <button type="submit" class="btn btn-default">Create</button>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="find">
+                <h3>Find Group</h3><hr>
+                <form >
+                    <div class="form-group">
+                        <label for="groupId">Group Number</label>
+                        <input class="form-control" name="group_id"  placeholder="Enter Group ID">
+                    </div>
+                    <button type="submit" class="btn btn-default">Find</button>
+                </form>
+
+                {% if leader %}
+                    <p>Leader:</p>
+                    <p>{{leader}}</p>
+                {% endif %} 
+                <br><br>
+                {% if members %}
+                    <p>Members:</p>
+                    {% for member in members %}
+                        <p>{{member.member_id}}</p>
+                    {% endfor %}
+                {% endif %}
+
+            
+            </div>
+        </div>
+    </div>
+{% endblock %}

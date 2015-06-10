@@ -30,6 +30,7 @@ Hunter:
 7.	need to refresh twice in order to get the newest result in group interface?
 8.	bug: chinese char. not available in discuss & reply.
 9.	how to record that user in the "message" tab?
+10.	auto jump to the certain group after a group created.
 
 For all:
 1.	convert all id to name.

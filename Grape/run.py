@@ -28,6 +28,7 @@ conn.commit()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    print "GET HOSTERE"
     islogin = session.get('islogin')
     user_id = session.get('user_id')
     message1 = session.get('message1')
@@ -79,7 +80,7 @@ def index():
         username = u'请先登录'
 
     return render_template(html, user_id=user_id, username=username, islogin=islogin,\
-                            message1=message1, messages=messages,\
+                            message1=message1, \
                             attend=attendedGroupsList, own=ownGroupsList, \
                             members=members, leader=leader)
 
