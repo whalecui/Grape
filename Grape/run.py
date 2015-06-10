@@ -298,15 +298,13 @@ def show_discuss(discuss_id):
                                    user_id=user_id)
     abort(404)
 
-@app.route('/_create_discussion/<int:group_id>', methods=['POST'])
+@app.route('/_create_discussion/<int:group_id>')
 def create_discussion(group_id):
     title = request.form.get('title')
     content = request.form.get('content')
     user_id = session.get('user_id')
     group = Group(group_id)
-    group.create_discussion(user_id, title, content)
-
-    return redirect(url_for('groupDetail',group_id=group_id))
+    return jsonify(status=group.create_discussion(user_id, title, content))
 
 
 @app.route('/_delete_discussion')
@@ -381,7 +379,7 @@ def admin():
                            groups=groups,users=users)
 
 
-@app.route('/group/gp<int:group_id>', methods=['GET', 'POST'])
+@app.route('/group/gp<int:group_id>')
 def groupDetail(group_id):
     is_login = session.get('islogin')
     if(is_login == '0'):                       #please login first!
@@ -406,15 +404,6 @@ def groupDetail(group_id):
             if str(member['member_id']) != str(group.leader_id):
                 user=User(user_id=member['member_id'])
                 memberNames+=[user.username]
-        #to be rewritten by ajax
-        if request.method == 'POST':
-            title = request.form.get('title')
-            content = request.form.get('content')
-            if title and content:
-                # print name,topic,confirmMessage,1235543
-                group.create_discussion(user=user_id, title=title, content=content)
-            return redirect(url_for('groupDetail', group_id=group_id))
-
         if str(user_id) == str(group.leader_id):
             return render_template('group-id.html', group_id=group_id,\
                                    group_data=group_data, discussions=discussions,\

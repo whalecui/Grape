@@ -560,7 +560,8 @@ class Group:
             #data[0]['leader_info'] = {'name':'', 'email':'', 'id':''}
             data[0]['user_info'] = []
             print e
-        return data[0]  
+        return data[0]
+
 
 class Discussion:
     def __init__(self,discuss_id):

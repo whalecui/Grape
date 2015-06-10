@@ -22,7 +22,11 @@ $(function(){
                     }
             });
         });
+    });
+});
 
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
         $('.group-quit').click(function(){
             var group_id = Number($(this).attr('victim'));
             var div = $(this).parent();
@@ -39,7 +43,11 @@ $(function(){
                     }
             });
         });
+    });
+});
 
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
         $('.group-delete-admin').click(function(){
             var group_id = Number($(this).attr('victim'));
             var div = $(this).parent();
@@ -50,13 +58,15 @@ $(function(){
                     if(data.success == '0'){
                         alert('failed');
                     }else{
-                        //$(div).remove();
-                        //alert('succeeded!');
                         location.reload();
                     }
             });
         });
+    });
+});
 
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
         $('.user-delete').click(function(){
             var user_id = Number($(this).attr('victim'));
             var div = $(this).parent();
@@ -67,13 +77,10 @@ $(function(){
                     if(data.success == '0'){
                         alert('failed');
                     }else{
-                        //$(div).remove();
-                        //alert('succeeded!');
                         location.reload();
                     }
             });
         });
-
     });
 });
 
