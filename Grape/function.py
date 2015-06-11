@@ -63,7 +63,7 @@ class User:
         exist=cursor.fetchall()
         if(exist):
             print 'failed to create group :', groupname
-            return False
+            return 'exist'
         cursor.execute("insert into groups(name,topic,confirmMessage,description,leader_id) values(%s,%s,%s,%s,%s);",\
             (groupname, topic, confirmMessage, desc,self.user_id))
         conn.commit()
@@ -75,7 +75,7 @@ class User:
         conn.commit()
         conn.close()
         print 'created group successfully:', groupname
-        return True
+        return 'success'
 
     def delete_group(self,group_id):
         group_id=str(group_id)
