@@ -398,7 +398,7 @@ def groupDetail(group_id):
         discussions = group.get_discussions()
         votes_list_voting = group.get_votes_voting()
         votes_list_end = group.get_votes_expired()
-        bulletin = group.get_bulletin()
+        bulletin = group.get_bulletin()
         members = group.get_members()
         memberNames=[]
         for member in members:
@@ -562,11 +562,11 @@ def show_bulletin(bulletin_id):
                                    user_id=user_id)
 
 @app.route('/_create_bulletin/<int:group_id>', methods=['GET', 'POST'])
-def create_bulletin(group_id):
+def create_bulletin(group_id):
     title = request.args.get('title')
     text = request.args.get('text')
     user_id = session.get('user_id')
-    group = Group(group_id)
+    group = Group(group_id)
     return jsonify(status=group.create_bulletin(user_id, title, text))
 
 if __name__ == '__main__':
