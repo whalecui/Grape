@@ -12,7 +12,7 @@ create_time timestamp not null default CURRENT_TIMESTAMP,
 -- groupCapacity int not null,
 confirmMessage varchar(30) not null,
 leader_id int not null
-);
+) ENGINE=INNODB ;
 insert into groups(name,topic,confirmMessage,leader_id) values('group1','AI','thisiskey','2');
 insert into groups(name,topic,confirmMessage,leader_id) values('group2','ML','thisiskey','2');
 insert into groups(name,topic,confirmMessage,leader_id) values('group3','IR','thisiskey','2');
@@ -54,7 +54,7 @@ title varchar(256) not null,
 content varchar(1024) not null, -- more reasonable than using TEXT.
 read_num int not null default 0,
 reply_num int not null default 0
-);
+)ENGINE = INNODB;
 
 insert into discussion(user_id, group_id, title, content) values('1','1','discussion1','This is discussion 1');
 insert into discussion(user_id, group_id, title, content) values('1','2','discussion2','This is discussion 2');
@@ -67,8 +67,9 @@ discuss_id int not null,
 user_id int not null,
 reply_time timestamp not null default CURRENT_TIMESTAMP,
 content varchar(512) not null,
-foreign key (discuss_id) references discussion(discuss_id) on delete cascade
-);
+constraint `DR_LINK` foreign key (discuss_id) references discussion(discuss_id) on delete cascade,
+KEY `RD_MAP` (`discuss_id`)
+)ENGINE=INNODB;
 
 insert into reply_discuss(discuss_id, user_id, content) values(1, 2, 'This is reply1 for discussion1');
 insert into reply_discuss(discuss_id, user_id, content) values(2, 2, 'This is reply1 for discussion2');
@@ -86,7 +87,9 @@ CREATE TABLE `votes` (
   `begintime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `endtime` timestamp NOT NULL DEFAULT "00-00-00 00:00:00",
   PRIMARY KEY (`vote_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+ALTER TABLE votes ADD INDEX GV_MAP(group_id);
+alter table votes add constraint VOTE_LINK foreign key (group_id) references groups(group_id) on delete cascade;
 
 
 Drop Table if exists vote_detail;
@@ -97,7 +100,9 @@ CREATE TABLE `vote_detail` (
 `vote_option` text,
 `votes` int(11) DEFAULT NULL,
 PRIMARY KEY (`option_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=INNODB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+ALTER TABLE vote_detail ADD INDEX VO_MAP(vote_id);
+alter table vote_detail add constraint OPTION_LINK foreign key (vote_id) references votes(vote_id) on delete cascade;
 
 
 Drop Table if exists vote_user_map;
@@ -107,9 +112,10 @@ CREATE TABLE `vote_user_map` (
 `user_id` int(11) DEFAULT NULL,
 `votefor` int(11) DEFAULT NULL,
 PRIMARY KEY (`map_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-
+) ENGINE=INNODB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 alter table vote_user_map add column vote_time timestamp;
+ALTER TABLE vote_user_map ADD INDEX VU_MAP(vote_id);
+alter table vote_user_map add constraint VOTE_USER_LINK foreign key (vote_id) references votes(vote_id) on delete cascade;
 
 Drop Table if exists bulletin;
 CREATE TABLE bulletin (
@@ -120,5 +126,6 @@ create_time timestamp not null default CURRENT_TIMESTAMP,
 title text not null,
 text text not null, -- more reasonable than using TEXT.
 read_num int not null default 0,
-foreign key (group_id) references groups(group_id) on delete cascade
-);
+constraint `BULLETIN_LINK` foreign key (group_id) references groups(group_id) on delete cascade,
+KEY `GB_MAP` (`group_id`)
+)ENGINE=INNODB;
