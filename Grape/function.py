@@ -248,6 +248,22 @@ class User:
         result = cursor.fetchall()[0]
         return result
 
+    def delete_vote(self,vote_id):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        vote = Vote(vote_id)
+        cursor.execute("select * from groups where group_id = %d and leader_id = %d" % (vote.group_id,self.user_id))
+        # only leader can delete vote
+        right = cursor.fetchall()
+        if (right):
+            cursor.execute("delete from votes where vote_id = %d" % vote_id)
+            cursor.commit()
+            conn.close()
+            return True
+        conn.close()
+        return False
+
     def delete_discussion(self,discuss_id):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
@@ -451,6 +467,7 @@ class Group:
         conn.commit()
         conn.close()
         return True
+
 
     def create_vote(self,user,vote_content,time2end,timeinterval2end,selection,options,vote_options):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
