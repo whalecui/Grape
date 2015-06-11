@@ -111,3 +111,14 @@ PRIMARY KEY (`map_id`)
 
 alter table vote_user_map add column vote_time timestamp;
 
+Drop Table if exists bulletin;
+CREATE TABLE bulletin (
+bulletin_id int not null primary key AUTO_INCREMENT,
+user_id int not null,
+group_id int not null,
+create_time timestamp not null default CURRENT_TIMESTAMP,
+title text not null,
+text text not null, -- more reasonable than using TEXT.
+read_num int not null default 0,
+foreign key (group_id) references groups(group_id) on delete cascade
+);

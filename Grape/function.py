@@ -282,6 +282,22 @@ class User:
         conn.close()
         return False
 
+    def delete_bulletin(self, bulletin_id):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        bulletin = Bulletin(bulletin_id)
+        if (bulletin.user_id == self.user_id):
+            print "Arrive here", bulletin.user_id
+            sql = "delete from bulletin where bulletin_id = %s;" % bulletin_id
+            cursor.execute(sql)
+            conn.commit()
+            conn.close()
+            return True
+        conn.close()
+        return False
+
 class Admin(User):
     def __init__(self, user_id):
         User.__init__(self,user_id=user_id)
@@ -531,8 +547,39 @@ class Group:
 
         return vote_record
 
+    def create_bulletin(self, user, title, text):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        print title,text
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        if self.leader_id == user:
+            sql = "insert into bulletin(user_id, group_id, title, text) values(%d,%s,'%s','%s');"\
+                  % (user, self.group_id, title, text)
+            cursor.execute(sql)
+            conn.commit()
+            conn.close()
+            return True
+        conn.close()
+        return False;
 
+    def get_bulletin(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
 
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from bulletin where group_id = %s \
+               order by create_time desc;" % self.group_id
+        cursor.execute(sql)
+        bulletin=cursor.fetchall()
+
+        for entry in bulletin:
+            user = User(user_id=entry["user_id"])
+            entry['username'] = user.username
+
+        conn.close()
+        return bulletin
 
     ## renew to be done!
     def get_data(self):
@@ -672,6 +719,53 @@ class Reply:
         if exist:
             return 1    #exist
         return 0        #non-ex
+
+class Bulletin:
+    def __init__(self, bulletin_id):
+        self.bulletin_id = int(bulletin_id)
+        if self.exist():
+            data = self.get_data()
+            self.group_id = data['group_id']
+            self.user_id = data['user_id']
+            self.title = data['title']
+            self.text = data['text']
+
+    def get_data(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from bulletin where bulletin_id="+str(self.bulletin_id)+";"
+        cursor.execute(sql)
+        item = cursor.fetchone()
+        user = User(user_id=item["user_id"])
+        item["username"] = user.username
+        conn.close()
+        return item
+
+    def increase_read_num(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "update bulletin set read_num = read_num + 1 \
+               where bulletin.bulletin_id = %d;" % self.bulletin_id
+        cursor.execute(sql)
+        conn.commit()
+        conn.close()
+
+    def exist(self):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                     user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                     db=db_config["db_name"],charset="utf8")
+        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "select * from bulletin where bulletin_id = %d;" % self.bulletin_id
+        cursor.execute(sql)
+        exist = cursor.fetchall()
+        conn.close()
+        if exist:
+            return 1    #exist
+        return 0 
 
 
 class Vote:
