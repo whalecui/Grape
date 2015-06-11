@@ -8,9 +8,8 @@ from function import *
 import plotly.plotly as py  #easy_install plotly
 from xml.sax.saxutils import quoteattr  # transfer ' to \' to escape error in mysql
 from plotly.graph_objs import *
-import string
-
 from init import initdb
+import string
 
 app = Flask(__name__)
 
@@ -27,6 +26,7 @@ cursor.execute(open_event_scheduler)
 conn.commit()
 #open the event_scheduler to set time expiration event
 
+
 @app.route('/init')
 def init():
     initdb()
@@ -34,13 +34,11 @@ def init():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    print "GET HOSTERE"
     islogin = session.get('islogin')
     user_id = session.get('user_id')
     message1 = session.get('message1')
     attendedGroupsList = []
     ownGroupsList = []
-    messages = []
     html = 'index.html'
     members = None
     leader = None
@@ -59,7 +57,6 @@ def index():
         for i in attendedGroups:
             if i not in ownGroups:
                 attendedGroupsList += [Group(i).get_data()]
-        messages = User1.get_messages()
 
         if request.method == 'GET':
             #Find group by group_id
@@ -87,7 +84,7 @@ def index():
         username = u'请先登录'
 
     return render_template(html, user_id=user_id, username=username, islogin=islogin,\
-                            message1=message1, messages=messages,\
+                            message1=message1, \
                             attend=attendedGroupsList, own=ownGroupsList, \
                             members=members, leader=leader)
 
@@ -237,9 +234,32 @@ def delete_group_admin():
     return jsonify(success=admin.delete_group(group_id))
 
 
-@app.route('/group/')
+@app.route('/group/', methods=['GET', 'POST'])
 def myGroups():
-    return make_response(redirect('/'))
+    try:
+        user_id = session.get('user_id')
+        User1 = User(user_id=user_id)
+        name=User1.username
+        attendedGroups, ownGroups = User1.get_groups()
+        attendedGroupsList = []
+        ownGroupsList = []
+        # print 'att=', attendedGroups
+        # print 'own=', ownGroups
+    ###把group对象存到了两个list中
+        for i in attendedGroups:
+            if i not in ownGroups:
+                attendedGroupsList += [Group(i).get_data()]
+        for i in ownGroups:
+            ownGroupsList += [Group(i).get_data()]
+        # print ownGroupsList
+    except Exception, e:
+        name = '!none!'
+        ownGroupsList = ['none']
+        attendedGroupsList = ['none']
+        print 1234, e
+    return render_template('group.html', user_id=user_id,\
+                           username=name, ownGroups=ownGroupsList, \
+                           attendedGroups=attendedGroupsList)
 
 
 
@@ -266,16 +286,22 @@ def show_discuss(discuss_id):
             discuss.increase_read_num()
             group_name = group.name
             members = group.get_members()
-            role = '0'
-            if({'member_id': user_id} in members):
-                role = '1'          # member
             if(str(user_id) == str(group.leader_id)):
-                role = '2'          # leader
+                return render_template('discussion.html', group_id=group_id,\
+                                       discuss=discuss_data,reply=reply,group_name=group_name,\
+                                       username=user_data['username'], role='2',\
+                                       user_id=user_id)
+                                       #leader
+            if({'member_id': user_id} in members):
+                return render_template('discussion.html', group_id=group_id,\
+                                       discuss=discuss_data,reply=reply,group_name=group_name,\
+                                       username=user_data['username'], role='1',\
+                                       user_id=user_id)
+                                       #member
             return render_template('discussion.html', group_id=group_id,\
-                                    discuss=discuss_data,reply=reply,group_name=group_name,\
-                                    username=user_data['username'], role=role,\
-                                    user_id=user_id)
-
+                                   discuss=discuss_data,group_name=group_name,\
+                                   username=user_data['username'], role='0',\
+                                   user_id=user_id)
     abort(404)
 
 @app.route('/_create_discussion/<int:group_id>')
@@ -320,12 +346,6 @@ def deleteReply():
     reply_id = str(request.args.get('reply_id', 0, type=int))
     return jsonify(success=user.delete_reply(reply_id))
 
-@app.route('/_message_confirm', methods=['GET'])
-def message_confirm():
-    user_id = str(request.args.get('user_id', 0, type=int))
-    message_id = str(request.args.get('message_id', 0, type=int))
-    user = User(user_id = user_id)
-    return jsonify(success=user.message_confirm(message_id))
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -384,23 +404,34 @@ def groupDetail(group_id):
         discussions = group.get_discussions()
         votes_list_voting = group.get_votes_voting()
         votes_list_end = group.get_votes_expired()
+        bulletin = group.get_bulletin()
         members = group.get_members()
         memberNames=[]
-        role = '0'
         for member in members:
             if str(member['member_id']) != str(group.leader_id):
                 user=User(user_id=member['member_id'])
                 memberNames+=[user.username]
-
-        if {'member_id': user_id} in members :
-            role = '1'              #member
         if str(user_id) == str(group.leader_id):
-            role = '2'              #leader
+            return render_template('group-id.html', group_id=group_id,\
+                                   group_data=group_data, discussions=discussions,\
+                                   votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
+                                   bulletin=bulletin,\
+                                   username=user_data['username'], memberNames=memberNames, role='2')
+                                   #leader
+        if {'member_id': user_id} in members :
+            return render_template('group-id.html', group_id=group_id,\
+                                   group_data=group_data, discussions=discussions,\
+                                   votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
+                                   bulletin=bulletin,\
+                                   username=user_data['username'], memberNames=memberNames,role='1')
+                                   #member
+        #to be continued
         return render_template('group-id.html', group_id=group_id,\
-                                group_data=group_data, discussions=discussions,\
-                                votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
-                                username=user_data['username'], memberNames=memberNames,\
-                                user_id=user_id, role=role)
+                               group_data=group_data,\
+                               username=user_data['username'], role='0')
+                                   #other
+    #return render_template('group-id.html', group_id=group_id,\
+    #                       username=user_data['username'], role='-1')
     abort(404)
                            #non-exist
 
@@ -505,7 +536,44 @@ def view_votes_result(vote_id):
                            user=user,creator=creator,\
                            group=group,vote=vote,vote_options_list=vote_options_list,votes_distribution = votes_distribution)
 
+@app.route('/bulletin/blt<int:bulletin_id>', methods=['GET', 'POST'])
+def show_bulletin(bulletin_id):
+    is_login = session.get('islogin')
+    if(is_login == 0):
+        return make_response(redirect('/'))
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    if(user.check_id() == 0):
+        session.clear()
+        return make_response(redirect('/'))
+    user_data = user.get_data_by_id()
 
+    bulletin = Bulletin(bulletin_id=bulletin_id)
+    if bulletin.exist():
+        bulletin_data = bulletin.get_data()
+        group_id = bulletin.group_id
+        group = Group(group_id=group_id)
+        if group.exist_group():
+            bulletin.increase_read_num()
+            group_name = group.name
+            if(str(user_id) == str(group.leader_id)):
+                return render_template('bulletin.html', group_id=group_id,\
+                                       bulletin=bulletin_data, group_name=group_name,\
+                                       username=user_data['username'], role='2',\
+                                       user_id=user_id)
+                                       #leader
+            return render_template('bulletin.html', group_id=group_id,\
+                                   bulletin=bulletin_data,group_name=group_name,\
+                                   username=user_data['username'], role='0',\
+                                   user_id=user_id)
+
+@app.route('/_create_bulletin/<int:group_id>', methods=['GET', 'POST'])
+def create_bulletin(group_id):
+    title = request.args.get('title')
+    text = request.args.get('text')
+    user_id = session.get('user_id')
+    group = Group(group_id)
+    return jsonify(status=group.create_bulletin(user_id, title, text))
 
 if __name__ == '__main__':
     app.run(debug=True, host=HOST, port=PORT)

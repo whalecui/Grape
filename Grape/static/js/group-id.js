@@ -70,6 +70,36 @@ $(function(){
 });
 
 $(function(){
+    $('.createBulletin').submit(function(e){
+        e.preventDefault();
+        var title = $('#bulletin-title').val();
+        var text = $('#bulletin-text').val();
+        if(!title){
+            alert('Title cannot be empty!');
+        }else if(!text) {
+            alert('Topic cannot be empty!');
+        }else{
+            var url = window.location.href;
+            alert(url);
+            var patt = /gp+[0-9]*/g;
+            url = url.match(patt)[0];
+            patt = /[^0-9]/g;
+            var group_id = url.replace(patt, '');
+            $.getJSON($SCRIPT_ROOT + '/_create_bulletin/' + group_id,
+                {title: title, text: text},
+                function (data) {
+                    if (data.status == '1') {
+                        location.hash = 'bulletin';
+                        location.reload();
+                    }else{
+                        alert(data.status);
+                    }
+                });
+        }
+    });
+});
+
+$(function(){
     $('.popover-options').on('shown.bs.popover', function(){
         $('.discuss-delete').click(function(){
             var discuss_id = Number($(this).attr('victim'));
