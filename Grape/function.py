@@ -59,7 +59,7 @@ class User:
     def get_messages(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = 'select * from message where receiver = %d;' % self.user_id
+        sql = 'select * from message where receiver = %d order by viewed, time desc;' % self.user_id
         cursor.execute(sql)
         data = cursor.fetchall()
         conn.close()
@@ -93,8 +93,21 @@ class User:
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         #判断是否存在且用户为leader
         cursor.execute("select name from groups where group_id='"+group_id+"' and leader_id='"+str(self.user_id)+"';")
-        right=cursor.fetchall()
-        if(right):
+        groupname=cursor.fetchone()
+        print group_id, self.user_id
+        if(groupname):
+            print groupname
+            cursor.execute("select * from groupMemberAssosiation where group_id='"+group_id+"';")
+            
+            relations = cursor.fetchall()
+            for relation in relations:
+                if relation['member_id'] == self.user_id:
+                    continue
+                delete_message = "The leader of group %s has deleted the group." % groupname['name']
+                sql = "insert into message(type, generator, receiver, content)\
+                       values(%d, %d, %s, '%s');" % (1, self.user_id, relation['member_id'], delete_message)
+                cursor.execute(sql)
+            
             cursor.execute("delete from groups where group_id='"+group_id+"';")
             conn.commit()
             cursor.execute("delete from groupMemberAssosiation where group_id='"+group_id+"';")
@@ -151,12 +164,18 @@ class User:
         return 'non-ex'
 
     def quit_group(self,group_id):
+        group = Group(group_id = group_id)
         group_id=str(group_id)
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute("select * from groupMemberAssosiation where member_id='"+str(self.user_id)+"' and group_id='"+group_id+"';")
         exist = cursor.fetchall()
         if(exist):
+            quit_message = "The member %s in group %s quited the group." % (self.username,group.name)
+            sql = "insert into message(type, generator, receiver, content)\
+                   values(%d, %d, %s, '%s');" % (2, self.user_id, group.leader_id, quit_message)
+            cursor.execute(sql)
+
             cursor.execute("delete from groupMemberAssosiation where member_id='"+str(self.user_id)+"' and group_id='"+group_id+"';")
             conn.commit()
             #whether he's leader
@@ -166,6 +185,7 @@ class User:
                 print "the user trying to quit is LEADER!"
                 cursor.execute("delete from groups where group_id='"+group_id+"';")
                 conn.commit()
+
 
             conn.close()
             print 'quit group successfully :',group_id
@@ -185,6 +205,7 @@ class User:
             Group1=Group(group_id)
             return Group1
         return None
+
     def kick_member(self,group_id,user_id):
         group_id=str(group_id)
         user_id=str(user_id)
@@ -196,8 +217,15 @@ class User:
             cursor.execute("select * from groupMemberAssosiation where group_id='%s' and member_id='%s';"),(group_id,user_id)
             exist=cursor.fetchall()
             if(exist):
+
+                delete_message = "The leader of group %s has removed you from the group." % exist.name
+                sql = "insert into message(type, generator, receiver, content)\
+                       values(%d, %d, %s, '%s');" % (1, self.user_id, user_id, delete_message)
+                cursor.execute(sql)
+
                 cursor.execute("delete from groupMemberAssosiation where group_id='%s' and member_id='%s';"),(group_id,user_id)
                 conn.commit()
+
                 return True
             print "Cannot find user_id in the group"
             return False
@@ -205,6 +233,14 @@ class User:
         print "Not leader"
         return False
 
+    def message_confirm(self,message_id):
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "update message set viewed = 1 where message.message_id = %s;" % message_id
+        cursor.execute(sql)
+        conn.commit()
+        conn.close()
+        return True
 
     def check_u(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
@@ -224,7 +260,6 @@ class User:
             return 1
         return 0
 
-    # Revised by Hunter: return 1 if the user exists.
     def check_id(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
@@ -255,8 +290,16 @@ class User:
         conn.commit()
         sql = 'select * from user where email="%s"' % self.email
         cursor.execute(sql)
-        result = cursor.fetchall()[0]
-        return result
+        user = cursor.fetchone()
+
+        welcome_content = "welcome to our Grape system, %s!" % user['username']
+        sql = 'insert into message(type, generator, receiver, content) \
+               values(%d, %d, %d, "%s");' % (0, 0, user['user_id'], welcome_content)
+        cursor.execute(sql)
+        conn.commit()
+
+        conn.close()
+        return user
 
     def delete_discussion(self,discuss_id):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
@@ -264,10 +307,18 @@ class User:
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         discuss = Discussion(discuss_id)
-        if(discuss.user_id == self.user_id):
-            print "Arrive here",discuss.user_id
+        group = Group(discuss.group_id)
+        valid = (discuss.user_id == self.user_id) or (group.leader_id == self.user_id)
+        if(valid):
+            delete_message = "Your discussion %s in group %s has been deleted by leader %s."\
+                              % (discuss.title,group.name,group.leader_id)
+            sql = "insert into message(type, generator, receiver, content)\
+                   values(%d, %d, %s, '%s');" % (3, group.leader_id, discuss.user_id, delete_message)
+            cursor.execute(sql)
+
             sql = "delete from discussion where discuss_id = %s;" % discuss_id
             cursor.execute(sql)
+            conn.commit()
             conn.close()
             return True
         conn.close()
@@ -279,7 +330,16 @@ class User:
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         reply = Reply(reply_id)
-        if(reply.user_id == self.user_id):
+        discuss = Discussion(reply.discuss_id)
+        group = Group(discuss.group_id)
+        valid = (reply.user_id == self.user_id) or (group.leader_id == self.user_id)
+        if(valid):
+            delete_message = 'Your reply: "%s" on discussion %s has been deleted by leader %s.'\
+                              % (reply.content, discuss.title,group.leader_id)
+            sql = "insert into message(type, generator, receiver, content)\
+                   values(%d, %d, %s, '%s');" % (4, group.leader_id, reply.user_id, delete_message)
+            cursor.execute(sql)
+
             sql = "delete from reply_discuss where reply_id = %s;" % reply_id
             cursor.execute(sql)
             sql = "update discussion set reply_num = reply_num - 1\
@@ -566,7 +626,8 @@ class Group:
             #data[0]['leader_info'] = {'name':'', 'email':'', 'id':''}
             data[0]['user_info'] = []
             print e
-        return data[0]  
+        return data[0]
+
 
 class Discussion:
     def __init__(self,discuss_id):
@@ -621,7 +682,7 @@ class Discussion:
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = "select reply_id,user_id,content from reply_discuss where discuss_id = %d\
+        sql = "select * from reply_discuss where discuss_id = %d\
                order by reply_id desc;" % self.discuss_id
         cursor.execute(sql)
         reply = cursor.fetchall()
@@ -807,4 +868,3 @@ class Vote:
         if exist:
             return 1    #exist
         return 0        #non-ex
-

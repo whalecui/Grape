@@ -22,26 +22,6 @@ $(function(){
 });
 
 $(function(){
-    $('.popover-options').on('shown.bs.popover', function(){
-        $('.discuss-delete').click(function(){
-            var discuss_id = Number($(this).attr('victim'));
-            var div = $(this).parent();
-            console.log(discuss_id);
-            $.getJSON($SCRIPT_ROOT + '/_delete_discussion',
-                {discuss_id: discuss_id},
-                function(data){
-                    if(data.success == '0'){
-                        alert('failed');
-                    }else{
-                        $(div).remove();
-                        location.reload();
-                    }
-            });
-        });
-    });
-});
-
-$(function(){
     $('#quit').click(function(){
         var url = window.location.href;
         var patt = /gp+[0-9]*/g;
@@ -54,12 +34,60 @@ $(function(){
                 if(data.status == '0'){
                     alert('fail!!');
                 }else if(data.status == '1') {
-                    alert('success');
+                    location.reload();
                 }
-                location.reload();
         });
     });
 });
+
+$(function(){
+    $('.createDiscussion').submit(function(e){
+        e.preventDefault();
+        var title = $('#discuss-title').val();
+        var content = $('#discuss-content').val();
+        if(!title){
+            alert('Title cannot be empty!');
+        }else if(!content) {
+            alert('Topic cannot be empty!');
+        }else{
+            var url = window.location.href;
+            var patt = /gp+[0-9]*/g;
+            url = url.match(patt)[0];
+            patt = /[^0-9]/g;
+            var group_id = url.replace(patt, '');
+            $.getJSON($SCRIPT_ROOT + '/_create_discussion/' + group_id,
+                {title: title, content: content},
+                function (data) {
+                    if (data.status == '1') {
+                        location.hash = 'discussions';
+                        location.reload();
+                    }else{
+                        alert(data.status);
+                    }
+                });
+        }
+    });
+});
+
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
+        $('.discuss-delete').click(function(){
+            var discuss_id = Number($(this).attr('victim'));
+            var div = $(this).parent();
+            console.log(discuss_id);
+            $.getJSON($SCRIPT_ROOT + '/_delete_discussion',
+                {discuss_id: discuss_id},
+                function(data){
+                    if(data.success == '0'){
+                        alert('failed');
+                    }else{
+                        location.reload();
+                    }
+            });
+        });
+    });
+});
+
 
 
 $(function () {
@@ -114,12 +142,12 @@ $(function(){
         {
             this.readOnly = false;
             this.className = "vote-option-content-edit";
-        }
+        };
         vote_option_content.onblur = function()
         {
             this.readOnly = true;
             this.className = "vote-option-content";
-        }
+        };
         //var vote_change_row = document.createElement('br');
         var vote_wrap = document.createElement('lable');
         var vote_order = String.fromCharCode(64+options); //limit to 26 options

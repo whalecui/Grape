@@ -10,6 +10,8 @@ from xml.sax.saxutils import quoteattr  # transfer ' to \' to escape error in my
 from plotly.graph_objs import *
 import string
 
+from init import initdb
+
 app = Flask(__name__)
 
 py.sign_in('NoListen','ueixigh6gr') # API KEY
@@ -25,6 +27,10 @@ cursor.execute(open_event_scheduler)
 conn.commit()
 #open the event_scheduler to set time expiration event
 
+@app.route('/init')
+def init():
+    initdb()
+    return "success"
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -34,6 +40,7 @@ def index():
     message1 = session.get('message1')
     attendedGroupsList = []
     ownGroupsList = []
+    messages = []
     html = 'index.html'
     members = None
     leader = None
@@ -80,7 +87,7 @@ def index():
         username = u'请先登录'
 
     return render_template(html, user_id=user_id, username=username, islogin=islogin,\
-                            message1=message1, \
+                            message1=message1, messages=messages,\
                             attend=attendedGroupsList, own=ownGroupsList, \
                             members=members, leader=leader)
 
@@ -230,32 +237,9 @@ def delete_group_admin():
     return jsonify(success=admin.delete_group(group_id))
 
 
-@app.route('/group/', methods=['GET', 'POST'])
+@app.route('/group/')
 def myGroups():
-    try:
-        user_id = session.get('user_id')
-        User1 = User(user_id=user_id)
-        name=User1.username
-        attendedGroups, ownGroups = User1.get_groups()
-        attendedGroupsList = []
-        ownGroupsList = []
-        # print 'att=', attendedGroups
-        # print 'own=', ownGroups
-    ###把group对象存到了两个list中
-        for i in attendedGroups:
-            if i not in ownGroups:
-                attendedGroupsList += [Group(i).get_data()]
-        for i in ownGroups:
-            ownGroupsList += [Group(i).get_data()]
-        # print ownGroupsList
-    except Exception, e:
-        name = '!none!'
-        ownGroupsList = ['none']
-        attendedGroupsList = ['none']
-        print 1234, e
-    return render_template('group.html', user_id=user_id,\
-                           username=name, ownGroups=ownGroupsList, \
-                           attendedGroups=attendedGroupsList)
+    return make_response(redirect('/'))
 
 
 
@@ -282,33 +266,25 @@ def show_discuss(discuss_id):
             discuss.increase_read_num()
             group_name = group.name
             members = group.get_members()
-            if(str(user_id) == str(group.leader_id)):
-                return render_template('discussion.html', group_id=group_id,\
-                                       discuss=discuss_data,reply=reply,group_name=group_name,\
-                                       username=user_data['username'], role='2',\
-                                       user_id=user_id)
-                                       #leader
+            role = '0'
             if({'member_id': user_id} in members):
-                return render_template('discussion.html', group_id=group_id,\
-                                       discuss=discuss_data,reply=reply,group_name=group_name,\
-                                       username=user_data['username'], role='1',\
-                                       user_id=user_id)
-                                       #member
+                role = '1'          # member
+            if(str(user_id) == str(group.leader_id)):
+                role = '2'          # leader
             return render_template('discussion.html', group_id=group_id,\
-                                   discuss=discuss_data,group_name=group_name,\
-                                   username=user_data['username'], role='0',\
-                                   user_id=user_id)
+                                    discuss=discuss_data,reply=reply,group_name=group_name,\
+                                    username=user_data['username'], role=role,\
+                                    user_id=user_id)
+
     abort(404)
 
-@app.route('/_create_discussion/<int:group_id>', methods=['POST'])
+@app.route('/_create_discussion/<int:group_id>')
 def create_discussion(group_id):
     title = request.form.get('title')
     content = request.form.get('content')
     user_id = session.get('user_id')
     group = Group(group_id)
-    group.create_discussion(user_id, title, content)
-
-    return redirect(url_for('groupDetail',group_id=group_id))
+    return jsonify(status=group.create_discussion(user_id, title, content))
 
 
 @app.route('/_delete_discussion')
@@ -344,6 +320,12 @@ def deleteReply():
     reply_id = str(request.args.get('reply_id', 0, type=int))
     return jsonify(success=user.delete_reply(reply_id))
 
+@app.route('/_message_confirm', methods=['GET'])
+def message_confirm():
+    user_id = str(request.args.get('user_id', 0, type=int))
+    message_id = str(request.args.get('message_id', 0, type=int))
+    user = User(user_id = user_id)
+    return jsonify(success=user.message_confirm(message_id))
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -383,7 +365,7 @@ def admin():
                            groups=groups,users=users)
 
 
-@app.route('/group/gp<int:group_id>', methods=['GET', 'POST'])
+@app.route('/group/gp<int:group_id>')
 def groupDetail(group_id):
     is_login = session.get('islogin')
     if(is_login == '0'):                       #please login first!
@@ -404,36 +386,21 @@ def groupDetail(group_id):
         votes_list_end = group.get_votes_expired()
         members = group.get_members()
         memberNames=[]
+        role = '0'
         for member in members:
             if str(member['member_id']) != str(group.leader_id):
                 user=User(user_id=member['member_id'])
                 memberNames+=[user.username]
-        #to be rewritten by ajax
-        if request.method == 'POST':
-            title = request.form.get('title')
-            content = request.form.get('content')
-            if title and content:
-                group.create_discussion(user=user_id, title=title, content=content)
-            return redirect(url_for('groupDetail', group_id=group_id))
 
-        if str(user_id) == str(group.leader_id):
-            return render_template('group-id.html', group_id=group_id,\
-                                   group_data=group_data, discussions=discussions,\
-                                   votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
-                                   username=user_data['username'], memberNames=memberNames,\
-                                   user_id=user_id, role='2')
-                                   #leader
         if {'member_id': user_id} in members :
-            return render_template('group-id.html', group_id=group_id,\
-                                   group_data=group_data, discussions=discussions,\
-                                   votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
-                                   username=user_data['username'], memberNames=memberNames,\
-                                   user_id=user_id, role='1')
-                                   #member
-        #to be continued
+            role = '1'              #member
+        if str(user_id) == str(group.leader_id):
+            role = '2'              #leader
         return render_template('group-id.html', group_id=group_id,\
-                               group_data=group_data,\
-                               username=user_data['username'], role='0', user_id=user_id)
+                                group_data=group_data, discussions=discussions,\
+                                votes_list_voting=votes_list_voting,votes_list_end=votes_list_end,\
+                                username=user_data['username'], memberNames=memberNames,\
+                                user_id=user_id, role=role)
     abort(404)
                            #non-exist
 

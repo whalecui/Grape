@@ -23,7 +23,11 @@ $(function(){
                     }
             });
         });
+    });
+});
 
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
         $('.group-quit').click(function(){
             var group_id = Number($(this).attr('victim'));
             var div = $(this).parent();
@@ -40,7 +44,11 @@ $(function(){
                     }
             });
         });
+    });
+});
 
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
         $('.group-delete-admin').click(function(){
             var group_id = Number($(this).attr('victim'));
             var div = $(this).parent();
@@ -51,13 +59,15 @@ $(function(){
                     if(data.success == '0'){
                         alert('failed');
                     }else{
-                        //$(div).remove();
-                        //alert('succeeded!');
                         location.reload();
                     }
             });
         });
+    });
+});
 
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
         $('.user-delete').click(function(){
             var user_id = Number($(this).attr('victim'));
             var div = $(this).parent();
@@ -68,13 +78,10 @@ $(function(){
                     if(data.success == '0'){
                         alert('failed');
                     }else{
-                        //$(div).remove();
-                        //alert('succeeded!');
                         location.reload();
                     }
             });
         });
-
     });
 });
 
@@ -136,4 +143,22 @@ $(function(){
 });
 
 
-
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
+        $('.message_confirm').click(function(){
+            var user_id = Number($(this).attr('victim1'));
+            var message_id = Number($(this).attr('victim2'));
+            var div = $(this).parent();
+            console.log(user_id);
+            $.getJSON($SCRIPT_ROOT + '/_message_confirm',
+                {user_id: user_id, message_id: message_id},
+                function(data){
+                    if(data.success == '0'){
+                        alert('failed');
+                    }else{
+                        location.reload();
+                    }
+            });
+        });
+    });
+});

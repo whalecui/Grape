@@ -72,29 +72,36 @@
             </div>
             <div class="tab-pane fade" id="message">
                 <h3>Messages</h3><hr>
-                {{messages}}
                 <ul class="message list-group">
+                {% for message in messages %}
+                    {% if message.viewed == 0 %}
+                    <li class="list-group-item message_not_viewed">
+                    {% else %}
                     <li class="list-group-item">
-                        <h4>Message 1</h4>
-                        <p>details</p>
+                    {% endif %}
+                        <h4>{{message.content}}</h4>
+                        <p class="message_info">
+                            <span class="message_time">{{message.time}}&nbsp;&nbsp;</span>
+                            {% if message.viewed == 0 %}
+                            <a class="popover-options" id="message-confirm-{{ message.message_id }}"
+                               title="Sure?"
+                               data-container="body" data-toggle="popover"
+                               data-content='<a class="message_confirm btn btn-primary" victim1="{{ user_id }}" victim2="{{message.message_id}}">yes</a>
+                               <a class="btn btn-primary popover-close" origin="#message-confirm-{{ message.message_id }}">no</a>'>
+                                 Mark as read  
+                            </a>
+                            {% endif %}
+                            <span class="message_viewed">viewed:{{message.viewed}}</span>
+                        </p>
                     </li>
-                    <li class="list-group-item">
-                        <h4>Message 2</h4>
-                        <p>details</p>
-                    </li>
-                    <li class="list-group-item">
-                        <h4>Message 3</h4>
-                        <p>details</p>
-                    </li>
+                {% endfor %}
                 </ul>
             </div>
 
             <div class="tab-pane fade" id="myGroup">
                 <ul id="tab-sub-group" class="nav nav-tabs">
-                    <li class="active">
-                    <a href="#attend" data-toggle="tab">In Groups</a>
-                    </li>
-                    <li><a href="#own" data-toggle="tab">Own Groups</a></li>
+                    <li class="active"><a href="#own" data-toggle="tab">Own Groups</a></li>
+                    <li><a href="#attend" data-toggle="tab">In Groups</a></li>
                 </ul>
                 <div id="tab-sub-content-group" class="tab-content tab-content-group">
                     <div class="tab-pane fade" id="attend">

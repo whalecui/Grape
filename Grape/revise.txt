@@ -26,13 +26,14 @@ Birdy:
 Hunter:
 2.	set up machines!
 
-6.	Q: delete discussion should belong to which class?
-7.	need to refresh twice in order to get the newest result in group interface?
 8.	bug: chinese char. not available in discuss & reply.
 9.	how to record that user in the "message" tab?
-10.	auto jump to the certain group after a group created.
-11.	delete discussion/reply can be done by both the promoter/leader.
 
 For all:
 1.	convert all id to name.
 2.	test the inputs for chinese characters and invalid char.(', alert etc.)
+
+
+1. pagination
+2. hover-over deletion / details.
+3. cancelation of confirm tab.

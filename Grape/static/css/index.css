@@ -1,6 +1,26 @@
 .main
 {
 	width: 100%;
+	/*min-height: 100vh;*/
+}
+
+body
+{
+	height: 100%;
+	background-image: url("../images/grape.jpg");
+}
+
+.navbar-default
+{
+	background: rgba(255,255,255,0.7);
+	border-color: rgba(255,255,255,0.4);
+	border-radius: 0px;
+}
+
+.grape-index
+{
+	font-family: Garamond;
+	/*font-weight: bold;*/
 }
 
 .content

@@ -248,7 +248,7 @@
                                 <a class="show-detail" data-toggle="collapse"
                                        data-target="#discussion-{{ discussion['discuss_id'] }}">
                                         details</a>
-                                {% if role == '2' || discussion.discuss_id == user_id %}
+                                {% if role == '2' or discussion.discuss_id == user_id %}
                                     <a class="popover-options" id="delete-discussion-{{ discussion['discuss_id'] }}"
                                         title="Are you sure to delete this group?"
                                         data-container="body" data-toggle="popover"
@@ -285,14 +285,14 @@
             {% if role == '1' or role == '2' %}
                 <div class="tab-pane fade" id="newDiscussion">
                     <h3>New Discussion</h3><hr>
-                    <form action="" method="post" enctype="multipart/form-data">
+                    <form class="createDiscussion" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="title">Title</label>
-                            <input class="form-control" name="title" placeholder="Enter Title">
+                            <input class="form-control" name="title" id="discuss-title" placeholder="Enter Title">
                         </div>
                         <div class="form-group">
                             <label for="content">Topic</label>
-                            <input class="form-control" name="content" placeholder="Enter Content">
+                            <input class="form-control" name="content" id="discuss-content" placeholder="Enter Content">
                         </div>
                         <button type="submit" class="btn btn-default">Create</button>
                     </form>
