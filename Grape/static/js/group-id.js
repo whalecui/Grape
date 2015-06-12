@@ -80,7 +80,6 @@ $(function(){
             alert('Topic cannot be empty!');
         }else{
             var url = window.location.href;
-            alert(url);
             var patt = /gp+[0-9]*/g;
             url = url.match(patt)[0];
             patt = /[^0-9]/g;
@@ -149,7 +148,7 @@ $(function () {
 });
 
 // if I have time, I want to realize the drag part;
-$(function(){
+function optionReady(){
     var options = 0;
     $('.addOption').click(function(){
         ++options;
@@ -196,7 +195,7 @@ $(function(){
         //vote_add_form.insertBefore(vote_change_row,vote_add_button);
         vote_add_form.insertBefore(vote_wrap,vote_add_button);
     });
-});
+};
 
 $(function(){
     $('.changeTimeSet').click(function(){
@@ -217,4 +216,49 @@ $(function(){
             endtime_selection.value = "2";
         }
     });
+});
+
+$(function(){
+    $('#instant_vote').click(function(){
+        // $('#vote-add-form').html("");
+        $('#vote-add-form').html("<label for=\"vote-content\">Title of the vote</label><input class=\"form-control\" type=\"text\" name=\"vote-content\" id=\"vote-content\"/><input class=\"form-control\" type=\"text\" name=\"vote-options-num\" id=\"vote-options-num\" style=\"display:none;\" value=\"0\"/><br><input type=\"button\" class=\"addOption btn btn-default\" id=\"vote-add-button\" value=\"Add new choices\"/><br><br><input class=\"form-control\" type=\"text\" id=\"endtime-selection\" name=\"endtime-selection\" value = \"1\" style=\"display:none\"/><label for=\"timeinterval\">Set the time</label><input type=\"text\" id=\"timeinterval\" name=\"timeinterval\"    class=\"countdown_timepicker form-control\" value=\"00:00:00\" /><br><button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
+        );
+        $(".countdown_timepicker").datetimepicker({
+        //showOn: "button",
+        //buttonImage: "./css/images/icon_calendar.gif",
+        //buttonImageOnly: true,
+        showButtonPanel: false,
+        timeOnly: true,
+        showSecond: true,
+        timeFormat: 'hh:mm:ss',
+        stepHour: 1,
+        stepMinute: 1,
+        stepSecond: 1
+        });
+        optionReady();
+    }
+    )
+}
+);
+
+$(function(){
+    $('#longlasting_vote').click(function(){
+        // $("vote-add-form").html("");
+        $("#vote-add-form").html("<label for=\"vote-content\">Title of the vote</label><input class=\"form-control\" type=\"text\" name=\"vote-content\" id=\"vote-content\"/><input class=\"form-control\" type=\"text\" name=\"vote-options-num\" id=\"vote-options-num\" style=\"display:none;\" value=\"0\"/><br><input type=\"button\" class=\"addOption btn btn-default\" id=\"vote-add-button\" value=\"Add new choices\"/><br><br><input class=\"form-control\" type=\"text\" id=\"endtime-selection\" name=\"endtime-selection\" value = \"2\" style=\"display:none\"/><label for=\"datetime\">Set the datetime</label><input type=\"text\" id=\"datetime\" name=\"datetime\" class=\"ui_timepicker form-control\" value=\"\"/><br><button type=\"submit\" class=\"btn btn-default\">let's vote!</button>")
+        $(".ui_timepicker").datetimepicker({
+        //showOn: "button",
+        //buttonImage: "./css/images/icon_calendar.gif",
+        //buttonImageOnly: true,
+        //showButtonPanel: false,
+        //timeOnly: true,
+        showSecond: true,
+        timeFormat: 'hh:mm:ss',
+        stepHour: 1,
+        stepMinute: 1,
+        stepSecond: 1
+        });
+        optionReady();
+    }
+
+    )
 });
