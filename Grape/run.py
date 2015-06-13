@@ -506,44 +506,22 @@ def view_votes_result(vote_id):
                            user=user,creator=creator,\
                            group=group,vote=vote,vote_options_list=vote_options_list,votes_distribution = votes_distribution)
 
-@app.route('/bulletin/blt<int:bulletin_id>', methods=['GET', 'POST'])
-def show_bulletin(bulletin_id):
-    is_login = session.get('islogin')
-    if(is_login == 0):
-        return make_response(redirect('/'))
-    user_id = session.get('user_id')
-    user = User(user_id=user_id)
-    if(user.check_id() == 0):
-        session.clear()
-        return make_response(redirect('/'))
-    user_data = user.get_data_by_id()
-
-    bulletin = Bulletin(bulletin_id=bulletin_id)
-    if bulletin.exist():
-        bulletin_data = bulletin.get_data()
-        group_id = bulletin.group_id
-        group = Group(group_id=group_id)
-        if group.exist_group():
-            bulletin.increase_read_num()
-            group_name = group.name
-            if(str(user_id) == str(group.leader_id)):
-                return render_template('bulletin.html', group_id=group_id,\
-                                       bulletin=bulletin_data, group_name=group_name,\
-                                       username=user_data['username'], role='2',\
-                                       user_id=user_id)
-                                       #leader
-            return render_template('bulletin.html', group_id=group_id,\
-                                   bulletin=bulletin_data,group_name=group_name,\
-                                   username=user_data['username'], role='0',\
-                                   user_id=user_id)
-
-@app.route('/_create_bulletin/<int:group_id>', methods=['GET', 'POST'])
+@app.route('/_create_bulletin/<int:group_id>')
 def create_bulletin(group_id):
     title = request.args.get('title')
     text = request.args.get('text')
     user_id = session.get('user_id')
     group = Group(group_id)
     return jsonify(status=group.create_bulletin(user_id, title, text))
+
+
+@app.route('/_delete_bulletin')
+def delete_bulletin():
+    bulletin_id = request.args.get('bulletin_id')
+    print bulletin_id
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    return jsonify(status=user.delete_bulletin(bulletin_id))
 
 if __name__ == '__main__':
     app.run(debug=True, host=HOST, port=PORT)
