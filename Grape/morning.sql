@@ -12,7 +12,7 @@ create_time timestamp not null default CURRENT_TIMESTAMP,
 -- groupCapacity int not null,
 confirmMessage varchar(30) not null,
 leader_id int not null
-) ENGINE=INNODB ;
+)ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 
 Drop Table if exists groupMemberAssosiation;
@@ -29,7 +29,7 @@ username varchar(128) not null,
 password varchar(128) not null, 
 email varchar(128),
 role int not null default 0
-);
+)ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 Drop Table if exists discussion;
 Create Table discussion(
@@ -42,7 +42,7 @@ content varchar(1024) not null, -- more reasonable than using TEXT.
 read_num int not null default 0,
 reply_num int not null default 0,
 foreign key (group_id) references groups(group_id) on delete cascade
-)ENGINE = INNODB;
+)ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 Drop Table if exists reply_discuss;
 Create Table reply_discuss(
@@ -53,7 +53,7 @@ reply_time timestamp not null default CURRENT_TIMESTAMP,
 content varchar(512) not null,
 constraint `DR_LINK` foreign key (discuss_id) references discussion(discuss_id) on delete cascade,
 KEY `RD_MAP` (`discuss_id`)
-) ENGINE=INNODB;
+)ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 Drop Table if exists votes;
 CREATE TABLE `votes` (

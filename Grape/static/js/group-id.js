@@ -45,6 +45,7 @@ $(function(){
         e.preventDefault();
         var title = $('#discuss-title').val();
         var content = $('#discuss-content').val();
+        // alert(title);
         if(!title){
             alert('Title cannot be empty!');
         }else if(!content) {

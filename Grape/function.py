@@ -530,6 +530,8 @@ class Group:
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        title = title.encode('utf8')
+        content = content.encode('utf8')
         sql = "insert into discussion(user_id, group_id, title, content) values(%d,%s,'%s','%s');"\
               % (user, self.group_id, title, content)
         cursor.execute(sql)
@@ -637,7 +639,8 @@ class Group:
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
-        print title,text
+        title = title.encode('utf8')
+        text = text.encode('utf8')
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         if self.leader_id == user:
             sql = "insert into bulletin(user_id, group_id, title, text) values(%d,%s,'%s','%s');"\

@@ -28,3 +28,6 @@ For all:
 2. hover-over deletion / details.
 3. cancelation of confirm tab.
 4. in detail page: creator_id needs to be changed. the style needs to be improved.
+5. delete "news" collum
+6. group "detail" button: confirm key not displayed.
+7. discussion creation problem

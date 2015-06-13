@@ -280,9 +280,10 @@ def show_discuss(discuss_id):
 
 @app.route('/_create_discussion/<int:group_id>')
 def create_discussion(group_id):
-    title = request.form.get('title')
-    content = request.form.get('content')
+    title = request.args.get('title')
+    content = request.args.get('content')
     user_id = session.get('user_id')
+    # print "content: ", content
     group = Group(group_id)
     return jsonify(status=group.create_discussion(user_id, title, content))
 
@@ -484,7 +485,6 @@ def vote_operation_result(vote_id):
 
 
 @app.route('/vote/rs<int:vote_id>',methods=['GET','POST']) #查看已完成的投票
-#@app.route('/group/gp<int:group_id>/vote/view-votes/rs<vote_id>',methods=['GET','POST'])
 def view_votes_result(vote_id):
 
     user_id = session.get('user_id')
