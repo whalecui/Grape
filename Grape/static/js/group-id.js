@@ -117,7 +117,24 @@ $(function(){
     });
 });
 
-
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
+        $('.bulletin-delete').click(function(){
+            var bulletin_id = Number($(this).attr('victim'));
+            var div = $(this).parent();
+            console.log(bulletin_id);
+            $.getJSON($SCRIPT_ROOT + '/_delete_bulletin',
+                {bulletin_id: bulletin_id},
+                function(data){
+                    if(data.success == '0'){
+                        alert('failed');
+                    }else{
+                        location.reload();
+                    }
+            });
+        });
+    });
+});
 
 $(function () {
     $(".countdown_timepicker").datetimepicker({
