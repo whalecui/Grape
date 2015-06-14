@@ -236,6 +236,14 @@ def delete_group_admin():
     admin = Admin(user_id=user_id)
     return jsonify(success=admin.delete_group(group_id))
 
+@app.route('/_delete_vote')
+def delete_vote():
+    user_id = session.get('user_id')
+    vote_id = str(request.args.get('vote_id', 0, type=int))
+    print vote_id,234234
+    user = User(user_id=user_id)
+    return jsonify(success=user.delete_vote(vote_id))
+
 
 @app.route('/group/')
 def myGroups():
@@ -495,6 +503,8 @@ def view_votes_result(vote_id):
     creator = User(user_id = creator_id)
     vote_options_list,votes_distribution = vote.votes_distribution()
     print vote_options_list,votes_distribution
+    latest=vote.get_recent_voted_record()
+    print 111,latest
     data = Data([
         Bar(
             x=vote_options_list,
@@ -504,7 +514,7 @@ def view_votes_result(vote_id):
     plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
     return render_template('votes_static.html',plot_url=plot_url,\
                            user=user,creator=creator,\
-                           group=group,vote=vote,vote_options_list=vote_options_list,votes_distribution = votes_distribution)
+                           group=group,vote=vote,vote_options_list=vote_options_list,votes_distribution = votes_distribution,latest=latest)
 
 @app.route('/_create_bulletin/<int:group_id>')
 def create_bulletin(group_id):

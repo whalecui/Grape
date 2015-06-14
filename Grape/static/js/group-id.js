@@ -281,3 +281,22 @@ $(function(){
 
     )
 });
+
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
+        $('.vote-delete').click(function(){
+            var vote_id = Number($(this).attr('victim'));
+            var div = $(this).parent();
+            console.log(vote_id);
+            $.getJSON($SCRIPT_ROOT + '/_delete_vote',
+                {vote_id: vote_id},
+                function(data){
+                    if(data.success == '0'){
+                        alert('failed');
+                    }else{
+                        location.reload();
+                    }
+            });
+        });
+    });
+});

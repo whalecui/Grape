@@ -208,9 +208,36 @@
                         <div class="tab-pane fade" id="end">
                             <ul class="ended-votes-group list-group">
                             {% for vote_pair in votes_list_end %}
+
                                 <li class="list-group-item">
                                     <a href="{{ url_for('view_votes_result',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a><br>
-                                </li>
+                                <a class="show-detail" data-target="#vote-{{ vote_pair[0] }}">
+                                    details</a>
+                                {% if role == '2' %}
+                                <a class="popover-options" id="delete-vote-{{ vote_pair[0] }}"
+                                        title="Are you sure to delete this vote?"
+                                        data-container="body" data-toggle="popover"
+                                        data-content='<a class="vote-delete btn btn-primary" victim="{{ vote_pair[0] }}">yes</a>
+                                        <a class="btn btn-primary popover-close" origin="#delete-vote-{{ vote_pair[0] }}">no</a>'>
+                                        delete
+                                </a>
+                                {% endif %}
+                                <div id="vote-{{ vote_pair[0]}}" class="collapse">
+                                    <ul class="gp-detail">
+                                        <li class="gp-detail-topic">
+                                            Number Of Voters:{{ vote_pair[2] }}
+                                        </li>
+                                        <li class="gp-detail-topic">
+                                            Begintime:{{ vote_pair[3] }}
+                                        </li>
+                                        <li class="gp-detail-topic">
+                                            Endtime:{{ vote_pair[4] }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+
                             {% else %}
                                 <li class="list-group-item">
                                     <h4>Oops! There isn't any past vote!</h4>

@@ -78,6 +78,15 @@
             <div class="panel-body">
                 <canvas id="canvas_HorizontalBar" height="300px" width="600px"></canvas>
             </div>
+            <h3>Vote Details</h3>
+            {% for each in latest%}
+            <hr>
+            <ul>
+              <li>member:{{each[0]}}</li>
+              <li>cast a vote {{each[2]}} ago</li>
+            </ul>
+            <hr>
+            {% endfor %}
             <div class="panel-footer">
                 <ol class="breadcrumb">
                     <li><a href="{{ url_for('index') }}">Grape</a></li>
@@ -87,6 +96,8 @@
             </div>
     	</div>
     </div>
+
+
 {% endblock %}
 
 <!-- https://plot.ly/~abhishek.mitra.963/1/.embed?width=800&height=600 -->
