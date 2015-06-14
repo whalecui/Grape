@@ -167,36 +167,60 @@ function optionReady_instant(){
         vote_option_content.readOnly = true;
         vote_option_content.setAttribute('value','double click to change value');
 
+
+        // remove button
+        option_remove_button = document.createElement('i');
+        option_remove_button.setAttribute('class', 'fa fa-lg fa-minus-square-o');
+        option_remove_button.setAttribute('id', 'remove-option-'+options.toString());
+
         vote_option_content.ondblclick = function()
         {
+            this.value = ''
             this.readOnly = false;
             this.className = "vote-option-content-edit";
         }
         vote_option_content.onblur = function()
         {
+            if (this.value == '')
+            {
+                this.value = "double click to change value";
+            }
             this.readOnly = true;
             this.className = "vote-option-content";
         }
+        option_remove_button.onclick = function()
+        {
+            options--;
+            vote_options_num.setAttribute('value',options.toString());
+            var tempArray = vote_option_content.name.split('-');
+            var currentNum = parseInt(tempArray[tempArray.length - 1]);
+            var next = vote_wrap.nextSibling;
+            while( next.value != "Add new choices" )
+            {
+                next.firstChild.innerHTML = String.fromCharCode(64+currentNum);
+                next.firstChild.nextSibling.name = 'vote-option-content-'+currentNum.toString();
+                next.lastChild.setAttribute('id', 'remove-option-'+currentNum.toString());
+                next = next.nextSibling;
+                currentNum++;
+            }
+            vote_wrap.parentNode.removeChild(vote_wrap);
+        }
         //var vote_change_row = document.createElement('br');
-        var vote_wrap = document.createElement('lable');
         var vote_order = String.fromCharCode(64+options); //limit to 26 options
 
-
-        vote_wrap.innerHTML = vote_order;
+        var vote_wrap = document.createElement('div');
+        vote_wrap.innerHTML = "<span>"+vote_order+"</span>";
         //vote_wrap.appendChild(vote_option);
         vote_wrap.appendChild(vote_option_content);
+        vote_wrap.appendChild(option_remove_button);
 
 
         var vote_add_form = document.getElementById("vote-add-form");
         var vote_add_button = document.getElementById("vote-add-button");
 
-        //vote_add_form.insertBefore(vote_option,vote_add_button);
-        //vote_add_form.insertBefore(vote_option_content,vote_add_button);
-        //vote_add_form.insertBefore(vote_change_row,vote_add_button);
         vote_add_form.insertBefore(vote_wrap,vote_add_button);
     });
 }
-
 
 // if I have time, I want to realize the drag part;
 function optionReady(){
