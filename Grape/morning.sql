@@ -63,7 +63,7 @@ CREATE TABLE `votes` (
   `title` text,
   `voting` tinyint(1) NOT NULL,
   `type` tinyint(1) NOT NULL,
-  `begintime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `begintime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `endtime` timestamp NOT NULL DEFAULT "00-00-00 00:00:00",
   PRIMARY KEY (`vote_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
