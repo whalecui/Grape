@@ -36,30 +36,40 @@
                 created by {{ creator.username }}
             </div>
             <div class="panel-body">
-                {% set options = 0 %}
+                
                 {% if vote.is_voted == 0 %}
                     <form action="{{ url_for('vote_operation_result',vote_id=vote.vote_id) }}" method="get" id="vote-operate-form">
-                        <br>
-                        {% for vote_option in vote_options_list %}
-                            {% set options = 1 + options %}
-                            <div class="radio">
-                                <label>
-                                    {% if vote.is_voted == 0 %}
-                                        <input id="ratio-{{ options }}" type="radio" name="vote-option" value="{{options}}"/>
-                                    {% endif %}
-                                    {{vote_option}}
-                                </label>
-                            </div>
+                        {% set contents = 0 %}
+                        {% for vote_content in vote.vote_contents %}
+                            <label>{{vote_content}}</label>
+                            {% set contents = contents + 1 %}
+                            {% set options = 0 %}
+                            <br>
+                            {% for vote_option in vote_options_list[contents-1] %}
+                                {% set options = 1 + options %}
+                                <div class="radio">
+                                    <label>
+                                        <input id="ratio-{{ options }}" type="radio" name="vote{{contents}}-option" value="{{options}}"/>
+                                        {{vote_option}}
+                                    </label>
+                                </div>
+                            {% endfor %}
                         {% endfor %}
                             <button type="submit" class="btn btn-default">Submit</button>
                     </form>
                 {% else %}
                         <br>
-                        {% for vote_option in vote_options_list %}
-                            {% set options = 1 + options %}
-                                {{options}}.{{vote_option}}<br>
+                        {% set contents = 0 %}
+                        {% for vote_content in vote.vote_contents %}
+                            <label>{{vote_content}}</label>
+                            {% set contents = contents+1 %}
+                            {% set options = 0 %}
+                            {% for vote_option in vote_options_list[contents-1] %}
+                                {% set options = 1 + options %}
+                                    {{options}}.{{vote_option}}<br>
+                            {% endfor %}
+                            <h2>You have voted for {{vote.options_voted[contents-1]}}</h2>
                         {% endfor %}
-                    <h2>You have voted for {{vote.option_voted}}</h2>
                 {% endif %}
             </div>
             <div class="panel-footer">

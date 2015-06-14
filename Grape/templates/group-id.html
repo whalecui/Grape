@@ -198,7 +198,7 @@
                             <ul class="voting-votes-list list-group">
                             {% for vote_pair in votes_list_voting %}
                                 <li class="list-group-item">
-                                    <a href="{{ url_for('vote_operation',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a><br>
+                                    <a href="{{ url_for('vote_operation',vote_id=vote_pair[0]) }}">{{vote_pair[1]}} {{vote_pair[2]}}</a><br>
                                 </li>
                             {% else %}
                                 <li class="list-group-item">

@@ -538,17 +538,14 @@ class Group:
         return True
 
 
-    def create_vote(self,user,vote_content,time2end,timeinterval2end,selection,options,vote_options):
+    def create_vote(self,user_id,title,vote_contents_set,selection,options_set,vote_options_set,endtime):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        if (selection == "2"):
-            endtime = "'%s'" % time2end
-        else:
-            time_split = timeinterval2end.split(":")
-            endtime = "current_timestamp + interval %s hour + interval %s minute + interval %s second" % (time_split[0],time_split[1],time_split[2])
-        sql = """insert into votes (user_id,group_id,vote_content,voting,endtime) values (%s,"%s",%s,1,%s)""" % (user,self.group_id,vote_content,endtime)
+        print len(options_set),"What?"
+        sql = """insert into votes (user_id,group_id,title,voting,type,endtime) values (%s,%s,'%s',1,%s,%s)""" % (user_id,self.group_id,title,selection,endtime)
+        print sql
         cursor.execute(sql)
         conn.commit()
 
@@ -565,17 +562,27 @@ class Group:
         sql = """ CREATE EVENT event_%s ON SCHEDULE AT %s  ENABLE DO update votes set voting=0 where vote_id=%d;""" % (voteid,endtime,voteid)
         cursor.execute(sql)
         conn.commit()
-
-        for i in range (1,options+1):
-            sql = """insert into vote_detail(vote_id,option_order,vote_option,votes) values (%d,%d,%s,0)""" % (voteid,i,vote_options[i-1])
+        print len(options_set)+1
+        for i in range (1,len(options_set)+1):
+            sql = """insert into vote_contents (vote_id,vote_content,content_order,options) values (%s,%s,%d,%s)""" %(voteid,vote_contents_set[i-1],i,options_set[i-1])
+            print sql
             cursor.execute(sql)
+            print "MARK"
             conn.commit()
+            cursor.execute("""select LAST_INSERT_ID() from vote_contents where vote_id=%s""" % (voteid))
+            content_id = cursor.fetchone()['LAST_INSERT_ID()']
+
+            for j in range (1,options_set[i-1]+1):
+                sql = """insert into vote_detail(content_id,option_order,vote_option,votes) values (%d,%d,%s,0)""" % (content_id,j,vote_options_set[i-1][j-1])
+                cursor.execute(sql)
+                conn.commit()
         conn.close()
         return True
 
     def get_votes_voting(self):
         votes_list_voting = []
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         sql = "select * from votes where group_id = %s and voting = 1 order by endtime" % self.group_id
         cursor.execute(sql)
@@ -584,7 +591,7 @@ class Group:
             sql = "select count(user_id) from vote_user_map where vote_id = %s" % vote['vote_id']
             cursor.execute(sql)
             voted_num = cursor.fetchone()['count(user_id)']
-            vote_pair = (vote['vote_id'],vote['vote_content'],voted_num)
+            vote_pair = (vote['vote_id'],vote['title'],voted_num)
             votes_list_voting.append(vote_pair)
 
         conn.close()
@@ -603,7 +610,7 @@ class Group:
             sql = "select count(user_id) from vote_user_map where vote_id = %s" % vote['vote_id']
             cursor.execute(sql)
             voted_num = cursor.fetchone()['count(user_id)']
-            vote_pair = (vote['vote_id'],vote['vote_content'],voted_num)
+            vote_pair = (vote['vote_id'],vote['title'],voted_num)
             votes_list_end.append(vote_pair)
 
         conn.close()
@@ -627,7 +634,7 @@ class Group:
             user = User(user_id = vote_op['user_id'])
             vote = Vote(vote_op['vote_id'],vote_op['user_id'])
             ######## 好像不是很合理 拿投票的人生成Vote对象###
-            vote_op_pair = (user.username,vote.vote_content,dlta)
+            vote_op_pair = (user.username,vote.title,dlta)
             ######用户名 投了哪个 多久之前
             vote_record.append(vote_op_pair)
 
@@ -860,17 +867,21 @@ class Vote:
             data = self.get_data(user_id)
             self.user_id = data['user_id']
             self.group_id = data['group_id']
-            self.vote_content = data['vote_content']
-            self.vote_options = data['vote_options']
+            self.vote_contents = data['vote_contents'] # a list
+            self.vote_options = data['options_content'] # a list
+            self.title = data['title']
             # array
-            self.is_voted = data['is_voted']
+            self.is_voted = data['is_voted']    # a num 0 or 1
             # 0 not voted
-            self.option_voted = data['option_voted']
+            self.options_voted = data['options_voted'] # a set
             # 0 not voted
             self.begintime = data['begintime']
             self.endtime = data['endtime']
             self.timedelta = str(self.endtime - self.begintime)
             self.voted_num = data['voted_num']
+            self.options_num = data['options_num']
+            self.votes = data['votes']
+            self.contents_num = len( self.vote_contents)
 
     def get_data(self,user_id):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
@@ -880,29 +891,57 @@ class Vote:
 
         sql="select * from votes where vote_id = %s" % self.vote_id;
         cursor.execute(sql)
-        item = cursor.fetchone()
+        item = cursor.fetchone() #title and so on
         ##########################
-        sql = "select * from vote_detail where vote_id = %s" % self.vote_id;
+        sql = "select * from vote_contents where vote_id = %s" % self.vote_id;
         cursor.execute(sql)
-        vote_options_data = cursor.fetchall()
-        item['vote_options'] = []
-        for vote_option in vote_options_data: 
-            item['vote_options'].append(vote_option['vote_option'])
-       ###########################
-        sql = "select * from vote_user_map where vote_id = '%s' and user_id = '%s'" % (self.vote_id,user_id)
-        cursor.execute(sql)
-        item['option_voted'] = 0
+        vote_contents_data = cursor.fetchall()
 
+
+        sql = "select * from vote_user_map where vote_id= %s and user_id= %s" % (self.vote_id,user_id)
+        cursor.execute(sql)
         map = cursor.fetchall()
+
         if (len(map) == 0):
             item['is_voted'] = 0
         else:
             item['is_voted'] = 1
-            item['option_voted'] = map[0]['votefor']
 
-        sql = "select count(user_id) from vote_user_map where vote_id = %s" % item['vote_id']
+
+        item['vote_contents'] = []
+        item['options_num']=[]
+        item['options_content'] = []
+        item['votes'] = []
+        item['options_voted'] = []
+        for vote_content in vote_contents_data: 
+            item['vote_contents'].append(vote_content['vote_content'])
+            item['options_num'].append(vote_content['options']) #set the width
+            sql = "select * from vote_detail where content_id = %d" % vote_content['content_id']
+            cursor.execute(sql)
+            options_set = cursor.fetchall()
+            options_content = []
+            votes = []
+            for option in options_set:
+                options_content.append(option['vote_option'])
+                votes.append(int(option['votes']))
+            item['votes'].append(votes)
+            item['options_content'].append(options_content)
+            option_voted = 0
+            if (item['is_voted'] == 1):
+                sql = "select * from content_user_map where content_id= %s and user_id= %s" % (vote_content['content_id'],user_id)
+                print sql
+                cursor.execute(sql)
+                option_voted = cursor.fetchone()['votefor']
+            item['options_voted'].append(option_voted)
+
+
+        
+       ###########################
+        sql = "select count(user_id) from vote_user_map where vote_id = %s" % self.vote_id
         cursor.execute(sql)
-        item['voted_num'] = cursor.fetchone()['count(user_id)']
+        voted_num = cursor.fetchone()['count(user_id)']
+
+        item['voted_num'] = voted_num
         ####################################################3
 
         user = User(user_id = item["user_id"]) # the leader
@@ -910,21 +949,32 @@ class Vote:
         conn.close()
         return item
 
-    def vote_op(self,user_id,vote_option):
+    def vote_op(self,user_id,vote_options):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = "select votes from vote_detail where option_order='%s' and vote_id='%s'" % (vote_option,self.vote_id)
+        sql = "select content_id from vote_contents where vote_id=%s" % (self.vote_id)
         cursor.execute(sql)
-        votes = cursor.fetchone()['votes']
-        sql = "update vote_detail set votes=%d where option_order='%s' and vote_id='%s'" % (votes+1,vote_option,self.vote_id)
+
+        
+        diff = cursor.fetchall()
+
+        sql = "insert into vote_user_map(vote_id,user_id) values (%s,%s)" % (self.vote_id,user_id)
         cursor.execute(sql)
         conn.commit()
 
-        sql = "insert into vote_user_map(vote_id,user_id,votefor) values('%s','%s','%s')" % (self.vote_id,user_id,vote_option)
-        cursor.execute(sql)
-        conn.commit()
+        for i in range(1,len(vote_options)+1):
+            sql = "insert into content_user_map(vote_id,content_id,user_id,votefor) values(%s,'%s','%s','%s')" % (self.vote_id,diff[i-1]['content_id'],user_id,vote_options[i-1])
+            cursor.execute(sql)
+            conn.commit()
+            sql = "select count(user_id) from content_user_map where content_id=%s" % diff[i-1]['content_id']
+            cursor.execute(sql)
+            new_votes = cursor.fetchone()['count(user_id)']
+
+            sql = "update vote_detail set votes=%s where content_id=%s and option_order=%s" % (new_votes,diff[i-1]['content_id'],vote_options[i-1])
+            cursor.execute(sql)
+            conn.commit()
         conn.close()
 
     def get_recent_voted_record(self):
@@ -944,29 +994,29 @@ class Vote:
             dlta = str(timenow - vote_time)
             user = User(user_id = vote_op['user_id'])
             ######## 好像不是很合理 拿投票的人生成Vote对象###
-            vote_op_pair = (user.username,self.vote_content,dlta)
+            vote_op_pair = (user.username,self.title,dlta)
             ######用户名 投了哪个 多久之前
             vote_record.append(vote_op_pair)
 
         return vote_record
 
-    def votes_distribution(self):
-        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
-                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
-                             db=db_config["db_name"],charset="utf8")
-        cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = "select * from vote_detail where vote_id='%s'" % self.vote_id
-        cursor.execute(sql)
-        votes_static = cursor.fetchall()
-        vote_options_list = []
-        votes_distribution = []
-        option = 0;
-        for vote_item in votes_static:
-            vote_options_list.append(str(chr(65+option)))
-            votes_distribution.append(int(vote_item['votes']))
-            option+=1
-        conn.close()
-        return vote_options_list,votes_distribution
+    # def votes_distribution(self):
+    #     conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+    #                          user=db_config["db_user"],passwd=db_config["db_passwd"],\
+    #                          db=db_config["db_name"],charset="utf8")
+    #     cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+    #     sql = "select * from vote_detail where vote_id='%s'" % self.vote_id
+    #     cursor.execute(sql)
+    #     votes_static = cursor.fetchall()
+    #     vote_options_list = []
+    #     votes_distribution = []
+    #     option = 0;
+    #     for vote_item in votes_static:
+    #         vote_options_list.append(str(chr(65+option)))
+    #         votes_distribution.append(int(vote_item['votes']))
+    #         option+=1
+    #     conn.close()
+    #     return vote_options_list,votes_distribution
 
 
     def exist(self):
