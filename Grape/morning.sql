@@ -63,7 +63,7 @@ CREATE TABLE `votes` (
   `title` text,
   `voting` tinyint(1) NOT NULL,
   `type` tinyint(1) NOT NULL,
-  `begintime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `begintime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `endtime` timestamp NOT NULL DEFAULT "00-00-00 00:00:00",
   PRIMARY KEY (`vote_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
@@ -99,7 +99,6 @@ CREATE TABLE `vote_user_map` (
 `vmap_id` bigint(20) NOT NULL AUTO_INCREMENT,
 `vote_id` bigint(20) DEFAULT NULL,
 `user_id` int(11) DEFAULT NULL,
-`votefor` int(11) DEFAULT NULL,
 PRIMARY KEY (`vmap_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 alter table vote_user_map add column vote_time timestamp;
