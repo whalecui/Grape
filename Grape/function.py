@@ -302,20 +302,23 @@ class User:
         return user
 
     def delete_vote(self,vote_id):
+        vote_id=int(vote_id)
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
-        vote = Vote(vote_id)
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        #IS THAT CORRECT?
+        vote = Vote(vote_id,self.user_id)
         cursor.execute("select * from groups where group_id = %d and leader_id = %d" % (vote.group_id,self.user_id))
         # only leader can delete vote
         right = cursor.fetchall()
         if (right):
             cursor.execute("delete from votes where vote_id = %d" % vote_id)
-            cursor.commit()
+            conn.commit()
             conn.close()
-            return True
+            return 1
         conn.close()
-        return False
+        return 0
 
     def delete_discussion(self,discuss_id):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
@@ -612,7 +615,8 @@ class Group:
             sql = "select count(user_id) from vote_user_map where vote_id = %s" % vote['vote_id']
             cursor.execute(sql)
             voted_num = cursor.fetchone()['count(user_id)']
-            vote_pair = (vote['vote_id'],vote['title'],voted_num)
+
+            vote_pair = (vote['vote_id'],vote['vote_content'],voted_num,vote['begintime'],vote['endtime'])
             votes_list_end.append(vote_pair)
 
         conn.close()
