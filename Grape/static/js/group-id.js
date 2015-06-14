@@ -34,7 +34,8 @@ $(function(){
                 if(data.status == '0'){
                     alert('fail!!');
                 }else if(data.status == '1') {
-                    location.reload();
+                    // location.reload();
+                    location.href='/';
                 }
         });
     });
