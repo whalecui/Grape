@@ -12,6 +12,16 @@ def initdb():
 	conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
 	cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 	
+	## set utf8 encoder.
+	conn.set_character_set('utf8')
+	cursor.execute("SET NAMES utf8;")
+	cursor.execute("SET CHARACTER SET utf8;")
+	cursor.execute("SET character_set_connection=utf8;")
+	cursor.execute("SET character_set_client=utf8;")
+	cursor.execute("SET character_set_database=utf8;")
+	cursor.execute("SET character_set_results=utf8;")
+	cursor.execute("SET character_set_server=utf8;")
+
 	filename = "morning.sql"
 	exec_sql_file(cursor,filename)
 

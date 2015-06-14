@@ -1,0 +1,30 @@
+Listen:
+1.	countdown.
+2.	chart.js.
+3.	log for votes.
+4.	show the number of voted person / ratio.
+5.	change the pattern for time record.(use Eng or html5)
+
+Morning:
+3.	do analysis for vote time. (*optional)
+
+4.	fix bug: admin cannot delete itself or other admin.
+
+Syachi:
+3.	revise the different ocassion for 404. (e.g. when no group found. / mis-operation)
+
+Birdy:
+	
+Hunter:
+
+8.	bug: chinese char. not available in discuss & reply.
+
+For all:
+1.	convert all id to name.
+2.	test the inputs for chinese characters and invalid char.(', alert etc.)
+
+
+1. pagination ? 
+2. hover-over deletion / details.
+3. cancelation of confirm tab.
+4. in detail page: creator_id needs to be changed. the style needs to be improved.

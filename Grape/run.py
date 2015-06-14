@@ -236,6 +236,14 @@ def delete_group_admin():
     admin = Admin(user_id=user_id)
     return jsonify(success=admin.delete_group(group_id))
 
+@app.route('/_delete_vote')
+def delete_vote():
+    user_id = session.get('user_id')
+    vote_id = str(request.args.get('vote_id', 0, type=int))
+    print vote_id,234234
+    user = User(user_id=user_id)
+    return jsonify(success=user.delete_vote(vote_id))
+
 
 @app.route('/group/')
 def myGroups():
@@ -280,9 +288,10 @@ def show_discuss(discuss_id):
 
 @app.route('/_create_discussion/<int:group_id>')
 def create_discussion(group_id):
-    title = request.form.get('title')
-    content = request.form.get('content')
+    title = request.args.get('title')
+    content = request.args.get('content')
     user_id = session.get('user_id')
+    # print "content: ", content
     group = Group(group_id)
     return jsonify(status=group.create_discussion(user_id, title, content))
 
@@ -527,7 +536,6 @@ def vote_operation_result(vote_id):
 
 
 @app.route('/vote/rs<int:vote_id>',methods=['GET','POST']) #查看已完成的投票
-#@app.route('/group/gp<int:group_id>/vote/view-votes/rs<vote_id>',methods=['GET','POST'])
 def view_votes_result(vote_id):
 
     user_id = session.get('user_id')
@@ -537,70 +545,37 @@ def view_votes_result(vote_id):
     creator_id = vote.user_id
     creator = User(user_id = creator_id)
 
-    votes_distribution = vote.votes
-    vote_contents = vote.vote_contents
-    vote_options = vote.vote_options
-    title = vote.title
-    vote_options_order = []
-    for i in votes_distribution:
-        order = [x for x in xrange(1,len(i)+1)]
-        vote_options_order.append(order)
-
-    votes_max = []
-    for i in votes_distribution:
-        votes_max.append(max(i))
-
-    # vote_options_list,votes_distribution = vote.votes_distribution()
-    # print vote_options_list,votes_distribution
-    # data = Data([
-    #     Bar(
-    #         x=vote_options_list,
-    #         y=votes_distribution
-    #     )
-    # ])
-    # plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
-    return render_template('votes_static.html',\
+    vote_options_list,votes_distribution = vote.votes_distribution()
+    print vote_options_list,votes_distribution
+    latest=vote.get_recent_voted_record()
+    print 111,latest
+    data = Data([
+        Bar(
+            x=vote_options_list,
+            y=votes_distribution
+        )
+    ])
+    plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
+    return render_template('votes_static.html',plot_url=plot_url,\
                            user=user,creator=creator,\
-                           group=group,vote=vote,votes_max=votes_max,vote_options_order = vote_options_order,vote_contents = vote_contents,title=title,vote_options = vote_options,votes_distribution = votes_distribution)
+                           group=group,vote=vote,vote_options_list=vote_options_list,votes_distribution = votes_distribution,latest=latest)
 
-@app.route('/bulletin/blt<int:bulletin_id>', methods=['GET', 'POST'])
-def show_bulletin(bulletin_id):
-    is_login = session.get('islogin')
-    if(is_login == 0):
-        return make_response(redirect('/'))
-    user_id = session.get('user_id')
-    user = User(user_id=user_id)
-    if(user.check_id() == 0):
-        session.clear()
-        return make_response(redirect('/'))
-    user_data = user.get_data_by_id()
-
-    bulletin = Bulletin(bulletin_id=bulletin_id)
-    if bulletin.exist():
-        bulletin_data = bulletin.get_data()
-        group_id = bulletin.group_id
-        group = Group(group_id=group_id)
-        if group.exist_group():
-            bulletin.increase_read_num()
-            group_name = group.name
-            if(str(user_id) == str(group.leader_id)):
-                return render_template('bulletin.html', group_id=group_id,\
-                                       bulletin=bulletin_data, group_name=group_name,\
-                                       username=user_data['username'], role='2',\
-                                       user_id=user_id)
-                                       #leader
-            return render_template('bulletin.html', group_id=group_id,\
-                                   bulletin=bulletin_data,group_name=group_name,\
-                                   username=user_data['username'], role='0',\
-                                   user_id=user_id)
-
-@app.route('/_create_bulletin/<int:group_id>', methods=['GET', 'POST'])
+@app.route('/_create_bulletin/<int:group_id>')
 def create_bulletin(group_id):
     title = request.args.get('title')
     text = request.args.get('text')
     user_id = session.get('user_id')
     group = Group(group_id)
     return jsonify(status=group.create_bulletin(user_id, title, text))
+
+
+@app.route('/_delete_bulletin')
+def delete_bulletin():
+    bulletin_id = request.args.get('bulletin_id')
+    print bulletin_id
+    user_id = session.get('user_id')
+    user = User(user_id=user_id)
+    return jsonify(status=user.delete_bulletin(bulletin_id))
 
 if __name__ == '__main__':
     app.run(debug=True, host=HOST, port=PORT)

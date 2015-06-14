@@ -34,7 +34,8 @@ $(function(){
                 if(data.status == '0'){
                     alert('fail!!');
                 }else if(data.status == '1') {
-                    location.reload();
+                    // location.reload();
+                    location.href='/';
                 }
         });
     });
@@ -45,6 +46,7 @@ $(function(){
         e.preventDefault();
         var title = $('#discuss-title').val();
         var content = $('#discuss-content').val();
+        // alert(title);
         if(!title){
             alert('Title cannot be empty!');
         }else if(!content) {
@@ -117,7 +119,24 @@ $(function(){
     });
 });
 
-
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
+        $('.bulletin-delete').click(function(){
+            var id = Number($(this).attr('victim'));
+            var div = $(this).parent();
+            console.log(bulletin_id);
+            $.getJSON($SCRIPT_ROOT + '/_delete_bulletin',
+                {bulletin_id: bulletin_id},
+                function(data){
+                    if(data.success == '0'){
+                        alert('failed');
+                    }else{
+                        location.reload();
+                    }
+            });
+        });
+    });
+});
 
 $(function () {
     $(".countdown_timepicker").datetimepicker({
@@ -167,12 +186,19 @@ function optionReady_instant(){
         vote_option_content.readOnly = true;
         vote_option_content.setAttribute('value','double click to change value');
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 338a0a1606d27d5fb682ff4e7e0960ca52ded864
         // remove button
         option_remove_button = document.createElement('i');
         option_remove_button.setAttribute('class', 'fa fa-lg fa-minus-square-o');
         option_remove_button.setAttribute('id', 'remove-option-'+options.toString());
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 338a0a1606d27d5fb682ff4e7e0960ca52ded864
         vote_option_content.ondblclick = function()
         {
             this.value = ''
@@ -185,9 +211,15 @@ function optionReady_instant(){
             {
                 this.value = "double click to change value";
             }
+<<<<<<< HEAD
             this.readOnly = true;
             this.className = "vote-option-content";
         }
+=======
+            this.className = "vote-option-content";
+        }
+
+>>>>>>> 338a0a1606d27d5fb682ff4e7e0960ca52ded864
         option_remove_button.onclick = function()
         {
             options--;
@@ -238,6 +270,12 @@ function optionReady(){
         vote_option_content.setAttribute('name',target_id+'-option-content-'+options.toString());
         vote_option_content.readOnly = true;
         vote_option_content.setAttribute('value','double click to change value');
+        
+        // remove button
+        option_remove_button = document.createElement('i');
+        option_remove_button.setAttribute('class', 'fa fa-lg fa-minus-square-o');
+        option_remove_button.setAttribute('id', target_id+'-remove-option-'+options.toString());        
+
         vote_option_content.ondblclick = function()
         {
             this.value = '';
@@ -254,16 +292,36 @@ function optionReady(){
             this.className = "vote-option-content";
             
         };
+        option_remove_button.onclick = function()
+        {
+            options--;
+            vote_options_num.setAttribute('value',options.toString());
+            var tempArray = vote_option_content.name.split('-');
+            var currentNum = parseInt(tempArray[tempArray.length - 1]);
+            var next = vote_wrap.nextSibling;
+            while( next.value != "Add new choices" )
+            {
+                next.firstChild.innerHTML = String.fromCharCode(64+currentNum);
+
+                next.firstChild.nextSibling.name = target_id+'-option-content-'+currentNum.toString();
+                next.lastChild.setAttribute('id', target_id+'-remove-option-'+currentNum.toString());
+                next = next.nextSibling;
+                currentNum++;
+            }
+            vote_wrap.parentNode.removeChild(vote_wrap);
+        }
         //var vote_change_row = document.createElement('br');
-        var vote_wrap = document.createElement('lable');
+        var vote_wrap = document.createElement('div');
         var option_order = String.fromCharCode(64+options); //limit to 26 options
+        var vote_add_button = vote_add_target.getElementsByClassName("addOption")[0];
 
-
-        vote_wrap.innerHTML = option_order;
+        vote_wrap.innerHTML = "<span>"+option_order+"</span>";
         //vote_wrap.appendChild(vote_option);
         vote_wrap.appendChild(vote_option_content);
+        vote_wrap.appendChild(option_remove_button);
 
-        vote_add_target.appendChild(vote_wrap);
+
+        vote_add_target.insertBefore(vote_wrap, vote_add_button);
         this.disable = false;
     });
 };
@@ -280,7 +338,16 @@ function voteReady()
         $(vote_li).attr('class','list-group-item');
         $(vote_li).attr('id','vote'+votes.toString());
 
-        $(vote_li).html("<label for=\"vote-content-"+votes+"\">Title of the vote</label><input class=\"form-control\" type=\"text\" name=\"vote-content-"+votes+"\" id=\"vote-content-"+votes+"\"/><input class=\"form-control\" type=\"text\" name=\"vote-options-num-"+votes+"\" id=\"vote-options-num-"+votes+"\" style=\"display:none;\" value=\"0\"/><br><input type=\"button\" class=\"addOption btn btn-default\" value=\"Add new choices\"/>");
+        $(vote_li).html(
+            "<label for=\"vote-content-"+votes+"\">Title of the vote</label>" +
+            "<input class=\"form-control\" type=\"text\" name=\"vote-content-"+votes+
+            "\" id=\"vote-content-"+votes+"\"/>" +
+            "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-"+votes+
+            "\" id=\"vote-options-num-"+votes+"\" style=\"display:none;\" value=\"0\"/><br>" +
+            "<input type=\"button\" class=\"addOption btn btn-default\"" +
+            "value=\"Add new choices\"/>"
+        );
+
         var votes_content_set = document.getElementById("votes_content_set");
         votes_content_set.appendChild(vote_li);
         optionReady();
@@ -312,7 +379,20 @@ $(function(){
 $(function(){
     $('#instant_vote').click(function(){
         // $('#vote-add-form').html("");
-        $('#vote-add-form').html("<label for=\"vote-content\">Title of the vote</label><input class=\"form-control\" type=\"text\" name=\"vote-content\" id=\"vote-content\"/><input class=\"form-control\" type=\"text\" name=\"vote-options-num\" id=\"vote-options-num\" style=\"display:none;\" value=\"0\"/><br><input type=\"button\" class=\"addOption btn btn-default\" id=\"vote-add-button\" value=\"Add new choices\"/><br><br><input class=\"form-control\" type=\"text\" id=\"endtime-selection\" name=\"endtime-selection\" value = \"0\" style=\"display:none\"/><label for=\"endtime\">Set the time</label><input type=\"text\" id=\"endtime\" name=\"endtime\"    class=\"countdown_timepicker form-control\" value=\"00:00:00\" /><br><button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
+        $('#vote-add-form').html(
+            "<label for=\"vote-content\">Title of the vote</label>" +
+            "<input class=\"form-control\" type=\"text\" name=\"vote-content\"" +
+            "id=\"vote-content\"/>" +
+            "<input class=\"form-control\" type=\"text\" name=\"vote-options-num\"" +
+            "id=\"vote-options-num\" style=\"display:none;\" value=\"0\"/><br>" +
+            "<input type=\"button\" class=\"addOption btn btn-default\" id=\"vote-add-button\"" +
+            "value=\"Add new choices\"/><br><br>" +
+            "<input class=\"form-control\" type=\"text\" id=\"endtime-selection\"" +
+            "name=\"endtime-selection\" value = \"0\" style=\"display:none\"/>" +
+            "<label for=\"endtime\">Set the time</label>" +
+            "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
+            "class=\"countdown_timepicker form-control\" value=\"00:00:00\" /><br>" +
+            "<button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
         );
         $(".countdown_timepicker").datetimepicker({
         //showOn: "button",
@@ -326,6 +406,7 @@ $(function(){
         stepMinute: 1,
         stepSecond: 1
         });
+
         optionReady_instant();
     }
     )
@@ -335,7 +416,31 @@ $(function(){
 $(function(){
     $('#longlasting_vote').click(function(){
         // $("vote-add-form").html("");
-        $("#vote-add-form").html("<label for=\"title\">Title of the content</label><input class=\"form-control\" type=\"text\" name=\"title\"/><ul id=\"votes_content_set\"><li class=\"list-group-item\" id=\"vote1\"><label for=\"vote-content-1\">Title of the vote</label><input class=\"form-control\" type=\"text\" name=\"vote-content-1\" id=\"vote-content-1\"/><input class=\"form-control\" type=\"text\" name=\"vote-options-num-1\" id=\"vote-options-num-1\" style=\"display:none;\" value=\"0\"/><br><input type=\"button\" class=\"addOption btn btn-default\" value=\"Add new choices\"/></li></ul><input class=\"form-control\" type=\"text\" name=\"votes-num\" id=\"votes-num\" style=\"display:none;\" value=\"1\"/><input type=\"button\" class=\"addVote btn btn-default\" value=\"Add new vote content\"/><br><br><input class=\"form-control\" type=\"text\" id=\"endtime-selection\" name=\"endtime-selection\" value = \"1\" style=\"display:none\"/><label for=\"endtime\">Set the datetime</label><input type=\"text\" id=\"endtime\" name=\"endtime\" class=\"ui_timepicker form-control\" value=\"\"/><br><button type=\"submit\" class=\"btn btn-default\">let's vote!</button>")
+        $("#vote-add-form").html(
+            "<label for=\"title\">Title of the content</label>" +
+            "<input class=\"form-control\" type=\"text\" name=\"title\"/>" +
+                "<ul id=\"votes_content_set\">" +
+                    "<li class=\"list-group-item\" id=\"vote1\">" +
+                    "<label for=\"vote-content-1\">Title of the vote</label>" +
+                    "<input class=\"form-control\" type=\"text\" name=\"vote-content-1\"" +
+                    "id=\"vote-content-1\"/>" +
+                    "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-1\"" +
+                    "id=\"vote-options-num-1\" style=\"display:none;\" value=\"0\"/><br>" +
+                    "<input type=\"button\" class=\"addOption btn btn-default\"" +
+                    "value=\"Add new choices\"/>" +
+                    "</li>" +
+                "</ul>" +
+            "<input class=\"form-control\" type=\"text\" name=\"votes-num\"" +
+            "id=\"votes-num\" style=\"display:none;\" value=\"1\"/>" +
+            "<input type=\"button\" class=\"addVote btn btn-default\"" +
+            "value=\"Add new vote content\"/><br><br>" +
+            "<input class=\"form-control\" type=\"text\" id=\"endtime-selection\"" +
+            "name=\"endtime-selection\" value = \"1\" style=\"display:none\"/>" +
+            "<label for=\"endtime\">Set the datetime</label>" +
+            "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
+            "class=\"ui_timepicker form-control\" value=\"\"/><br>" +
+            "<button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
+        )
         $(".ui_timepicker").datetimepicker({
         //showOn: "button",
         //buttonImage: "./css/images/icon_calendar.gif",
@@ -349,8 +454,28 @@ $(function(){
         stepMinute: 1,
         stepSecond: 1
         });
+
         voteReady();
         optionReady();
     }
     )
+});
+
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
+        $('.vote-delete').click(function(){
+            var vote_id = Number($(this).attr('victim'));
+            var div = $(this).parent();
+            console.log(vote_id);
+            $.getJSON($SCRIPT_ROOT + '/_delete_vote',
+                {vote_id: vote_id},
+                function(data){
+                    if(data.success == '0'){
+                        alert('failed');
+                    }else{
+                        location.reload();
+                    }
+            });
+        });
+    });
 });
