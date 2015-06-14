@@ -427,16 +427,54 @@ def raise_a_vote(group_id):
 def raise_a_vote_result(group_id):
     user_id = session.get('user_id')
     if request.method == "GET":
-        vote_content = quoteattr(request.args.get('vote-content'))
+        vote_contents_set = []
+        options_set = []
+        vote_options_set = []
+
+        time2end = request.args.get('endtime')
+        print "############",type(time2end)
+        print time2end
         endtime_selection = request.args.get('endtime-selection')
-        time2end = request.args.get('datetime')
-        timeinterval2end = request.args.get('timeinterval')
-        options = string.atoi(request.args.get('vote-options-num'))
-        vote_options = []
-        for i in range(1,options+1):
-            vote_options.append(quoteattr(request.args.get('vote-option-content-%s'% str(i))).encode('utf-8'))
+        print endtime_selection
+        if endtime_selection == '0': # date
+            title = quoteattr(request.args.get('vote-content'))
+            vote_contents_set.append(title)
+
+            vote_options = []
+            options = string.atoi(request.args.get('vote-options-num'))
+
+            options_set.append(options)
+
+            for i in range(1,options+1):
+                vote_options.append(quoteattr(request.args.get('vote-option-content-%s'% str(i))).encode('utf-8'))
+
+            vote_options_set.append(vote_options)
+            time_split = time2end.split(":")
+            endtime = "current_timestamp + interval %s hour + interval %s minute + interval %s second" % (time_split[0],time_split[1],time_split[2])
+
+        else:
+            title = quoteattr(request.args.get('title'))
+            endtime = "'%s'" % time2end
+            vote_contents_num = string.atoi(request.args.get('votes-num'))
+
+            for i in range(1,vote_contents_num+1):
+                vote_contents_set.append(quoteattr(request.args.get('vote-content-%d' % i)))
+                options = string.atoi(request.args.get('vote-options-num-%d' % i))
+                options_set.append(options)
+                vote_options = []
+
+                for j in range(1,options+1):
+                    vote_options.append(quoteattr(request.args.get('vote%d-option-content-%s'% (i,str(j))).encode('utf-8')))
+                
+                vote_options_set.append(vote_options)
+
+        print vote_contents_set[0]
+       
+        #options = string.atoi(request.args.get('vote-options-num'))
+        
+        print title,vote_contents_set,options_set,vote_options_set
         group = Group(group_id)
-        group.create_vote(user_id,vote_content,time2end,timeinterval2end,endtime_selection,options,vote_options)
+        group.create_vote(user_id,title,vote_contents_set,endtime_selection,options_set,vote_options_set,endtime)
     return redirect(url_for('groupDetail',group_id=group_id))
 
 
@@ -446,41 +484,46 @@ def vote_operation(vote_id): # use groupid to verify the vote
     vote = Vote(vote_id,user_id)
     # ensure the vote has not voted before 
     # if the user change the status to submit it
-    try:
-        user = User(user_id=user_id)
-        username = user.username
-        group_id = vote.group_id
-        vote_options_list = vote.vote_options
-        vote_content = vote.vote_content
-        is_voted = vote.is_voted
-        option_voted = vote.option_voted
-        # the option the user has voted for
-        #0 means not yet
-        return render_template('view_vote-id.html',vote_options_list=vote_options_list,\
-                               vote=vote,group=Group(group_id=group_id),\
-                               username=username,creator=User(user_id=vote.user_id),\
-                               current_path=request.path)
-    except Exception, e:
-        print e
-        abort(404)
+    # try:
+    user = User(user_id=user_id)
+    username = user.username
+    group_id = vote.group_id
+    vote_options_list = vote.vote_options # a list [[]]
+    #vote_contents = vote.vote_contents # a list []
+    #is_voted = vote.is_voted
+   # options_voted = vote.options_voted
+    # the option the user has voted for
+    #0 means not yet
+    return render_template('view_vote-id.html',vote_options_list=vote_options_list,\
+                           vote=vote,group=Group(group_id=group_id),\
+                           username=username,creator=User(user_id=vote.user_id),\
+                           current_path=request.path)
+    # except Exception, e:
+    #     print e
+        # abort(404)
 
 @app.route('/_vote_op/voting<int:vote_id>',methods=['GET','POST']) #进行投票
 def vote_operation_result(vote_id):
     if request.method == 'GET':
-        try:
-            user_id = session.get('user_id')
-            print user_id
-            vote_option = request.args.get('vote-option')
-            #vote_id = request.args.get('vote-id')
-            vote = Vote(vote_id,user_id)
-            if vote.is_voted != 0:
-                return "You have been voted"
-            group_id = vote.group_id
-            vote.vote_op(user_id,vote_option)
-            return redirect(url_for('vote_operation', vote_id=vote_id))
-        except Exception, e:
-            print e
-            abort(404)
+        # try:
+        user_id = session.get('user_id')
+        print user_id
+        vote_option = request.args.get('vote-option')
+        #vote_id = request.args.get('vote-id')
+        vote = Vote(vote_id,user_id)
+        if vote.is_voted != 0:
+            return "You have been voted"
+        vote_contents_num = vote.contents_num
+        vote_options = []
+        for i in range(1,vote_contents_num+1):
+            vote_options.append(request.args.get('vote%d-option' % i))
+
+        group_id = vote.group_id
+        vote.vote_op(user_id,vote_options)
+        return redirect(url_for('vote_operation', vote_id=vote_id))
+        # except Exception, e:
+        #     print e
+        #     abort(404)
     return redirect(url_for('vote_operation', vote_id=vote_id))
 
 
@@ -493,18 +536,32 @@ def view_votes_result(vote_id):
     group = Group(group_id=vote.group_id)
     creator_id = vote.user_id
     creator = User(user_id = creator_id)
-    vote_options_list,votes_distribution = vote.votes_distribution()
-    print vote_options_list,votes_distribution
-    data = Data([
-        Bar(
-            x=vote_options_list,
-            y=votes_distribution
-        )
-    ])
-    plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
-    return render_template('votes_static.html',plot_url=plot_url,\
+
+    votes_distribution = vote.votes
+    vote_contents = vote.vote_contents
+    vote_options = vote.vote_options
+    title = vote.title
+    vote_options_order = []
+    for i in votes_distribution:
+        order = [x for x in xrange(1,len(i)+1)]
+        vote_options_order.append(order)
+
+    votes_max = []
+    for i in votes_distribution:
+        votes_max.append(max(i))
+
+    # vote_options_list,votes_distribution = vote.votes_distribution()
+    # print vote_options_list,votes_distribution
+    # data = Data([
+    #     Bar(
+    #         x=vote_options_list,
+    #         y=votes_distribution
+    #     )
+    # ])
+    # plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
+    return render_template('votes_static.html',\
                            user=user,creator=creator,\
-                           group=group,vote=vote,vote_options_list=vote_options_list,votes_distribution = votes_distribution)
+                           group=group,vote=vote,votes_max=votes_max,vote_options_order = vote_options_order,vote_contents = vote_contents,title=title,vote_options = vote_options,votes_distribution = votes_distribution)
 
 @app.route('/_create_bulletin/<int:group_id>')
 def create_bulletin(group_id):

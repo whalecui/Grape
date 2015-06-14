@@ -7,49 +7,50 @@
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         var username = "{{ user.username }}";
+        var startWithDataset =1;
+        var startWithData =1;
 
-        var plotdata = {
-            labels : {{vote_options_list | safe}},
+
+
+    {% set order = 0 %}
+    {% for votes in votes_distribution %}
+        {% set order = order+1 %}
+        var plotdata{{order}} = {
+            labels : {{vote_options_order[order-1] | safe}},
             datasets : [
             {
                 fillColor : "rgba(255,153,0,0.5)",
                 strokeColor : "rgba(255,153,0,1)",
                 pointColor : "rgba(255,153,0,1)",
                 pointstrokeColor : "orange",
-                data : {{votes_distribution}},
+                data : {{votes}},
     //          data : [40],
 
-          title : "2014"
+          title : "{{vote_contents[order-1]}}"
             }
         ]
         }
-
-        var startWithDataset =1;
-        var startWithData =1;
-
-        var opt = {
-              //scaleOverride: true,
-              yAxisMinimumInterval : 1,
-              xAxisMinimumInterval : 1,
-              scaleIntegersOnly: true,
-              animationStartWithDataset : startWithDataset,
-              animationStartWithData : startWithData,
-              animationSteps : 200,
-            //canvasBorders : true,
-              canvasBordersWidth : 3,
-              canvasBordersColor : "black",
-              graphTitle : "{{vote.vote_content}}",
-              legend : true,
-              inGraphDataShow : true,
-              annotateDisplay : true,
-              graphTitleFontSize: 18
-
+        var opt{{order}} = {
+      //scaleOverride: true,
+      yAxisMinimumInterval : 1,
+      animationStartWithDataset : startWithDataset,
+      animationStartWithData : startWithData,
+      animationSteps : 200,
+    //canvasBorders : true,
+      canvasBordersWidth : 3,
+      canvasBordersColor : "black",
+      graphTitle : "{{vote_contents[order-1]|safe}}",
+      graphMax:{{votes_max[order-1]}},
+      legend : true,
+      inGraphDataShow : true,
+      annotateDisplay : true,
+      graphTitleFontSize: 18
         }
 
-        window.onload = function(){
-            var horizonralbar = new Chart(document.getElementById("canvas_HorizontalBar").getContext("2d")).HorizontalBar(plotdata,opt);
-        }
-
+        $(function(){
+            var horizonralbar = new Chart(document.getElementById("canvas_HorizontalBar{{order}}").getContext("2d")).HorizontalBar(plotdata{{order}},opt{{order}});
+        });
+    {% endfor %}
     </script>
 {% endblock %}
 
@@ -76,13 +77,21 @@
                 created by {{ creator.username }}
             </div>
             <div class="panel-body">
-                <canvas id="canvas_HorizontalBar" height="300px" width="600px"></canvas>
+                {% for i in range(1,vote.contents_num+1) %}
+                    {% set height = vote.options_num[i-1]*75 + 55 %}
+                    <br>
+                    
+                    <canvas id="canvas_HorizontalBar{{i}}" height="{{height}}px" width="600px"></canvas><br>
+                    {% for j in range(1,(vote_options[i-1]|length)+1) %}
+                        <lable>{{j}}.{{vote_options[i-1][j-1]}}<lable><br>
+                    {% endfor %}
+                {% endfor %}
             </div>
             <div class="panel-footer">
                 <ol class="breadcrumb">
                     <li><a href="{{ url_for('index') }}">Grape</a></li>
                     <li><a href="{{ url_for('groupDetail', group_id=vote.group_id) }}">{{ group.name }}</a></li>
-                    <li class="active">{{ vote.vote_content }}</li>
+                    <li class="active">{{ vote.title }}</li>
                 </ol>
             </div>
     	</div>

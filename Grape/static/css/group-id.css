@@ -1,11 +1,13 @@
-input.vote-option-content
+.vote-option-content
 {
     border:1px solid #fff;background:#fff;
     font-size:14px;
     padding-left:5px;
     height:30px;
     line-height:30px;
-    width:300px
+    width:300px;
+    display: inline-block;
+    
 }
 
 input.vote-option-content-edit
@@ -15,7 +17,8 @@ input.vote-option-content-edit
     padding-left:5px;
     height:30px;
     line-height:30px;
-    width:300px
+    width:300px;
+    display: inline-block;
 }
 
 #vote-add-form lable

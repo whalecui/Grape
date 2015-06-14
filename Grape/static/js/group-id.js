@@ -165,8 +165,8 @@ $(function () {
     });
 });
 
-// if I have time, I want to realize the drag part;
-function optionReady(){
+
+function optionReady_instant(){
     var options = 0;
     $('.addOption').click(function(){
         ++options;
@@ -185,35 +185,162 @@ function optionReady(){
         vote_option_content.readOnly = true;
         vote_option_content.setAttribute('value','double click to change value');
 
+        // remove button
+        option_remove_button = document.createElement('i');
+        option_remove_button.setAttribute('class', 'fa fa-lg fa-minus-square-o');
+        option_remove_button.setAttribute('id', 'remove-option-'+options.toString());
+
+
         vote_option_content.ondblclick = function()
         {
+            this.value = ''
             this.readOnly = false;
             this.className = "vote-option-content-edit";
-        };
+        }
         vote_option_content.onblur = function()
         {
-            this.readOnly = true;
+            if (this.value == '')
+            {
+                this.value = "double click to change value";
+            }
             this.className = "vote-option-content";
-        };
+        }
+
+        option_remove_button.onclick = function()
+        {
+            options--;
+            vote_options_num.setAttribute('value',options.toString());
+            var tempArray = vote_option_content.name.split('-');
+            var currentNum = parseInt(tempArray[tempArray.length - 1]);
+            var next = vote_wrap.nextSibling;
+            while( next.value != "Add new choices" )
+            {
+                next.firstChild.innerHTML = String.fromCharCode(64+currentNum);
+                next.firstChild.nextSibling.name = 'vote-option-content-'+currentNum.toString();
+                next.lastChild.setAttribute('id', 'remove-option-'+currentNum.toString());
+                next = next.nextSibling;
+                currentNum++;
+            }
+            vote_wrap.parentNode.removeChild(vote_wrap);
+        }
         //var vote_change_row = document.createElement('br');
-        var vote_wrap = document.createElement('lable');
         var vote_order = String.fromCharCode(64+options); //limit to 26 options
 
-
-        vote_wrap.innerHTML = vote_order;
+        var vote_wrap = document.createElement('div');
+        vote_wrap.innerHTML = "<span>"+vote_order+"</span>";
         //vote_wrap.appendChild(vote_option);
         vote_wrap.appendChild(vote_option_content);
+        vote_wrap.appendChild(option_remove_button);
 
 
         var vote_add_form = document.getElementById("vote-add-form");
         var vote_add_button = document.getElementById("vote-add-button");
 
-        //vote_add_form.insertBefore(vote_option,vote_add_button);
-        //vote_add_form.insertBefore(vote_option_content,vote_add_button);
-        //vote_add_form.insertBefore(vote_change_row,vote_add_button);
         vote_add_form.insertBefore(vote_wrap,vote_add_button);
     });
+}
+
+
+// if I have time, I want to realize the drag part;
+function optionReady(){
+    var options = 0;
+    $('.addOption').click(function(){
+        this.disable = true;
+        ++options;
+        var vote_add_target = this.parentNode;
+        var target_id = $(vote_add_target).attr("id");
+        var vote_order = target_id.replace(/[^0-9]/ig,""); 
+        var vote_options_num = document.getElementById('vote-options-num-'+vote_order); // specify it
+        vote_options_num.setAttribute('value',options.toString());
+        var vote_option_content = document.createElement('input');
+        vote_option_content.setAttribute('class','vote-option-content form-control');
+        vote_option_content.setAttribute('name',target_id+'-option-content-'+options.toString());
+        vote_option_content.readOnly = true;
+        vote_option_content.setAttribute('value','double click to change value');
+        
+        // remove button
+        option_remove_button = document.createElement('i');
+        option_remove_button.setAttribute('class', 'fa fa-lg fa-minus-square-o');
+        option_remove_button.setAttribute('id', target_id+'-remove-option-'+options.toString());        
+
+        vote_option_content.ondblclick = function()
+        {
+            this.value = '';
+            this.readOnly = false;
+            this.className = "vote-option-content-edit";
+        };
+        vote_option_content.onblur = function()
+        {
+            if (this.value == '')
+            {
+                this.value = "double click to change value";
+            }
+            this.readOnly = true;
+            this.className = "vote-option-content";
+            
+        };
+        option_remove_button.onclick = function()
+        {
+            options--;
+            vote_options_num.setAttribute('value',options.toString());
+            var tempArray = vote_option_content.name.split('-');
+            var currentNum = parseInt(tempArray[tempArray.length - 1]);
+            var next = vote_wrap.nextSibling;
+            while( next.value != "Add new choices" )
+            {
+                next.firstChild.innerHTML = String.fromCharCode(64+currentNum);
+
+                next.firstChild.nextSibling.name = target_id+'-option-content-'+currentNum.toString();
+                next.lastChild.setAttribute('id', target_id+'-remove-option-'+currentNum.toString());
+                next = next.nextSibling;
+                currentNum++;
+            }
+            vote_wrap.parentNode.removeChild(vote_wrap);
+        }
+        //var vote_change_row = document.createElement('br');
+        var vote_wrap = document.createElement('div');
+        var option_order = String.fromCharCode(64+options); //limit to 26 options
+        var vote_add_button = vote_add_target.getElementsByClassName("addOption")[0];
+
+        vote_wrap.innerHTML = "<span>"+option_order+"</span>";
+        //vote_wrap.appendChild(vote_option);
+        vote_wrap.appendChild(vote_option_content);
+        vote_wrap.appendChild(option_remove_button);
+
+
+        vote_add_target.insertBefore(vote_wrap, vote_add_button);
+        this.disable = false;
+    });
 };
+
+function voteReady()
+{
+    var votes = 1;
+    $('.addVote').click(function()
+    {
+        ++votes;
+        var votes_num = $("#votes-num");
+        $(votes_num).val(votes.toString());
+        var vote_li = document.createElement('li');
+        $(vote_li).attr('class','list-group-item');
+        $(vote_li).attr('id','vote'+votes.toString());
+
+        $(vote_li).html(
+            "<label for=\"vote-content-"+votes+"\">Title of the vote</label>" +
+            "<input class=\"form-control\" type=\"text\" name=\"vote-content-"+votes+
+            "\" id=\"vote-content-"+votes+"\"/>" +
+            "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-"+votes+
+            "\" id=\"vote-options-num-"+votes+"\" style=\"display:none;\" value=\"0\"/><br>" +
+            "<input type=\"button\" class=\"addOption btn btn-default\"" +
+            "value=\"Add new choices\"/>"
+        );
+
+        var votes_content_set = document.getElementById("votes_content_set");
+        votes_content_set.appendChild(vote_li);
+        optionReady();
+    }
+    );
+}
 
 $(function(){
     $('.changeTimeSet').click(function(){
@@ -239,7 +366,20 @@ $(function(){
 $(function(){
     $('#instant_vote').click(function(){
         // $('#vote-add-form').html("");
-        $('#vote-add-form').html("<label for=\"vote-content\">Title of the vote</label><input class=\"form-control\" type=\"text\" name=\"vote-content\" id=\"vote-content\"/><input class=\"form-control\" type=\"text\" name=\"vote-options-num\" id=\"vote-options-num\" style=\"display:none;\" value=\"0\"/><br><input type=\"button\" class=\"addOption btn btn-default\" id=\"vote-add-button\" value=\"Add new choices\"/><br><br><input class=\"form-control\" type=\"text\" id=\"endtime-selection\" name=\"endtime-selection\" value = \"1\" style=\"display:none\"/><label for=\"timeinterval\">Set the time</label><input type=\"text\" id=\"timeinterval\" name=\"timeinterval\"    class=\"countdown_timepicker form-control\" value=\"00:00:00\" /><br><button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
+        $('#vote-add-form').html(
+            "<label for=\"vote-content\">Title of the vote</label>" +
+            "<input class=\"form-control\" type=\"text\" name=\"vote-content\"" +
+            "id=\"vote-content\"/>" +
+            "<input class=\"form-control\" type=\"text\" name=\"vote-options-num\"" +
+            "id=\"vote-options-num\" style=\"display:none;\" value=\"0\"/><br>" +
+            "<input type=\"button\" class=\"addOption btn btn-default\" id=\"vote-add-button\"" +
+            "value=\"Add new choices\"/><br><br>" +
+            "<input class=\"form-control\" type=\"text\" id=\"endtime-selection\"" +
+            "name=\"endtime-selection\" value = \"0\" style=\"display:none\"/>" +
+            "<label for=\"endtime\">Set the time</label>" +
+            "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
+            "class=\"countdown_timepicker form-control\" value=\"00:00:00\" /><br>" +
+            "<button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
         );
         $(".countdown_timepicker").datetimepicker({
         //showOn: "button",
@@ -253,7 +393,8 @@ $(function(){
         stepMinute: 1,
         stepSecond: 1
         });
-        optionReady();
+
+        optionReady_instant();
     }
     )
 }
@@ -262,21 +403,47 @@ $(function(){
 $(function(){
     $('#longlasting_vote').click(function(){
         // $("vote-add-form").html("");
-        $("#vote-add-form").html("<label for=\"vote-content\">Title of the vote</label><input class=\"form-control\" type=\"text\" name=\"vote-content\" id=\"vote-content\"/><input class=\"form-control\" type=\"text\" name=\"vote-options-num\" id=\"vote-options-num\" style=\"display:none;\" value=\"0\"/><br><input type=\"button\" class=\"addOption btn btn-default\" id=\"vote-add-button\" value=\"Add new choices\"/><br><br><input class=\"form-control\" type=\"text\" id=\"endtime-selection\" name=\"endtime-selection\" value = \"2\" style=\"display:none\"/><label for=\"datetime\">Set the datetime</label><input type=\"text\" id=\"datetime\" name=\"datetime\" class=\"ui_timepicker form-control\" value=\"\"/><br><button type=\"submit\" class=\"btn btn-default\">let's vote!</button>")
+        $("#vote-add-form").html(
+            "<label for=\"title\">Title of the content</label>" +
+            "<input class=\"form-control\" type=\"text\" name=\"title\"/>" +
+                "<ul id=\"votes_content_set\">" +
+                    "<li class=\"list-group-item\" id=\"vote1\">" +
+                    "<label for=\"vote-content-1\">Title of the vote</label>" +
+                    "<input class=\"form-control\" type=\"text\" name=\"vote-content-1\"" +
+                    "id=\"vote-content-1\"/>" +
+                    "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-1\"" +
+                    "id=\"vote-options-num-1\" style=\"display:none;\" value=\"0\"/><br>" +
+                    "<input type=\"button\" class=\"addOption btn btn-default\"" +
+                    "value=\"Add new choices\"/>" +
+                    "</li>" +
+                "</ul>" +
+            "<input class=\"form-control\" type=\"text\" name=\"votes-num\"" +
+            "id=\"votes-num\" style=\"display:none;\" value=\"1\"/>" +
+            "<input type=\"button\" class=\"addVote btn btn-default\"" +
+            "value=\"Add new vote content\"/><br><br>" +
+            "<input class=\"form-control\" type=\"text\" id=\"endtime-selection\"" +
+            "name=\"endtime-selection\" value = \"1\" style=\"display:none\"/>" +
+            "<label for=\"endtime\">Set the datetime</label>" +
+            "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
+            "class=\"ui_timepicker form-control\" value=\"\"/><br>" +
+            "<button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
+        )
         $(".ui_timepicker").datetimepicker({
         //showOn: "button",
         //buttonImage: "./css/images/icon_calendar.gif",
         //buttonImageOnly: true,
         //showButtonPanel: false,
         //timeOnly: true,
+        dateFormat: 'yy-mm-dd',
         showSecond: true,
         timeFormat: 'hh:mm:ss',
         stepHour: 1,
         stepMinute: 1,
         stepSecond: 1
         });
+
+        voteReady();
         optionReady();
     }
-
     )
 });

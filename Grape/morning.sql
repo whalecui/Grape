@@ -60,8 +60,9 @@ CREATE TABLE `votes` (
   `vote_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `vote_content` text,
+  `title` text,
   `voting` tinyint(1) NOT NULL,
+  `type` tinyint(1) NOT NULL,
   `begintime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `endtime` timestamp NOT NULL DEFAULT "00-00-00 00:00:00",
   PRIMARY KEY (`vote_id`)
@@ -69,26 +70,54 @@ CREATE TABLE `votes` (
 ALTER TABLE votes ADD INDEX GV_MAP(group_id);
 alter table votes add constraint VOTE_LINK foreign key (group_id) references groups(group_id) on delete cascade;
 
+Drop Table if exists vote_contents;
+CREATE TABLE `vote_contents` (
+  `content_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `vote_id` bigint NOT NULL,
+  `options` int(11) DEFAULT NULL,
+  `content_order` int(11) DEFAULT NULL,
+  `vote_content` text,
+  PRIMARY KEY (`content_id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+ALTER TABLE vote_contents ADD INDEX VC_MAP(vote_id);
+ALTER table vote_contents ADD constraint CONTENT_LINK foreign key (vote_id) references votes(vote_id) on delete cascade; 
+
 Drop Table if exists vote_detail;
 CREATE TABLE `vote_detail` (
 `option_id` bigint(20) NOT NULL AUTO_INCREMENT,
-`vote_id` bigint(20) DEFAULT NULL,
+`content_id` bigint(20) DEFAULT NULL,
 `option_order` int(11) DEFAULT NULL,
 `vote_option` text,
 `votes` int(11) DEFAULT NULL,
 PRIMARY KEY (`option_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-ALTER TABLE vote_detail ADD INDEX VO_MAP(vote_id);
-alter table vote_detail add constraint OPTION_LINK foreign key (vote_id) references votes(vote_id) on delete cascade;
+ALTER TABLE vote_detail ADD INDEX CO_MAP(content_id);
+alter table vote_detail add constraint OPTION_LINK foreign key (content_id) references vote_contents(content_id) on delete cascade;
 
 Drop Table if exists vote_user_map;
 CREATE TABLE `vote_user_map` (
-`map_id` bigint(20) NOT NULL AUTO_INCREMENT,
+`vmap_id` bigint(20) NOT NULL AUTO_INCREMENT,
 `vote_id` bigint(20) DEFAULT NULL,
 `user_id` int(11) DEFAULT NULL,
 `votefor` int(11) DEFAULT NULL,
-PRIMARY KEY (`map_id`)
+PRIMARY KEY (`vmap_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+alter table vote_user_map add column vote_time timestamp;
+ALTER TABLE vote_user_map ADD INDEX VU_MAP(vote_id);
+alter table vote_user_map add constraint VOTE_USER_LINK foreign key (vote_id) references votes(vote_id) on delete cascade;
+
+Drop Table if exists content_user_map;
+CREATE TABLE `content_user_map` (
+`cmap_id` bigint(20) NOT NULL AUTO_INCREMENT,
+`vote_id` bigint(20) DEFAULT NULL,
+`content_id` bigint(20) DEFAULT NULL,
+`user_id` int(11) DEFAULT NULL,
+`votefor` int(11) DEFAULT NULL,
+PRIMARY KEY (`cmap_id`)
+) ENGINE=INNODB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+ALTER TABLE content_user_map ADD INDEX CU_MAP(vote_id);
+alter table content_user_map add constraint CONTENT_USER_LINK foreign key (vote_id) references votes(vote_id) on delete cascade;
+
 
 Drop table if exists message;
 Create table message (
@@ -103,9 +132,7 @@ content varchar(256) not null,
 viewed tinyint(1) default 0
 );
 
-alter table vote_user_map add column vote_time timestamp;
-ALTER TABLE vote_user_map ADD INDEX VU_MAP(vote_id);
-alter table vote_user_map add constraint VOTE_USER_LINK foreign key (vote_id) references votes(vote_id) on delete cascade;
+
 
 Drop Table if exists bulletin;
 CREATE TABLE bulletin (

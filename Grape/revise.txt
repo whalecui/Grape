@@ -17,7 +17,6 @@ Birdy:
 	
 Hunter:
 
-8.	bug: chinese char. not available in discuss & reply.
 
 For all:
 1.	convert all id to name.
@@ -30,4 +29,11 @@ For all:
 4. in detail page: creator_id needs to be changed. the style needs to be improved.
 5. delete "news" collum
 6. group "detail" button: confirm key not displayed.
-7. discussion creation problem
+
+
+For vote:
+1. delete vote(in tab) is not added.
+2. display details in tab: vote number, create_time, vote_creator...
+3. display vote result instantly.(but cannot see the result before oneself voted.)
+4. when create a new vote: can remove options / questions.
+5. display 5 recent voter.
