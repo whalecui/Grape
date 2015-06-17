@@ -15,38 +15,57 @@
             <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
             <link rel="stylesheet" href="{{ url_for('static', filename='css/icon.css') }}">
             <link rel="stylesheet" href="{{ url_for('static', filename='css/grape.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/docs.min.css') }}">
         {% endblock %}
     </head>
 
     <body>
-        <div class='main'>
+        <nav class="navbar navbar-default">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle"
+                        data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="sr-only">切换导航</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand logo" href="{{url_for('index')}}">
+                    <i class="grape"><s></s></i>Grape
+                </a>
+            </div>
+            <div class="collapse navbar-collapse"
+                id="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    {% block navbar %}{% endblock %}
+                </ul>
+            </div>
+        </nav>
 
-            <nav class="navbar navbar-default">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle"
-                            data-toggle="collapse" data-target="#navbar-collapse">
-                        <span class="sr-only">切换导航</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand logo" href="{{url_for('index')}}">
-                        <i class="grape"><s></s></i>Grape
-                    </a>
-                </div>
-                <div class="collapse navbar-collapse"
-                    id="navbar-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        {% block navbar %}{% endblock %}
-                    </ul>
-                </div>
-            </nav>
+        {% block banner %}{% endblock %}
 
+        <div class='container bs-docs-container'>
 			<div class="content">
                 {% block content %}{% endblock %}
             </div>
-
         </div>
         {% block modal %}{% endblock %}
+        {% block footer %}
+            <footer class="bs-docs-footer" role="contentinfo">
+                <div class="container">
+                <p>
+                    Designed and built by team Grape from 2013 IEEE class
+                </p>
+                <p>
+                    Front-end designed by Birdy and built by Syachi
+                </p>
+                <p>
+                    Back-end Designed and finished by team Grape
+                </p>
+                <p>
+                    Database Designed by Grape and finished by Morning, Hunter, Birdy and Listen
+                </p>
+                </div>
+            </footer>
+        {% endblock %}
     </body>
 </html>

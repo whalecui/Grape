@@ -31,9 +31,17 @@
     </ul>
 {% endblock %}
 
+{% block banner %}
+    <div class="bs-docs-header" id="content" tabindex="-1">
+        <div class="container">
+            <h1>{{ group_data['name'] }}</h1>
+            <p>{{ group_data['description'] }}</p>
+        </div>
+    </div>
+{% endblock %}
+
 {% block content %}
     <div class="group-details">
-    <h1>{{ group_data['name'] }}</h1>
         <div class="tab-group">
             <ul class="list-group">
                 {% if role == '0' %}

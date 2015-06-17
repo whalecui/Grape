@@ -414,24 +414,6 @@ def groupDetail(group_id):
     abort(404)
                            #non-exist
 
-@app.route('/group/gp<int:group_id>/vote/view-votes')
-def view_votes(group_id):
-    group = Group(group_id)
-    votes_list_voting = group.get_votes_voting()
-    votes_list_end = group.get_votes_expired()
-    return render_template('view_the_votes.html',votes_list_voting=votes_list_voting,\
-                            votes_list_end=votes_list_end,current_path=request.path) # add status
-
-
-@app.route('/group/gp<int:group_id>/vote', methods=['GET', 'POST'])
-def vote(group_id):
-    return render_template('vote_index.html',current_path=request.path)
-
-
-@app.route('/group/gp<int:group_id>/vote/raise-vote',methods=['GET','POST'])
-def raise_a_vote(group_id):
-    return render_template('raise_a_vote.html',current_path=request.path)
-
 @app.route('/_create_vote/<int:group_id>',methods=['GET','POST'])
 def raise_a_vote_result(group_id):
     user_id = session.get('user_id')
