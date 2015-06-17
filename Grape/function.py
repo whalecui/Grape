@@ -75,7 +75,7 @@ class User:
             print 'failed to create group :', groupname
             return 'exist'
         cursor.execute("insert into groups(name,topic,confirmMessage,description,leader_id) values(%s,%s,%s,%s,%s);",\
-            (groupname, topic, confirmMessage, desc,self.user_id))
+            (groupname, topic,desc, confirmMessage, self.user_id))
         conn.commit()
 
         cursor.execute("select group_id from groups where name='"+groupname+"';")
@@ -306,6 +306,7 @@ class User:
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
         vote = Vote(vote_id)
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute("select * from groups where group_id = %d and leader_id = %d" % (vote.group_id,self.user_id))
         # only leader can delete vote
         right = cursor.fetchall()

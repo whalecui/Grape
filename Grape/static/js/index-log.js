@@ -133,6 +133,7 @@ $(function(){
                         if(tmp){ $(tmp).remove(); }
                         $('#group-name').before(error);
                     }else if(data.status == 'success'){
+                        location.hash = myGroup;
                         location.reload();
                     }else{
                         alert('please input valid ' + data.status);
