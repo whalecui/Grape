@@ -165,7 +165,7 @@
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <div id="members">
+                                <div id="members" style="display: none;">
                                 {% for name in memberNames %}
                                     <span class="label label-primary">{{ name }}</span>
                                 {% else %}
@@ -195,7 +195,7 @@
                             <ul class="voting-votes-list list-group">
                             {% for vote_pair in votes_list_voting %}
                                 <li class="list-group-item">
-                                    <a href="{{ url_for('vote_operation',vote_id=vote_pair[0]) }}">{{vote_pair[1]}} {{vote_pair[2]}}</a><br>
+                                    <a href="{{ url_for('vote_operation',vote_id=vote_pair[0]) }}">{{vote_pair[1]}} {{vote_pair[2]}}/{{memberNum}}</a><br>
                                 </li>
                             {% else %}
                                 <li class="list-group-item">
@@ -228,7 +228,7 @@
                                             Creator:{{ vote_pair[5] }}
                                         </li>
                                         <li class="gp-detail-topic">
-                                            Number Of Voters:{{ vote_pair[2] }}
+                                            Number Of Voters:{{ vote_pair[2] }} / {{memberNum}}
                                         </li>
                                         <li class="gp-detail-topic">
                                             Begintime:{{ vote_pair[3] }}

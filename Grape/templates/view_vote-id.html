@@ -60,6 +60,7 @@
                             <label>{{vote_content}}</label>
                             {% set contents = contents+1 %}
                             {% set options = 0 %}
+                            <br>
                             {% for vote_option in vote_options_list[contents-1] %}
                                 {% set options = 1 + options %}
                                     {{options}}.{{vote_option}}<br>

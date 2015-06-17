@@ -74,8 +74,8 @@ class User:
         if(exist):
             print 'failed to create group :', groupname
             return 'exist'
-        cursor.execute("insert into groups(name,topic,confirmMessage,description,leader_id) values(%s,%s,%s,%s,%s);",\
-            (groupname, topic, confirmMessage, desc,self.user_id))
+        cursor.execute("insert into groups(name,topic,description,confirmMessage,leader_id) values(%s,%s,%s,%s,%s);",\
+            (groupname, topic,desc, confirmMessage, self.user_id))
         conn.commit()
 
         cursor.execute("select group_id from groups where name='"+groupname+"';")
@@ -149,6 +149,7 @@ class User:
             if(str(self.user_id) in member_list):
                 print 'already joined', group_id
                 return 'joined'
+            print confirm,233,group.confirmMessage
             if(confirm == group.confirmMessage):
                 cursor.execute("insert into groupMemberAssosiation(group_id,member_id) values(%s,%s) ;", (group_id, self.user_id) )
                 conn.commit()
@@ -305,13 +306,14 @@ class User:
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
-        vote = Vote(vote_id)
+        vote = Vote(vote_id,self.user_id)
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         cursor.execute("select * from groups where group_id = %d and leader_id = %d" % (vote.group_id,self.user_id))
         # only leader can delete vote
         right = cursor.fetchall()
         if (right):
-            cursor.execute("delete from votes where vote_id = %d" % vote_id)
-            cursor.commit()
+            cursor.execute("delete from votes where vote_id = %d" % int(vote_id))
+            conn.commit()
             conn.close()
             return True
         conn.close()

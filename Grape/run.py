@@ -406,11 +406,12 @@ def groupDetail(group_id):
             role = '1'              #member
         if str(user_id) == str(group.leader_id):
             role = '2'              #leader
+
         return render_template('group-id.html', group_id=group_id, bulletin=bulletin,\
                                 group_data=group_data, discussions=discussions,\
                                 votes_list_voting=votes_list_voting,\
                                 votes_list_end=votes_list_end,username=user_data['username'],\
-                                memberNames=memberNames,user_id=user_id, role=role)
+                                memberNames=memberNames,memberNum=len(memberNames),user_id=user_id, role=role)
     abort(404)
                            #non-exist
 
