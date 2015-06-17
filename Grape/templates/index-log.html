@@ -32,8 +32,6 @@
             <ul class="list-group">
                 <li><a class="list-group-item tab-main" href="#news" data-toggle="tab">
                     News</a></li>
-                <li><a class="list-group-item tab-main" href="#message" data-toggle="tab">
-                    Message</a></li>
                 <hr>
                 <li><a class="list-group-item tab-main" href="#myGroup" data-toggle="tab">
                     My Group</a></li>
@@ -52,42 +50,25 @@
             <div class="tab-pane fade in active" id="news">
                 <h3>News</h3><hr>
                 <ul class="news list-group">
-                    <li class="list-group-item">
-                        <h4>News 1</h4>
-                        <p>details</p>
-                    </li>
-                    <li class="list-group-item">
-                        <h4>News 2</h4>
-                        <p>details</p>
-                    </li>
-                    <li class="list-group-item">
-                        <h4>News 3</h4>
-                        <p>details</p>
-                    </li>
-                </ul>
-            </div>
-            <div class="tab-pane fade" id="message">
-                <h3>Messages</h3><hr>
-                <ul class="message list-group">
-                {% for message in messages %}
-                    {% if message.viewed == 0 %}
-                    <li class="list-group-item message_not_viewed">
+                {% for news in newsList %}
+                    {% if news.viewed == 0 %}
+                    <li class="list-group-item news_not_viewed">
                     {% else %}
                     <li class="list-group-item">
                     {% endif %}
-                        <h4>{{message.content}}</h4>
-                        <p class="message_info">
-                            <span class="message_time">{{message.time}}&nbsp;&nbsp;</span>
-                            {% if message.viewed == 0 %}
-                            <a class="popover-options" id="message-confirm-{{ message.message_id }}"
+                        <h4>{{news.content}}</h4>
+                        <p class="news_info">
+                            <span class="news_time">{{news.time}}&nbsp;&nbsp;</span>
+                            {% if news.viewed == 0 %}
+                            <a class="popover-options" id="news-confirm-{{news.news_id }}"
                                title="Sure?"
                                data-container="body" data-toggle="popover"
-                               data-content='<a class="message_confirm btn btn-primary" victim1="{{ user_id }}" victim2="{{message.message_id}}">yes</a>
-                               <a class="btn btn-primary popover-close" origin="#message-confirm-{{ message.message_id }}">no</a>'>
+                               data-content='<a class="news_confirm btn btn-primary" victim1="{{ user_id }}" victim2="{{news.news_id}}">yes</a>
+                               <a class="btn btn-primary popover-close" origin="#news-confirm-{{ news.news_id }}">no</a>'>
                                  Mark as read  
                             </a>
                             {% endif %}
-                            <span class="message_viewed">viewed:{{message.viewed}}</span>
+                            <span class="news_viewed">viewed:{{news.viewed}}</span>
                         </p>
                     </li>
                 {% endfor %}

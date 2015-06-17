@@ -40,7 +40,7 @@ def index():
     message1 = session.get('message1')
     attendedGroupsList = []
     ownGroupsList = []
-    messages = []
+    news = []
     html = 'index.html'
     members = None
     leader = None
@@ -59,8 +59,8 @@ def index():
         for i in attendedGroups:
             if i not in ownGroups:
                 attendedGroupsList += [Group(i).get_data()]
-        messages = User1.get_messages()
-
+        news = User1.get_news()
+        print news
         if request.method == 'GET':
             #Find group by group_id
             group_id=request.args.get('group_id')
@@ -87,7 +87,7 @@ def index():
         username = u'请先登录'
 
     return render_template(html, user_id=user_id, username=username, islogin=islogin,\
-                            message1=message1, messages=messages,\
+                            message1=message1, newsList=news,\
                             attend=attendedGroupsList, own=ownGroupsList, \
                             members=members, leader=leader)
 
@@ -329,12 +329,12 @@ def deleteReply():
     reply_id = str(request.args.get('reply_id', 0, type=int))
     return jsonify(success=user.delete_reply(reply_id))
 
-@app.route('/_message_confirm', methods=['GET'])
-def message_confirm():
+@app.route('/_news_confirm', methods=['GET'])
+def news_confirm():
     user_id = str(request.args.get('user_id', 0, type=int))
-    message_id = str(request.args.get('message_id', 0, type=int))
+    news_id = str(request.args.get('news_id', 0, type=int))
     user = User(user_id = user_id)
-    return jsonify(success=user.message_confirm(message_id))
+    return jsonify(success=user.news_confirm(news_id))
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -390,11 +390,14 @@ def groupDetail(group_id):
     if(group.exist_group()):
         group_data = group.get_data()
         group_data['leader_name'] = User(user_id=group.leader_id).username
+
         discussions = group.get_discussions()
         votes_list_voting = group.get_votes_voting()
         votes_list_end = group.get_votes_expired()
         bulletin = group.get_bulletin()
         members = group.get_members()
+        news = group.get_news()
+
         memberNames=[]
         role = '0'
         for member in members:
@@ -409,7 +412,7 @@ def groupDetail(group_id):
 
         return render_template('group-id.html', group_id=group_id, bulletin=bulletin,\
                                 group_data=group_data, discussions=discussions,\
-                                votes_list_voting=votes_list_voting,\
+                                votes_list_voting=votes_list_voting, newsList=news,\
                                 votes_list_end=votes_list_end,username=user_data['username'],\
                                 memberNames=memberNames,memberNum=len(memberNames),user_id=user_id, role=role)
     abort(404)
@@ -478,11 +481,8 @@ def raise_a_vote_result(group_id):
                 
                 vote_options_set.append(vote_options)
 
-        print vote_contents_set[0]
-       
         #options = string.atoi(request.args.get('vote-options-num'))
         
-        print title,vote_contents_set,options_set,vote_options_set
         group = Group(group_id)
         group.create_vote(user_id,title,vote_contents_set,endtime_selection,options_set,vote_options_set,endtime)
     return redirect(url_for('groupDetail',group_id=group_id))

@@ -255,18 +255,28 @@
                 <div class="tab-pane fade in active" id="news">
                     <h3>News</h3><hr>
                     <ul class="news list-group">
+                    {% for news in newsList %}
+                        {% if news.viewed == 0 %}
+                        <li class="list-group-item news_not_viewed">
+                        {% else %}
                         <li class="list-group-item">
-                            <h4>News 1</h4>
-                            <p>details</p>
+                        {% endif %}
+                            <h4>{{news.content}}</h4>
+                            <p class="news_info">
+                                <span class="news_time">{{news.time}}&nbsp;&nbsp;</span>
+                                {% if news.viewed == 0 %}
+                                <a class="popover-options" id="news-confirm-{{news.news_id }}"
+                                   title="Sure?"
+                                   data-container="body" data-toggle="popover"
+                                   data-content='<a class="news_confirm btn btn-primary" victim1="{{ user_id }}" victim2="{{news.news_id}}">yes</a>
+                                   <a class="btn btn-primary popover-close" origin="#news-confirm-{{ news.news_id }}">no</a>'>
+                                     Mark as read  
+                                </a>
+                                {% endif %}
+                                <span class="news_viewed">viewed:{{news.viewed}}</span>
+                            </p>
                         </li>
-                        <li class="list-group-item">
-                            <h4>News 2</h4>
-                            <p>details</p>
-                        </li>
-                        <li class="list-group-item">
-                            <h4>News 3</h4>
-                            <p>details</p>
-                        </li>
+                    {% endfor %}
                     </ul>
                 </div>
 
