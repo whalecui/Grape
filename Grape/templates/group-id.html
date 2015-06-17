@@ -25,10 +25,6 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">Contact with Admin</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Settings</a></li>
-                <li class="divider"></li>
                 <li><a href="{{ url_for('logout') }}">Log Out</a></li>
             </ul>
         </li>
@@ -37,6 +33,7 @@
 
 {% block content %}
     <div class="group-details">
+    <h1>{{ group_data['name'] }}</h1>
         <div class="tab-group">
             <ul class="list-group">
                 {% if role == '0' %}
@@ -211,9 +208,39 @@
                         <div class="tab-pane fade" id="end">
                             <ul class="ended-votes-group list-group">
                             {% for vote_pair in votes_list_end %}
+
                                 <li class="list-group-item">
                                     <a href="{{ url_for('view_votes_result',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a><br>
-                                </li>
+                                <a class="show-detail" data-target="#vote-{{ vote_pair[0] }}">
+                                    details</a>
+                                {% if role == '2' %}
+                                <a class="popover-options" id="delete-vote-{{ vote_pair[0] }}"
+                                        title="Are you sure to delete this vote?"
+                                        data-container="body" data-toggle="popover"
+                                        data-content='<a class="vote-delete btn btn-primary" victim="{{ vote_pair[0] }}">yes</a>
+                                        <a class="btn btn-primary popover-close" origin="#delete-vote-{{ vote_pair[0] }}">no</a>'>
+                                        delete
+                                </a>
+                                {% endif %}
+                                <div id="vote-{{ vote_pair[0]}}" class="collapse">
+                                    <ul class="gp-detail">
+                                        <li class="gp-detail-topic">
+                                            Creator:{{ vote_pair[5] }}
+                                        </li>
+                                        <li class="gp-detail-topic">
+                                            Number Of Voters:{{ vote_pair[2] }}
+                                        </li>
+                                        <li class="gp-detail-topic">
+                                            Begintime:{{ vote_pair[3] }}
+                                        </li>
+                                        <li class="gp-detail-topic">
+                                            Endtime:{{ vote_pair[4] }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+
                             {% else %}
                                 <li class="list-group-item">
                                     <h4>Oops! There isn't any past vote!</h4>
@@ -290,7 +317,7 @@
                     <ul class="news list-group">
                         {% for entry in bulletin %}
                             <li class="list-group-item">
-                                <h4><a href="{{ url_for('show_bulletin', bulletin_id=entry.bulletin_id) }}">{{ entry['title'] }}</a></h4>
+                                <h4>{{ entry['title'] }}</h4>
                                 <a class="show-detail" data-toggle="collapse"
                                        data-target="#bulletin-{{ entry['bulletin_id'] }}">
                                         details</a>
@@ -308,12 +335,15 @@
                                 <span>create date: {{entry.create_time}}</span>
                                 <span>read_num: {{entry.read_num}}</span>
                                 <div id="bulletin-{{ entry['bulletin_id'] }}" class="collapse">
-                                    <ul class="gp-detail">
-                                        <li class="gp-detail-topic">
-                                            Creator:{{ entry['user_id'] }}
+                                    <ul class="blt-detail">
+                                        <li class="blt-detail-content">
+                                            Content: {{ entry['text'] }}
                                         </li>
-                                        <li class="gp-detail-leader">
-                                            Content:{{ entry['text'] }}
+                                        <li class="blt-detail-creator">
+                                            Creator: {{ entry['user_id'] }}
+                                        </li>
+                                        <li class="blt-detail-time">
+                                            Time: {{ entry['create_time'] }}
                                         </li>
                                     </ul>
                                 </div>

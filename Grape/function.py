@@ -610,7 +610,10 @@ class Group:
             sql = "select count(user_id) from vote_user_map where vote_id = %s" % vote['vote_id']
             cursor.execute(sql)
             voted_num = cursor.fetchone()['count(user_id)']
-            vote_pair = (vote['vote_id'],vote['title'],voted_num)
+            sql = "select username from user where user_id = %d" % vote['user_id']
+            cursor.execute(sql)
+            username = cursor.fetchone()['username']
+            vote_pair = (vote['vote_id'],vote['title'],voted_num, vote['begintime'], vote['endtime'], username)
             votes_list_end.append(vote_pair)
 
         conn.close()

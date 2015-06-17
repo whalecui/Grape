@@ -1,3 +1,23 @@
+
+Listen:
+1.	countdown.
+2.	chart.js.
+3.	log for votes.
+4.	show the number of voted person / ratio.
+5.	change the pattern for time record.(use Eng or html5)
+
+Morning:
+3.	do analysis for vote time. (*optional)
+
+4.	fix bug: admin cannot delete itself or other admin.
+
+Syachi:
+3.	revise the different ocassion for 404. (e.g. when no group found. / mis-operation)
+
+Birdy:
+	
+Hunter:
+
 For all:
 1.	convert all id to name.
 2.	test the inputs for chinese characters and invalid char.(', alert etc.)
@@ -16,8 +36,12 @@ For vote:
 2. display details in tab: vote number, create_time, vote_creator...
 3. display vote result instantly.(but cannot see the result before oneself voted.)
 4. when create a new vote: can remove options / questions.
+<<<<<<< HEAD
 5. display 5 recent voter.
 
 
 1. redirect when voted.
 2. countdown
+=======
+5. display 5 recent voter.
+>>>>>>> 901cded734b29cff19c61c754ec2804bbf078a5d
