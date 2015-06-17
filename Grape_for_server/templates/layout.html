@@ -1,0 +1,52 @@
+    <!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        {% block head %}
+            {% if title %}
+            <title>{{title}}</title>
+            {% else %}
+            <title>Grape</title>
+            {% endif %}
+            <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+            <meta http-equiv="content-script-type" content="text/javascript">
+            <script type="text/javascript" src="/static/js/jquery-1.7.1.min.js"></script>
+            <script type=text/javascript src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/icon.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/grape.css') }}">
+        {% endblock %}
+    </head>
+
+    <body>
+        <div class='main'>
+
+            <nav class="navbar navbar-default">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle"
+                            data-toggle="collapse" data-target="#navbar-collapse">
+                        <span class="sr-only">切换导航</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand logo" href="{{url_for('index')}}">
+                        <i class="grape"><s></s></i>Grape
+                    </a>
+                </div>
+                <div class="collapse navbar-collapse"
+                    id="navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        {% block navbar %}{% endblock %}
+                    </ul>
+                </div>
+            </nav>
+
+			<div class="content">
+                {% block content %}{% endblock %}
+            </div>
+
+        </div>
+        {% block modal %}{% endblock %}
+    </body>
+</html>

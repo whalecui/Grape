@@ -25,10 +25,6 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">Contact with Admin</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Settings</a></li>
-                <li class="divider"></li>
                 <li><a href="{{ url_for('logout') }}">Log Out</a></li>
             </ul>
         </li>
@@ -37,6 +33,7 @@
 
 {% block content %}
     <div class="group-details">
+    <h1>{{ group_data['name'] }}</h1>
         <div class="tab-group">
             <ul class="list-group">
                 {% if role == '0' %}
@@ -198,7 +195,7 @@
                             <ul class="voting-votes-list list-group">
                             {% for vote_pair in votes_list_voting %}
                                 <li class="list-group-item">
-                                    <a href="{{ url_for('vote_operation',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a><br>
+                                    <a href="{{ url_for('vote_operation',vote_id=vote_pair[0]) }}">{{vote_pair[1]}} {{vote_pair[2]}}</a><br>
                                 </li>
                             {% else %}
                                 <li class="list-group-item">
@@ -211,9 +208,39 @@
                         <div class="tab-pane fade" id="end">
                             <ul class="ended-votes-group list-group">
                             {% for vote_pair in votes_list_end %}
+
                                 <li class="list-group-item">
                                     <a href="{{ url_for('view_votes_result',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a><br>
-                                </li>
+                                <a class="show-detail" data-target="#vote-{{ vote_pair[0] }}">
+                                    details</a>
+                                {% if role == '2' %}
+                                <a class="popover-options" id="delete-vote-{{ vote_pair[0] }}"
+                                        title="Are you sure to delete this vote?"
+                                        data-container="body" data-toggle="popover"
+                                        data-content='<a class="vote-delete btn btn-primary" victim="{{ vote_pair[0] }}">yes</a>
+                                        <a class="btn btn-primary popover-close" origin="#delete-vote-{{ vote_pair[0] }}">no</a>'>
+                                        delete
+                                </a>
+                                {% endif %}
+                                <div id="vote-{{ vote_pair[0]}}" class="collapse">
+                                    <ul class="gp-detail">
+                                        <li class="gp-detail-topic">
+                                            Creator:{{ vote_pair[5] }}
+                                        </li>
+                                        <li class="gp-detail-topic">
+                                            Number Of Voters:{{ vote_pair[2] }}
+                                        </li>
+                                        <li class="gp-detail-topic">
+                                            Begintime:{{ vote_pair[3] }}
+                                        </li>
+                                        <li class="gp-detail-topic">
+                                            Endtime:{{ vote_pair[4] }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+
                             {% else %}
                                 <li class="list-group-item">
                                     <h4>Oops! There isn't any past vote!</h4>
@@ -252,7 +279,7 @@
                                 <a class="show-detail" data-toggle="collapse"
                                        data-target="#discussion-{{ discussion['discuss_id'] }}">
                                         details</a>
-                                {% if role == '2' or discussion.discuss_id == user_id %}
+                                {% if role == '2' %}
                                     <a class="popover-options" id="delete-discussion-{{ discussion['discuss_id'] }}"
                                         title="Are you sure to delete this group?"
                                         data-container="body" data-toggle="popover"
@@ -290,7 +317,7 @@
                     <ul class="news list-group">
                         {% for entry in bulletin %}
                             <li class="list-group-item">
-                                <h4><a href="{{ url_for('show_bulletin', bulletin_id=entry.bulletin_id) }}">{{ entry['title'] }}</a></h4>
+                                <h4>{{ entry['title'] }}</h4>
                                 <a class="show-detail" data-toggle="collapse"
                                        data-target="#bulletin-{{ entry['bulletin_id'] }}">
                                         details</a>
@@ -308,12 +335,15 @@
                                 <span>create date: {{entry.create_time}}</span>
                                 <span>read_num: {{entry.read_num}}</span>
                                 <div id="bulletin-{{ entry['bulletin_id'] }}" class="collapse">
-                                    <ul class="gp-detail">
-                                        <li class="gp-detail-topic">
-                                            Creator:{{ entry['user_id'] }}
+                                    <ul class="blt-detail">
+                                        <li class="blt-detail-content">
+                                            Content: {{ entry['text'] }}
                                         </li>
-                                        <li class="gp-detail-leader">
-                                            Content:{{ entry['text'] }}
+                                        <li class="blt-detail-creator">
+                                            Creator: {{ entry['user_id'] }}
+                                        </li>
+                                        <li class="blt-detail-time">
+                                            Time: {{ entry['create_time'] }}
                                         </li>
                                     </ul>
                                 </div>
@@ -348,21 +378,12 @@
 
             {% if role == '2' %}
                 <div class="tab-pane fade" id="newVote">
-                    <h3>New Vote</h3><hr>
+                    <h3>New Vote</h3>
+                    <a id="instant_vote" class="list-group-item tab-main">Instant Vote</a>
+                    <a id="longlasting_vote" class="list-group-item tab-main">Longlasting Vote</a>
+                    <hr>
                     <form action="{{ url_for('raise_a_vote_result',group_id=group_id) }}" method="get" id="vote-add-form">
-                        <label for="vote-content">Title of the vote</label>
-                        <input class="form-control" type="text" name="vote-content" id="vote-content"/>
-                        <input class="form-control" type="text" name="vote-options-num" id="vote-options-num" style="display:none;" value="0"/>
-                        <br>
-                        <input type="button" class="addOption btn btn-default" id="vote-add-button" value="Add new choices"/>
-                        <br><br>
-                        <input type="button" class="changeTimeSet btn btn-default"  id="change-time-set-button" value="timeset"/>
-                        <br><br>
-                        <input class="form-control" type="text" id="endtime-selection" name="endtime-selection" value = "2" style="display:none"/>
-                        <input type="text" id="timeinterval" name="timeinterval"    class="countdown_timepicker form-control" value="00:00:00" style="display:none;"/>
-                        <input type="text" id="datetime" name="datetime" class="ui_timepicker form-control" value=""/>
-                        <br>
-                        <button type="submit" class="btn btn-default">let's vote!</button>
+                        <h3>choose a type of vote</h3>
                     </form>
                 </div>
             {% endif %}

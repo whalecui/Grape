@@ -8,6 +8,7 @@ body
 {
 	height: 100%;
 	background-image: url("../images/grape.jpg");
+	background-size: 100%, 100%;
 }
 
 .navbar-default
