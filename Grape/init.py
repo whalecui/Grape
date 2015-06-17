@@ -50,7 +50,7 @@ def initdb():
 		desc = "description%d" % i
 		confirm = "thisiskey%d" % i
 		status = user.create_group(name, topic, desc, confirm)
-		if(status):
+		if(status=='success'):
 			print "group%d insert successfully!"% i
 
 
@@ -59,7 +59,7 @@ def initdb():
 		for j in range(i+1,11):			# jump the creation of the leader.
 			user = User(user_id = j)
 			status = user.join_group(group_id = i, confirm = confirm)
-			if(status):
+			if(status=='success'):
 				print "user%d joins the group%d"% (j, i)
 
 	count_dis = 0;
