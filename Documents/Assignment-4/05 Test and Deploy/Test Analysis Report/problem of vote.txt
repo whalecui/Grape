@@ -1,0 +1,9 @@
+点了instant vote没有任何输入就可以 let's vote了，建议加入不为空 等判断条件，之后点击past vote中的项会报错votes_max.append(max(i))为空
+建议在所有创建东西后显示创建成功弹窗，并跳到刚创建的东西
+
+多项投票只点击一个也可以投，但是会报错 之后就打不开了……
+
+modify a voting test是什么
+leader stop vote，leader save the result好像没有吧？删掉算了= =
+
+以及感觉前端展示的有些乱（数字）

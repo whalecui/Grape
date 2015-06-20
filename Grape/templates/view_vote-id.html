@@ -57,13 +57,13 @@
                         <br>
                         {% set contents = 0 %}
                         {% for vote_content in vote.vote_contents %}
-                            <label>{{vote_content}}</label>
+                            <label>Question:{{vote_content}}</label>
                             {% set contents = contents+1 %}
                             {% set options = 0 %}
-                            <br>
+                            <br><br>
                             {% for vote_option in vote_options_list[contents-1] %}
                                 {% set options = 1 + options %}
-                                    {{options}}.{{vote_option}}<br>
+                                <p>{{options}}.{{vote_option}}</p>
                             {% endfor %}
                             <h2>You have voted for {{vote.options_voted[contents-1]}}</h2>
                         {% endfor %}
