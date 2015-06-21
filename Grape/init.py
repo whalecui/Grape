@@ -68,7 +68,7 @@ def initdb():
 		for j in range(1,4):			# user1 is the id of 2.
 			title = "title%d"% j
 			content = "content%d"% j
-			status = group.create_discussion(user = j, title = title, content = content)
+			status = group.create_discussion(j, title, content)
 			if(status):
 				print "user%d creates discussion%d"% (j, j)
 				count_dis += 1

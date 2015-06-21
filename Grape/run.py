@@ -40,7 +40,7 @@ def index():
     message1 = session.get('message1')
     attendedGroupsList = []
     ownGroupsList = []
-    news = []
+    messages = []
     html = 'index.html'
     members = None
     leader = None
@@ -59,8 +59,7 @@ def index():
         for i in attendedGroups:
             if i not in ownGroups:
                 attendedGroupsList += [Group(i).get_data()]
-        news = User1.get_news()
-        print news
+        messages = User1.get_messages()
         if request.method == 'GET':
             #Find group by group_id
             group_id=request.args.get('group_id')
@@ -87,7 +86,7 @@ def index():
         username = u'请先登录'
 
     return render_template(html, user_id=user_id, username=username, islogin=islogin,\
-                            message1=message1, newsList=news,\
+                            message1=message1, messages=messages,\
                             attend=attendedGroupsList, own=ownGroupsList, \
                             members=members, leader=leader)
 
@@ -329,12 +328,12 @@ def deleteReply():
     reply_id = str(request.args.get('reply_id', 0, type=int))
     return jsonify(success=user.delete_reply(reply_id))
 
-@app.route('/_news_confirm', methods=['GET'])
+@app.route('/_message_confirm', methods=['GET'])
 def news_confirm():
     user_id = str(request.args.get('user_id', 0, type=int))
-    news_id = str(request.args.get('news_id', 0, type=int))
+    message_id = str(request.args.get('message_id', 0, type=int))
     user = User(user_id = user_id)
-    return jsonify(success=user.news_confirm(news_id))
+    return jsonify(success=user.message_confirm(message_id))
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -396,7 +395,7 @@ def groupDetail(group_id):
         votes_list_end = group.get_votes_expired()
         bulletin = group.get_bulletin()
         members = group.get_members()
-        news = group.get_news()
+        news = group.get_news(user_id)
 
         memberNames=[]
         role = '0'

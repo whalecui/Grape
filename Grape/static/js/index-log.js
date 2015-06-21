@@ -146,13 +146,13 @@ $(function(){
 
 $(function(){
     $('.popover-options').on('shown.bs.popover', function(){
-        $('.news_confirm').click(function(){
+        $('.message_confirm').click(function(){
             var user_id = Number($(this).attr('victim1'));
-            var news_id = Number($(this).attr('victim2'));
+            var message_id = Number($(this).attr('victim2'));
             var div = $(this).parent();
             console.log(user_id);
-            $.getJSON($SCRIPT_ROOT + '/_news_confirm',
-                {user_id: user_id, news_id: news_id},
+            $.getJSON($SCRIPT_ROOT + '/_message_confirm',
+                {user_id: user_id, message_id: message_id},
                 function(data){
                     if(data.success == '0'){
                         alert('failed');

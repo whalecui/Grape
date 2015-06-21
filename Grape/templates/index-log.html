@@ -30,8 +30,8 @@
     <div class="group-details">
         <div class="tab-group">
             <ul class="list-group">
-                <li><a class="list-group-item tab-main" href="#news" data-toggle="tab">
-                    News</a></li>
+                <li><a class="list-group-item tab-main" href="#messages" data-toggle="tab">
+                    Messages</a></li>
                 <hr>
                 <li><a class="list-group-item tab-main" href="#myGroup" data-toggle="tab">
                     My Group</a></li>
@@ -47,29 +47,39 @@
             </ul>
         </div>
         <div id="tab-content-main" class="tab-content tab-content-main">
-            <div class="tab-pane fade in active" id="news">
-                <h3>News</h3><hr>
-                <ul class="news list-group">
-                {% for news in newsList %}
-                    {% if news.viewed == 0 %}
-                    <li class="list-group-item news_not_viewed">
-                    {% else %}
+            <div class="tab-pane fade in active" id="messages">
+                <h3>Messages</h3><hr>
+                <ul class="messages list-group">
+                {% for message in messages %}
                     <li class="list-group-item">
-                    {% endif %}
-                        <h4>{{news.content}}</h4>
-                        <p class="news_info">
-                            <span class="news_time">{{news.time}}&nbsp;&nbsp;</span>
-                            {% if news.viewed == 0 %}
-                            <a class="popover-options" id="news-confirm-{{news.news_id }}"
-                               title="Sure?"
-                               data-container="body" data-toggle="popover"
-                               data-content='<a class="news_confirm btn btn-primary" victim1="{{ user_id }}" victim2="{{news.news_id}}">yes</a>
-                               <a class="btn btn-primary popover-close" origin="#news-confirm-{{ news.news_id }}">no</a>'>
-                                 Mark as read  
-                            </a>
-                            {% endif %}
-                            <span class="news_viewed">viewed:{{news.viewed}}</span>
-                        </p>
+                        {% if message.type == 0 %}
+                            {% set key = 'fa-heart-o first-time-icon icon' %}
+                        {% elif message.type == 1 %}
+                            {% set key = 'fa-bullhorn bulletin-icon icon' %}
+                        {% elif message.type == 2 %}
+                            {% set key = 'fa-table vote-icon icon' %}
+                        {% elif message.type == 3 %}
+                            {% set key = 'fa-weixin discuss-icon icon' %}
+                        {% else %}
+                            {% set key = 'fa-chain-broken delete-icon icon' %}
+                        {% endif %}
+                        <div class="icon-div">
+                            <span class="fa fa-4x {{key}}"></span>
+                        </div>
+                        <div class="message-content-div">
+                            <h4>{{message.content}}</h4>
+                            <p class="news_info">
+                                <span class="news_time">{{message.time}}&nbsp;&nbsp;</span>
+                                <span class="news_viewed">viewed:{{message.viewed}}</span>
+                                <a class="popover-options" id="message-confirm-{{ message['message_id'] }}"
+                                   title="Sure?"
+                                   data-container="body" data-toggle="popover"
+                                   data-content='<a class="message_confirm btn btn-primary" victim1="{{ user_id }}" victim2="{{ message['message_id'] }}">yes</a>
+                                   <a class="btn btn-primary popover-close" origin="#message-confirm-{{ message['message_id'] }}">no</a>'>
+                                   Mark as read
+                                </a>
+                            </p>
+                        </div>
                     </li>
                 {% endfor %}
                 </ul>

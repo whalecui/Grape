@@ -56,21 +56,17 @@ class User:
         conn.close()
         return data[0]
 
-    def get_news(self):
+    def get_messages(self):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        # sql = 'select group_id from group where leader_id = %d \
-        #        UNION \
-        #        select group_id from groupMemberAssosiation where member_id = %d \
-        #        ORDER BY 1;' % (self.user_id, self.user_id)
-        # cursor.execute(sql)
-        # group_list = cursor.fetchall()
-        # news generated
-        sql = 'select * from news where\
-               receiver = %d \
-               order by viewed, time desc;' % self.user_id
+        
+        receiver = self.user_id
+        sql = "select * from message \
+               where receiver = %d and viewed = 0 \
+               order by time desc;" % (receiver)
         cursor.execute(sql)
         data = cursor.fetchall()
+        print "message data is:", data
         conn.close()
         return data;
 
@@ -83,12 +79,31 @@ class User:
         if(exist):
             print 'failed to create group :', groupname
             return 'exist'
+
         cursor.execute("insert into groups(name,topic,description,confirmMessage,leader_id) values(%s,%s,%s,%s,%s);",\
             (groupname, topic,desc, confirmMessage, self.user_id))
         conn.commit()
 
         cursor.execute("select group_id from groups where name='"+groupname+"';")
         group_id=cursor.fetchone()['group_id']
+
+        create_message = "Have a look at new bulletin(s) in Group %s!" % groupname
+        sql = 'insert into message(type, group_id, receiver, content) \
+               values(%d, %d, %d, "%s");' % (1, group_id, self.user_id, create_message)
+        cursor.execute(sql)
+        conn.commit()
+
+        create_message = "Have a look at new discussion(s) in Group %s!" % groupname
+        sql = 'insert into message(type, group_id, receiver, content) \
+               values(%d, %d, %d, "%s");' % (3, group_id, self.user_id, create_message)
+        cursor.execute(sql)
+        conn.commit()
+
+        create_message = "Have a look at new vote(s) in Group %s!" % groupname
+        sql = 'insert into message(type, group_id, receiver, content) \
+               values(%d, %d, %d, "%s");' % (2, group_id, self.user_id, create_message)
+        cursor.execute(sql)
+        conn.commit()
 
         cursor.execute("insert into groupMemberAssosiation(group_id,member_id) values(%s,%s);",(group_id,self.user_id))
         conn.commit()
@@ -112,11 +127,13 @@ class User:
             for relation in relations:
                 if relation['member_id'] == self.user_id:
                     continue
-                delete_message = "The leader of group %s has deleted the group." % groupname['name']
-                sql = "insert into news(type, group_id, receiver, content)\
-                       values(%d, %s, %s, '%s');" % (7, group_id, 0, delete_message)
-                cursor.execute(sql)
+            delete_message = "The leader of group %s has deleted this group." % groupname['name']
+            sql = "insert into message(type, group_id, receiver, content)\
+                   values(%d, %s, %s, '%s');" % (4, group_id, 0, delete_message)
+            cursor.execute(sql)
             
+
+            cursor.execute("delete from message where group_id'"+group_id+"';")
             cursor.execute("delete from groups where group_id='"+group_id+"';")
             conn.commit()
             cursor.execute("delete from groupMemberAssosiation where group_id='"+group_id+"';")
@@ -160,6 +177,25 @@ class User:
                 return 'joined'
             print confirm,233,group.confirmMessage
             if(confirm == group.confirmMessage):
+
+                create_message = "Have a look at new bulletin(s) in Group %s!" % group.name
+                sql = 'insert into message(type, group_id, receiver, content) \
+                       values(%d, %s, %d, "%s");' % (1, group_id, self.user_id, create_message)
+                cursor.execute(sql)
+                conn.commit()
+
+                create_message = "Have a look at new discussion(s) in Group %s!" % group.name
+                sql = 'insert into message(type, group_id, receiver, content) \
+                       values(%d, %s, %d, "%s");' % (3, group_id, self.user_id, create_message)
+                cursor.execute(sql)
+                conn.commit()
+
+                create_message = "Have a look at new vote(s) in Group %s!" % group.name
+                sql = 'insert into message(type, group_id, receiver, content) \
+                       values(%d, %s, %d, "%s");' % (2, group_id, self.user_id, create_message)
+                cursor.execute(sql)
+                conn.commit()
+
                 cursor.execute("insert into groupMemberAssosiation(group_id,member_id) values(%s,%s) ;", (group_id, self.user_id) )
                 conn.commit()
                 conn.close()
@@ -181,10 +217,18 @@ class User:
         cursor.execute("select * from groupMemberAssosiation where member_id='"+str(self.user_id)+"' and group_id='"+group_id+"';")
         exist = cursor.fetchall()
         if(exist):
-            quit_message = "The member %s in group %s has quited the group." % (self.username,group.name)
+
+            quit_message = "The member %s quitted our group." % (self.username)
             sql = "insert into news(type, group_id, receiver, content)\
+                   values(%d, %s, %s, '%s');" % (6, group_id, 0, quit_message)
+            cursor.execute(sql)
+
+            quit_message = "The member %s quitted your group %s." % (self.username, group.name)
+            sql = "insert into message(type, group_id, receiver, content)\
                    values(%d, %s, %s, '%s');" % (8, group_id, group.leader_id, quit_message)
             cursor.execute(sql)
+
+            cursor.execute("delete from message where receiver='"+str(self.user_id)+"' and group_id='"+group_id+"';")
 
             cursor.execute("delete from groupMemberAssosiation where member_id='"+str(self.user_id)+"' and group_id='"+group_id+"';")
             conn.commit()
@@ -228,9 +272,18 @@ class User:
             exist=cursor.fetchall()
             if(exist):
 
-                delete_message = "The leader of group %s has removed you from the group." % exist.name
+                user = User(user_id = user_id)
+                delete_message = "Group member %s is removed from our group." % user.username
                 sql = "insert into news(type, group_id, receiver, content)\
+                       values(%d, %s, %s, '%s');" % (5, group_id, user_id, delete_message)
+                cursor.execute(sql)
+
+                delete_message = "The leader of group %s has removed you from the group." % exist.name
+                sql = "insert into message(type, group_id, receiver, content)\
                        values(%d, %s, %s, '%s');" % (4, group_id, user_id, delete_message)
+                cursor.execute(sql)
+
+                sql = "delete from message where group_id = %s and receiver = %d;" % (group_id, user_id)
                 cursor.execute(sql)
 
                 cursor.execute("delete from groupMemberAssosiation where group_id='%s' and member_id='%s';"),(group_id,user_id)
@@ -243,10 +296,10 @@ class User:
         print "Not leader"
         return False
 
-    def news_confirm(self,news_id):
+    def message_confirm(self,message_id):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = "update news set viewed = 1 where news.news_id = %s;" % news_id
+        sql = "update message set viewed = 1 where message.message_id = %s;" % message_id
         cursor.execute(sql)
         conn.commit()
         conn.close()
@@ -303,7 +356,7 @@ class User:
         user = cursor.fetchone()
 
         welcome_content = "welcome to our Grape system, %s!" % user['username']
-        sql = 'insert into news(type, group_id, receiver, content) \
+        sql = 'insert into message(type, group_id, receiver, content) \
                values(%d, %d, %d, "%s");' % (0, 0, user['user_id'], welcome_content)
         cursor.execute(sql)
         conn.commit()
@@ -337,10 +390,10 @@ class User:
         group = Group(discuss.group_id)
         valid = (discuss.user_id == self.user_id) or (group.leader_id == self.user_id)
         if(valid):
-            delete_message = "Your discussion %s in group %s has been deleted by leader."\
+            delete_message = "Your discussion <i>%s</i> in group %s has been deleted by leader."\
                               % (discuss.title,group.name)
             sql = "insert into news(type, group_id, receiver, content)\
-                   values(%d, %s, %s, '%s');" % (5, group.group_id, discuss.user_id, delete_message)
+                   values(%d, %s, %s, '%s');" % (6, group.group_id, discuss.user_id, delete_message)
             cursor.execute(sql)
 
             sql = "delete from discussion where discuss_id = %s;" % discuss_id
@@ -361,10 +414,10 @@ class User:
         group = Group(discuss.group_id)
         valid = (reply.user_id == self.user_id) or (group.leader_id == self.user_id)
         if(valid):
-            delete_message = 'Your reply: "%s" on discussion %s has been deleted by leader.'\
+            delete_message = 'Your reply: "%s" on discussion <i>%s</i> has been deleted by leader.'\
                               % (reply.content, discuss.title)
             sql = "insert into news(type, group_id, receiver, content)\
-                   values(%d, %s, %s, '%s');" % (6, group.group_id, reply.user_id, delete_message)
+                   values(%d, %s, %s, '%s');" % (7, group.group_id, reply.user_id, delete_message)
             cursor.execute(sql)
 
             sql = "delete from reply_discuss where reply_id = %s;" % reply_id
@@ -406,6 +459,12 @@ class Admin(User):
         cursor.execute("select name from groups where group_id='"+group_id+"';")
         right=cursor.fetchall()
         if(right):
+
+            delete_message = "The group %s is deleted by the Admin." % (self.name)
+            sql = "insert into message(type, group_id, receiver, content)\
+                   values(%d, %s, %d, '%s');" % (4, self.group_id, 0, delete_message)
+            cursor.execute(sql)
+
             cursor.execute("delete from groups where group_id='"+group_id+"';")
             conn.commit()
             cursor.execute("delete from groupMemberAssosiation where group_id='"+group_id+"';")
@@ -453,6 +512,7 @@ class Admin(User):
         #     print 
         conn.close() 
         return users
+
     def delete_user(self,user_id):
         user_id=str(user_id)
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
@@ -469,8 +529,9 @@ class Admin(User):
             conn.commit()
             cursor.execute("delete from groupMemberAssosiation where member_id='"+user_id+"';")
             conn.commit()
+            cursor.execute("delete from message where receiver = '"+user_id+"';")
+            conn.commit()
             cursor.execute("select group_id from groups where leader_id='"+user_id+"';")
-
             leadergroups=cursor.fetchall()
             # print 'leadergroups',leadergroups
             if(leadergroups):
@@ -508,10 +569,13 @@ class Group:
         exist=cursor.fetchall()
         return exist
 
-    def get_news(self):
+    def get_news(self, user_id):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        sql = 'select * from news where group_id = %s order by time desc;' % self.group_id
+        receiver = -1*user_id
+        sql = 'select * from news where \
+               (group_id = %s and receiver != %d) \
+               order by time desc;' % (self.group_id, receiver)
         cursor.execute(sql)
         data = cursor.fetchall()
         return data
@@ -544,19 +608,27 @@ class Group:
         #print "discussions: ",discussions
         return discussions
 
-    def create_discussion(self, user, title, content):
+    def create_discussion(self, user_id, title, content):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 
-        create_message = "A new discussion %s is created in group %s" % (title,self.name)
+        create_message = "A new discussion <i>%s</i> is created in our group" % (title)
+        receiver = -1*(user_id)
         sql = "insert into news(type, group_id, receiver, content)\
-               values(%d, %s, %d, '%s');" % (1, self.group_id, 0, create_message)
+               values(%d, %s, %d, '%s');" % (1, self.group_id, receiver, create_message)
         cursor.execute(sql)
 
+        excluder = user_id
+        sql = "update message \
+               set viewed = 0, time = CURRENT_TIMESTAMP \
+               where type = 3 and group_id = %s and receiver != %d;" % (self.group_id, excluder)
+        cursor.execute(sql)
+        conn.commit()
+
         sql = "insert into discussion(user_id, group_id, title, content) values(%d,%s,'%s','%s');"\
-              % (user, self.group_id, title, content)
+              % (user_id, self.group_id, title, content)
         cursor.execute(sql)
         conn.commit()
         conn.close()
@@ -568,8 +640,21 @@ class Group:
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        print len(options_set),"What?"
-        sql = """insert into votes (user_id,group_id,title,voting,type,endtime) values (%s,%s,'%s',1,%s,%s)""" % (user_id,self.group_id,title,selection,endtime)
+
+        create_message = "A new vote <i>%s</i> is created in our group!" % (title)
+        receiver = -1*(user_id)
+        sql = "insert into news(type, group_id, receiver, content)\
+               values(%d, %s, %d, '%s');" % (3, self.group_id, receiver, create_message)
+        cursor.execute(sql)
+
+        excluder = user_id
+        sql = "update message \
+               set viewed = 0, time = CURRENT_TIMESTAMP \
+               where type = 2 and group_id = %s and receiver != %d;" % (self.group_id, excluder)
+        cursor.execute(sql)
+        conn.commit()
+
+        sql = """insert into votes (user_id,group_id,title,voting,type,endtime) values (%s,%s,%s,1,%s,%s)""" % (user_id,self.group_id,title,selection,endtime)
         cursor.execute(sql)
         conn.commit()
 
@@ -665,15 +750,28 @@ class Group:
 
         return vote_record
 
-    def create_bulletin(self, user, title, text):
+    def create_bulletin(self, user_id, title, text):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
-        print title,text
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-        if self.leader_id == user:
+        if self.leader_id == user_id:
+
+            create_message = "A new bulletin <i>%s</i> is created in our group!" % (title)
+            receiver = -1*(user_id)
+            sql = "insert into news(type, group_id, receiver, content)\
+                   values(%d, %s, %d, '%s');" % (4, self.group_id, receiver, create_message)
+            cursor.execute(sql)
+
+            excluder = user_id
+            sql = "update message \
+                   set viewed = 0, time = CURRENT_TIMESTAMP \
+                   where type = 1 and group_id = %s and receiver != %d;" % (self.group_id, excluder)
+            cursor.execute(sql)
+            conn.commit()
+
             sql = "insert into bulletin(user_id, group_id, title, text) values(%d,%s,'%s','%s');"\
-                  % (user, self.group_id, title, text)
+                  % (user_id, self.group_id, title, text)
             cursor.execute(sql)
             conn.commit()
             conn.close()
@@ -766,6 +864,14 @@ class Discussion:
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+
+        # sql = "select receiver from news where type = 2 and group_id = %s" % self.group_id;
+        # create_message = "New replies in discussion <i>%s</i>!" % (self.title)
+        # receiver = -1*(user_id)
+        # sql = "insert into news(type, group_id, receiver, content)\
+        #        values(%d, %s, %d, '%s');" % (2, self.group_id, receiver, create_message)
+        # cursor.execute(sql)
+
         sql = "insert into reply_discuss(discuss_id, user_id, content) values(%d,%d,'%s');"\
               % (self.discuss_id, user_id, content)
         cursor.execute(sql)

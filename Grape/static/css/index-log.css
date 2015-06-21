@@ -36,9 +36,33 @@
 	margin: auto;
 }
 
-.news_not_viewed 
+.message_not_viewed 
 {
     border: 1px solid #FFA500;
 }
 
+.icon-div {
+    float: left;
+    margin: 5px 18px 13px 4px;
+    min-width: 70px;
+}
 
+.discuss-icon {
+    color: rgb(116, 192, 98);
+}
+
+.bulletin-icon {
+    color: rgb(139, 100, 186);
+    margin-left: 8px;
+}
+
+.vote-icon {
+    color: rgb(217, 112, 51);
+    margin-left: 7px;
+    margin-top: 2px;
+}
+
+.delete-icon {
+    color: rgb(248, 25, 25);
+    margin-left: 7px;
+}
