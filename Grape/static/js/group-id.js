@@ -327,7 +327,7 @@ function voteReady()
         $(vote_li).attr('id','vote'+votes.toString());
 
         $(vote_li).html(
-            "<label for=\"vote-content-"+votes+"\">Title of the vote</label>" +
+            "<label for=\"vote-content-"+votes+"\">Title of the item</label>" +
             "<input class=\"form-control\" type=\"text\" name=\"vote-content-"+votes+
             "\" id=\"vote-content-"+votes+"\"/>" +
             "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-"+votes+
@@ -368,7 +368,7 @@ $(function(){
     $('#instant_vote').click(function(){
         // $('#vote-add-form').html("");
         $('#vote-add-form').html(
-            "<label for=\"vote-content\">Title of the vote</label>" +
+            "<label for=\"vote-content\">Title of the Vote</label>" +
             "<input class=\"form-control\" type=\"text\" name=\"vote-content\"" +
             "id=\"vote-content\"/>" +
             "<input class=\"form-control\" type=\"text\" name=\"vote-options-num\"" +
@@ -405,11 +405,11 @@ $(function(){
     $('#longlasting_vote').click(function(){
         // $("vote-add-form").html("");
         $("#vote-add-form").html(
-            "<label for=\"title\">Title of the content</label>" +
+            "<label for=\"title\">Title of the Vote</label>" +
             "<input class=\"form-control\" type=\"text\" name=\"title\"/>" +
                 "<ul id=\"votes_content_set\">" +
                     "<li class=\"list-group-item\" id=\"vote1\">" +
-                    "<label for=\"vote-content-1\">Title of the vote</label>" +
+                    "<label for=\"vote-content-1\">Title of the item</label>" +
                     "<input class=\"form-control\" type=\"text\" name=\"vote-content-1\"" +
                     "id=\"vote-content-1\"/>" +
                     "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-1\"" +
