@@ -18,8 +18,8 @@
             <link rel="stylesheet" href="{{ url_for('static', filename='css/docs.min.css') }}">
         {% endblock %}
     </head>
-
     <body>
+        {% block nav %}
         <nav class="navbar navbar-default">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle"
@@ -40,6 +40,7 @@
                 </ul>
             </div>
         </nav>
+        {% endblock %}
 
         {% block banner %}{% endblock %}
 
@@ -56,13 +57,7 @@
                     Designed and built by team Grape from 2013 IEEE class
                 </p>
                 <p>
-                    Front-end designed by Birdy and built by Syachi
-                </p>
-                <p>
-                    Back-end Designed and finished by team Grape
-                </p>
-                <p>
-                    Database Designed by Grape and finished by Morning, Hunter, Birdy and Listen
+                    2015 Group Undefined. All right reserved.
                 </p>
                 </div>
             </footer>

@@ -10,19 +10,21 @@
     </script>
 {% endblock %}
 
-{% block navbar %}
-    <li><a href="#" data-toggle="modal" data-target="#logModal">
-        Log In
-    </a></li>
-    <li><a href="#"  data-toggle="modal" data-target="#regModal">
-        <i class="fa fa-user-plus"></i> Sign Up
-    </a></li>
+{% block nav %}
 {% endblock %}
 
 {% block content %}
     <div class="grape-index">
-        <h1>Grape</h1>
-        <p>some words of zhuangbility</p>
+    	<div id="grape-title">
+	        <h1>Grape</h1>
+    	</div>
+<!--     	<div id="grape-intro">
+	        <p>some words of zhuangbility</p>
+    	</div> -->
+    </div>
+	<div id="log-in" data-toggle="modal" data-target="#logModal"><span>Log In</span></div>
+	<div id="sign-up" data-toggle="modal" data-target="#regModal">
+        <span> Sign Up </span>
     </div>
 {% endblock %}
 
@@ -110,4 +112,7 @@
 				</div>
 			</div>
 		</div><!-- end of register modal -->
+{% endblock %}
+
+{% block footer %}
 {% endblock %}

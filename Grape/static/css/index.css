@@ -1,14 +1,14 @@
 .container
 {
 	width: 100% !important;
-	/*min-height: 100vh;*/
+	min-height: 100vh;
 }
 
 body
 {
 	height: 100%;
-	background-image: url("../images/grape.jpg");
-	background-size: 100%, 100%;
+	background-image: url("../images/grape-1.jpg");
+	background-height: 100%;
 }
 
 .navbar-default
@@ -24,9 +24,57 @@ body
 	/*font-weight: bold;*/
 }
 
+#grape-title {
+	position: absolute;
+	top: 15%;
+	right: 8%;
+	text-align: center;
+
+}
+
 .content
 {
 	width: 100% !important;
 	margin: auto;
 }
 
+div[data-toggle] {
+	display: inline-block;
+	position: absolute;
+	right: 18%;
+	width: 200px;
+	height: 45px;
+	border: 1px white solid;
+	font-size: 25px;
+	font-family: Garamond;
+	text-align: center;
+	color: white;
+}
+
+div[data-toggle] span {
+	display: inline-block;
+	margin-top: 2px;
+}
+
+#log-in {
+	top: 64%;
+	transition: background-color 500ms,
+				color 800ms;
+}
+
+#log-in:hover {
+	background-color: rgba(255,255,255,0.7);
+	color: black;
+
+}
+
+#sign-up {
+	top: 75%;
+	transition: background-color 500ms,
+				color 800ms;
+}
+
+#sign-up:hover {
+	background-color: rgba(255,255,255,0.7);
+	color: black;
+}
