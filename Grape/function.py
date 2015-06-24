@@ -66,7 +66,7 @@ class User:
                order by time desc;" % (receiver)
         cursor.execute(sql)
         data = cursor.fetchall()
-        print "message data is:", data
+        # print "message data is:", data
         conn.close()
         return data;
 
