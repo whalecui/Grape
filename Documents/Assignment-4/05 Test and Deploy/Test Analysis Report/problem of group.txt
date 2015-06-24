@@ -1,13 +1,22 @@
 1.创建account的时候 Username好像有检查符号什么的 但是打钩后修改好像就不再检查了
+<<<你好坏……
+
 2.创建New group方面，我...用了引号，然后因为后台出错，所以前台没有任何反应，所以我还以为不工作了。前台的检查还是很好的。
+<<<是create_message的时候create_message = "Have a look at new bulletin(s) in Group %s!" % groupname有两个引号导致sql语法错误。建议在前台检查一下（我不太会……）
 3.Invite someone to the group
   Member leader rename nickname
 没有做..nickname没什么大意义吧
 invite someone to the group 我觉得可有可无，告诉别人小组ID和别人告诉你USER_ID一样麻烦，毕竟没有好友功能和小组成员信息查看什么的。
+<<<说的好……
 
-3.dismiss group没有做，觉得有一定必要，但是这个要删的东西想想就好麻烦，不过一个表可以创建多个外键。
+4.dismiss group没有做，觉得有一定必要，但是这个要删的东西想想就好麻烦，不过一个表可以创建多个外键。
 
-4.accuse of some invalid group 没有做,觉得没什么必要，觉得不好就退出好了..
+<<<这个有啊 叫delete ...而且我在TODO里说让你们把自己的东西删一下不知道有没有人做……
+
+5.accuse of some invalid group 没有做,觉得没什么必要，觉得不好就退出好了..
+
+<<<说的好……
 
 
 老师上次说提供兴趣什么的不知道怎么考虑，就是推荐一些组。或者我们就只是工作用途？
+<<<他说像我们这种提供组号和密码的就是工作用途的  如果可以按照名字或描述搜索就是兴趣群组了  怎么做都可以。
