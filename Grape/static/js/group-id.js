@@ -22,21 +22,22 @@ $(function(){
 });
 
 $(function(){
-    $('#quit').click(function(){
-        var url = window.location.href;
-        var patt = /gp+[0-9]*/g;
-        url = url.match(patt)[0];
-        patt = /[^0-9]/g;
-        var group_id = url.replace(patt, '');
-        $.getJSON($SCRIPT_ROOT + '/_quit_group',
-            {group_id: group_id},
-            function(data){
-                if(data.status == '0'){
-                    alert('fail!!');
-                }else if(data.status == '1') {
-                    // location.reload();
-                    location.href='/';
-                }
+    $('.popover-options').on('shown.bs.popover', function(){
+        $('#quit').click(function(){
+            var url = window.location.href;
+            var patt = /gp+[0-9]*/g;
+            url = url.match(patt)[0];
+            patt = /[^0-9]/g;
+            var group_id = url.replace(patt, '');
+            $.getJSON($SCRIPT_ROOT + '/_quit_group',
+                {group_id: group_id},
+                function(data){
+                    if(data.status == '0'){
+                        alert('fail!!');
+                    }else if(data.status == '1') {
+                        location.reload();
+                    }
+            });
         });
     });
 });

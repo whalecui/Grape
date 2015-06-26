@@ -824,6 +824,12 @@ class Group:
             print e
         return data[0]
 
+    def news(self, type, receiver, content):
+        conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        sql = "insert into message(type, group_id, receiver, content)\
+                   values(%d, %s, %d, '%s');" % (type, self.group_id, receiver, content)
+        cursor.execute(sql)
 
 class Discussion:
     def __init__(self,discuss_id):
