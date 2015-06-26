@@ -123,7 +123,7 @@ $(function(){
 $(function(){
     $('.popover-options').on('shown.bs.popover', function(){
         $('.bulletin-delete').click(function(){
-            var id = Number($(this).attr('victim'));
+            var bulletin_id = Number($(this).attr('victim'));
             var div = $(this).parent();
             console.log(bulletin_id);
             $.getJSON($SCRIPT_ROOT + '/_delete_bulletin',
