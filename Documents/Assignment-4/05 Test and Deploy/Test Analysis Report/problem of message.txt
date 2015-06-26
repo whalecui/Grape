@@ -1,0 +1,4 @@
+message / news 部分的ui待优化。
+当message过多时，隐藏剩余部分（more）
+
+reply被删除和创建时的功能未加入。
