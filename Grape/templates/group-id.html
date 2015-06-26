@@ -185,7 +185,13 @@
                     </tbody>
                 </table>
                 {% if role == '1' %}
-                    <button id="quit" class="btn btn-default">quit</button>
+                    <a class="popover-options btn btn-default" id="quit-group"
+                            title="Are you sure to quit this group?"
+                            data-container="body" data-toggle="popover"
+                            data-content='<a class="group-quit btn btn-primary" id="quit">yes</a>
+                            <a class="btn btn-primary popover-close" origin="#quit-group">no</a>'>
+                            quit
+                    </a>
                 {% endif %}
             </div>
             {% endif %}
@@ -203,7 +209,42 @@
                             <ul class="voting-votes-list list-group">
                             {% for vote_pair in votes_list_voting %}
                                 <li class="list-group-item">
-                                    <a href="{{ url_for('vote_operation',vote_id=vote_pair[0]) }}">{{vote_pair[1]}} {{vote_pair[2]}}/{{memberNum}}</a><br>
+                                    <div class="row">
+                                        <div class="col-md-2" style="text-align: center;">
+                                            <i class="fa fa-4x fa-bar-chart"></i>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <h4><a href="{{ url_for('vote_operation',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a></h4>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <a class="show-detail btn btn-default" data-toggle="collapse"
+                                               data-target="#vote-{{ vote_pair[0] }}">
+                                                details</a>
+                                        {% if role == '2' or username == vote_pair[5] %}
+                                            <a class="popover-options btn btn-default" id="delete-vote-{{ vote_pair[0] }}"
+                                                    title="Are you sure to delete this vote?"
+                                                    data-container="body" data-toggle="popover"
+                                                    data-content='<a class="vote-delete btn btn-primary" victim="{{ vote_pair[0] }}">yes</a>
+                                                    <a class="btn btn-primary popover-close" origin="#delete-vote-{{ vote_pair[0] }}">no</a>'>
+                                                    delete
+                                            </a>
+                                        {% endif %}
+                                        <div id="vote-{{ vote_pair[0]}}" class="collapse row vote-detail">
+                                            <ul>
+                                                <li>
+                                                    Created by {{ vote_pair[5] }} on {{ vote_pair[3] }}.
+                                                </li>
+                                                <li>
+                                                    {{ vote_pair[2] }} among {{ memberNum }} attended this vote.
+                                                </li>
+                                                <li>
+                                                    Will end on {{ vote_pair[4] }}.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </li>
                             {% else %}
                                 <li class="list-group-item">
@@ -218,36 +259,43 @@
                             {% for vote_pair in votes_list_end %}
 
                                 <li class="list-group-item">
-                                    <a href="{{ url_for('view_votes_result',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a><br>
-                                <a class="show-detail" data-target="#vote-{{ vote_pair[0] }}">
-                                    details</a>
-                                {% if role == '2' %}
-                                <a class="popover-options" id="delete-vote-{{ vote_pair[0] }}"
-                                        title="Are you sure to delete this vote?"
-                                        data-container="body" data-toggle="popover"
-                                        data-content='<a class="vote-delete btn btn-primary" victim="{{ vote_pair[0] }}">yes</a>
-                                        <a class="btn btn-primary popover-close" origin="#delete-vote-{{ vote_pair[0] }}">no</a>'>
-                                        delete
-                                </a>
-                                {% endif %}
-                                <div id="vote-{{ vote_pair[0]}}" class="collapse">
-                                    <ul class="gp-detail">
-                                        <li class="gp-detail-topic">
-                                            Creator:{{ vote_pair[5] }}
-                                        </li>
-                                        <li class="gp-detail-topic">
-                                            Number Of Voters:{{ vote_pair[2] }} / {{memberNum}}
-                                        </li>
-                                        <li class="gp-detail-topic">
-                                            Begintime:{{ vote_pair[3] }}
-                                        </li>
-                                        <li class="gp-detail-topic">
-                                            Endtime:{{ vote_pair[4] }}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-
+                                    <div class="row">
+                                        <div class="col-md-2" style="text-align: center;">
+                                            <i class="fa fa-4x fa-bar-chart"></i>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <h4><a href="{{ url_for('view_votes_result',vote_id=vote_pair[0]) }}">{{vote_pair[1]}}</a></h4>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <a class="show-detail btn btn-default" data-toggle="collapse"
+                                               data-target="#vote-{{ vote_pair[0] }}">
+                                                details</a>
+                                        {% if role == '2' or username == vote_pair[5] %}
+                                            <a class="popover-options btn btn-default" id="delete-vote-{{ vote_pair[0] }}"
+                                                    title="Are you sure to delete this vote?"
+                                                    data-container="body" data-toggle="popover"
+                                                    data-content='<a class="vote-delete btn btn-primary" victim="{{ vote_pair[0] }}">yes</a>
+                                                    <a class="btn btn-primary popover-close" origin="#delete-vote-{{ vote_pair[0] }}">no</a>'>
+                                                    delete
+                                            </a>
+                                        {% endif %}
+                                        <div id="vote-{{ vote_pair[0]}}" class="collapse row vote-detail">
+                                            <ul>
+                                                <li>
+                                                    Created by {{ vote_pair[5] }} on {{ vote_pair[3] }}.
+                                                </li>
+                                                <li>
+                                                    {{ vote_pair[2] }} among {{ memberNum }} attended this vote.
+                                                </li>
+                                                <li>
+                                                    End on {{ vote_pair[4] }}.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
 
                             {% else %}
                                 <li class="list-group-item">
@@ -294,33 +342,45 @@
                     <ul class="news list-group">
                         {% for discussion in discussions %}
                             <li class="list-group-item">
-                                <h4><a href="{{ url_for('show_discuss', discuss_id=discussion.discuss_id) }}">{{ discussion['title'] }}</a></h4>
-                                <a class="show-detail" data-toggle="collapse"
-                                       data-target="#discussion-{{ discussion['discuss_id'] }}">
-                                        details</a>
-                                {% if role == '2' %}
-                                    <a class="popover-options" id="delete-discussion-{{ discussion['discuss_id'] }}"
-                                        title="Are you sure to delete this group?"
-                                        data-container="body" data-toggle="popover"
-                                        data-content='<a class="discuss-delete btn btn-primary" victim="{{discussion.discuss_id}}">yes</a>
-                                        <a class="btn btn-primary popover-close" origin="#delete-discussion-{{ discussion['discuss_id'] }}">no</a>'>
-                                        delete
-                                    </a>
-
-                                {% endif %}
-                                <span>from user {{discussion.username}}</span>
-                                <span>create date: {{discussion.create_time}}</span>
-                                <span>reply_num: {{discussion.reply_num}}</span>
-                                <span>read_num: {{discussion.read_num}}</span>
-                                <div id="discussion-{{ discussion['discuss_id'] }}" class="collapse">
-                                    <ul class="gp-detail">
-                                        <li class="gp-detail-topic">
-                                            Creator:{{ discussion['user_id'] }}
-                                        </li>
-                                        <li class="gp-detail-leader">
-                                            Content:{{ discussion['content'] }}
-                                        </li>
-                                    </ul>
+                                <div class="row">
+                                    <div class="col-md-2" style="text-align: center;">
+                                        <i class="fa fa-4x fa-comments-o"></i>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <h4><a href="{{ url_for('show_discuss', discuss_id=discussion.discuss_id) }}">{{ discussion['title'] }}</a></h4>
+                                        <p>{{ discussion['content'] }}</p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <a class="show-detail btn btn-default" data-toggle="collapse"
+                                           data-target="#discussion-{{ discussion['discuss_id'] }}">
+                                            details</a>
+                                    {% if role == '2' or username == discussion.username %}
+                                        <a class="popover-options btn btn-default" id="delete-discussion-{{ discussion['discuss_id'] }}"
+                                            title="Are you sure to delete this group?"
+                                            data-container="body" data-toggle="popover"
+                                            data-content='<a class="discuss-delete btn btn-primary" victim="{{discussion.discuss_id}}">yes</a>
+                                            <a class="btn btn-primary popover-close" origin="#delete-discussion-{{ discussion['discuss_id'] }}">no</a>'>
+                                            delete
+                                        </a>
+                                    {% endif %}
+                                    <div id="discussion-{{ discussion['discuss_id'] }}" class="collapse row discuss-detail">
+                                        <ul>
+                                            <li>
+                                                Created by {{discussion.username}} on {{discussion.create_time}}
+                                            </li>
+                                            <li>
+                                                {% if discussion.reply_num == 0 %}
+                                                With no replies.
+                                                {% elif discussion.reply_num == 1 %}
+                                                With 1 reply.
+                                                {% else %}
+                                                With {{ discussion.reply_num }} replies.
+                                                {% endif %}
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </li>
                         {% else %}
@@ -335,36 +395,41 @@
                     <h3>Bulletin</h3><hr>
                     <ul class="news list-group">
                         {% for entry in bulletin %}
-                            <li class="list-group-item">
-                                <h4>{{ entry['title'] }}</h4>
-                                <a class="show-detail" data-toggle="collapse"
-                                       data-target="#bulletin-{{ entry['bulletin_id'] }}">
-                                        details</a>
-                                {% if role == '2' %}
-                                    <a class="popover-options" id="delete-bulletin-{{ entry['bulletin_id'] }}"
-                                        title="Are you sure to delete this bulletin?"
-                                        data-container="body" data-toggle="popover"
-                                        data-content='<a class="bulletin-delete btn btn-primary" victim="{{entry.bulletin_id}}">yes</a>
-                                        <a class="btn btn-primary popover-close" origin="#delete-bulletin-{{ entry['bulletin_id'] }}">no</a>'>
-                                        delete
-                                    </a>
 
-                                {% endif %}
-                                <span>from user {{entry.username}}</span>
-                                <span>create date: {{entry.create_time}}</span>
-                                <span>read_num: {{entry.read_num}}</span>
-                                <div id="bulletin-{{ entry['bulletin_id'] }}" class="collapse">
-                                    <ul class="blt-detail">
-                                        <li class="blt-detail-content">
-                                            Content: {{ entry['text'] }}
-                                        </li>
-                                        <li class="blt-detail-creator">
-                                            Creator: {{ entry['user_id'] }}
-                                        </li>
-                                        <li class="blt-detail-time">
-                                            Time: {{ entry['create_time'] }}
-                                        </li>
-                                    </ul>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-2" style="text-align: center;">
+                                        <i class="fa fa-4x fa-bullhorn"></i>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <h4>{{ entry['title'] }}</h4>
+                                        <p>{{ entry['text'] }}</p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <a class="show-detail btn btn-default" data-toggle="collapse"
+                                           data-target="#bulletin-{{ entry['bulletin_id'] }}">
+                                            details</a>
+                                    {% if role == '2' or username == entry.username %}
+                                        <a class="popover-options btn btn-default" id="delete-bulletin-{{ entry['bulletin_id'] }}"
+                                            title="Are you sure to delete this bulletin?"
+                                            data-container="body" data-toggle="popover"
+                                            data-content='<a class="bulletin-delete btn btn-primary" victim="{{entry.bulletin_id}}">yes</a>
+                                            <a class="btn btn-primary popover-close" origin="#delete-bulletin-{{ entry['bulletin_id'] }}">no</a>'>
+                                            delete
+                                        </a>
+                                    {% endif %}
+                                    <div id="bulletin-{{ entry['bulletin_id'] }}" class="collapse row discuss-detail">
+                                        <ul>
+                                            <li>
+                                                Created by {{ entry['user_id'] }} on {{ entry['create_time'] }}
+                                            </li>
+                                            <li>
+                                                Viewed by {{ entry.read_num }} members.
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </li>
                         {% else %}

@@ -22,21 +22,22 @@ $(function(){
 });
 
 $(function(){
-    $('#quit').click(function(){
-        var url = window.location.href;
-        var patt = /gp+[0-9]*/g;
-        url = url.match(patt)[0];
-        patt = /[^0-9]/g;
-        var group_id = url.replace(patt, '');
-        $.getJSON($SCRIPT_ROOT + '/_quit_group',
-            {group_id: group_id},
-            function(data){
-                if(data.status == '0'){
-                    alert('fail!!');
-                }else if(data.status == '1') {
-                    // location.reload();
-                    location.href='/';
-                }
+    $('.popover-options').on('shown.bs.popover', function(){
+        $('#quit').click(function(){
+            var url = window.location.href;
+            var patt = /gp+[0-9]*/g;
+            url = url.match(patt)[0];
+            patt = /[^0-9]/g;
+            var group_id = url.replace(patt, '');
+            $.getJSON($SCRIPT_ROOT + '/_quit_group',
+                {group_id: group_id},
+                function(data){
+                    if(data.status == '0'){
+                        alert('fail!!');
+                    }else if(data.status == '1') {
+                        location.reload();
+                    }
+            });
         });
     });
 });
@@ -122,7 +123,7 @@ $(function(){
 $(function(){
     $('.popover-options').on('shown.bs.popover', function(){
         $('.bulletin-delete').click(function(){
-            var id = Number($(this).attr('victim'));
+            var bulletin_id = Number($(this).attr('victim'));
             var div = $(this).parent();
             console.log(bulletin_id);
             $.getJSON($SCRIPT_ROOT + '/_delete_bulletin',
@@ -261,7 +262,7 @@ function optionReady(){
         
         // remove button
         option_remove_button = document.createElement('i');
-        option_remove_button.setAttribute('class', 'fa fa-lg fa-minus-square-o');
+        option_remove_button.setAttribute('class', 'fa fa-lg fa-minus-square-o vote-option-remove');
         option_remove_button.setAttribute('id', target_id+'-remove-option-'+options.toString());        
 
         vote_option_content.ondblclick = function()
@@ -303,8 +304,9 @@ function optionReady(){
         var option_order = String.fromCharCode(64+options); //limit to 26 options
         var vote_add_button = vote_add_target.getElementsByClassName("addOption")[0];
 
-        vote_wrap.innerHTML = "<span>"+option_order+"</span>";
+        vote_wrap.innerHTML = "<span class='vote-option-title'>"+option_order+"</span>";
         //vote_wrap.appendChild(vote_option);
+        vote_wrap.setAttribute('class', 'vote-option');
         vote_wrap.appendChild(vote_option_content);
         vote_wrap.appendChild(option_remove_button);
 
@@ -407,7 +409,7 @@ $(function(){
         $("#vote-add-form").html(
             "<label for=\"title\">Title of the Vote</label>" +
             "<input class=\"form-control\" type=\"text\" name=\"title\"/>" +
-                "<ul id=\"votes_content_set\">" +
+                "<ul id=\"votes_content_set\" class='list-group'>" +
                     "<li class=\"list-group-item\" id=\"vote1\">" +
                     "<label for=\"vote-content-1\">Title of the item</label>" +
                     "<input class=\"form-control\" type=\"text\" name=\"vote-content-1\"" +

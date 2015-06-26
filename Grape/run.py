@@ -64,7 +64,7 @@ def index():
             #Find group by group_id
             group_id=request.args.get('group_id')
             #print "id from front=", group_id
-            if group_id:
+            if group_id and group_id.isdigit():
             #    Group1=User1.search_group(group_id)
             #    if Group1:
             #        members=Group1.get_members()

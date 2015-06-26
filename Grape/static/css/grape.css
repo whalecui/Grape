@@ -34,3 +34,19 @@ i.fa-check, i.fa-times
 	padding-top: 5px !important;
 	padding-bottom: 20px !important;
 }
+
+nav.navbar-default
+{
+    margin-bottom: 0;
+}
+
+.container
+{
+    margin-top: 3%;
+}
+
+a
+{
+    transition: background-color 500ms,
+				color 800ms;
+}
