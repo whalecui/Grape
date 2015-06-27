@@ -32,35 +32,42 @@
                 created by {{ creator.username }}
             </div>
             <div class="panel-body">
-
+                <!-- status judged -->
                 {% if vote.is_voted == 0 %}
                     <form action="{{ url_for('vote_operation_result',vote_id=vote.vote_id) }}" method="get" id="vote-operate-form">
+                        <!-- vote order -->
                         {% set contents = 0 %}
                         {% for vote_content in vote.vote_contents %}
                             <label>{{vote_content}}</label>
                             {% set contents = contents + 1 %}
+                            <!-- options order -->
                             {% set options = 0 %}
                             <br>
+                            <div class="radio">
                             {% for vote_option in vote_options_list[contents-1] %}
                                 {% set options = 1 + options %}
-                                <div class="radio">
+                                <!-- select -->
                                     <label>
-                                        <input id="ratio-{{ options }}" type="radio" name="vote{{contents}}-option" value="{{options}}"/>
+                                        <input type="radio" name="vote{{contents}}-option" value="{{options}}"/>
                                         {{vote_option}}
                                     </label>
-                                </div>
+                                    <br>
                             {% endfor %}
+                            </div>
+                            <hr>
                         {% endfor %}
                             <button type="submit" class="btn btn-default">Submit</button>
                     </form>
                 {% else %}
                         <br>
+                        <!-- vote order -->
                         {% set contents = 0 %}
                         {% for vote_content in vote.vote_contents %}
                             <label>Question:{{vote_content}}</label>
                             {% set contents = contents + 1 %}
                             {% set options = 0 %}
                             <br><br>
+                            <!-- show the options -->
                             {% for vote_option in vote_options_list[contents-1] %}
                                 {% set options = 1 + options %}
                                 <p>{{options}}.{{vote_option}}</p>

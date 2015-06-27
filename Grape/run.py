@@ -528,8 +528,12 @@ def view_votes_result(vote_id):
     creator_id = vote.user_id
     creator = User(user_id = creator_id)
 
+    #votes for each option
+    #in the form [v1-[op1,op2,op3...],v2-[op1,op2,op3..],[]]
     votes_distribution = vote.votes
+    #in the form [v1,v2,v3]
     vote_contents = vote.vote_contents
+    #in the form [v1-[op1,op2,op3...],v2-[op1,op2,op3..],[]]
     vote_options = vote.vote_options
     title = vote.title
     vote_options_order = []
@@ -538,18 +542,10 @@ def view_votes_result(vote_id):
         vote_options_order.append(order)
 
     votes_max = []
+    # calcualte the max
     for i in votes_distribution:
         votes_max.append(max(i))
 
-    # vote_options_list,votes_distribution = vote.votes_distribution()
-    # print vote_options_list,votes_distribution
-    # data = Data([
-    #     Bar(
-    #         x=vote_options_list,
-    #         y=votes_distribution
-    #     )
-    # ])
-    # plot_url = py.plot(data,filename="votes-bar-%s"%vote_id,auto_open=False)+'/.embed?width=800&height=600'
     return render_template('votes_static.html', user=user, creator=creator, group=group,\
                             vote=vote, votes_max=votes_max, title=title,\
                             vote_options_order = vote_options_order, vote_options = vote_options,\
