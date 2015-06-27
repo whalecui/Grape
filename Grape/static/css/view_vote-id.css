@@ -16,3 +16,9 @@
 {
     margin:0;
 }
+
+.panel-body
+{
+    width: 90%;
+    margin: auto;
+}
