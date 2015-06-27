@@ -167,10 +167,11 @@ $(function () {
     });
 });
 
-
+// optionready_instant is used in instant
 function optionReady_instant(){
     var options = 0;
     $('.addOption').click(function(){
+
         ++options;
         var vote_options_num = document.getElementById('vote-options-num');
         vote_options_num.setAttribute('value',options.toString());
@@ -244,9 +245,9 @@ function optionReady_instant(){
 }
 
 // if I have time, I want to realize the drag part;
-function optionReady(){
+function optionReady(toAdd){
     var options = 0;
-    $('.addOption').click(function(){
+    $(toAdd).find('input.addOption').click(function(){
         this.disable = true;
         ++options;
         var vote_add_target = this.parentNode;
@@ -340,7 +341,8 @@ function voteReady()
 
         var votes_content_set = document.getElementById("votes_content_set");
         votes_content_set.appendChild(vote_li);
-        optionReady();
+        optionReady(vote_li);
+        $(vote_li).find('input.addOption').click();
     }
     );
 }
@@ -414,18 +416,18 @@ $(function(){
                     "<label for=\"vote-content-1\">Title of the item</label>" +
                     "<input class=\"form-control\" type=\"text\" name=\"vote-content-1\"" +
                     "id=\"vote-content-1\"/>" +
-                    "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-1\"" +
+                    "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-1\"" + // the number of options
                     "id=\"vote-options-num-1\" style=\"display:none;\" value=\"0\"/><br>" +
                     "<input type=\"button\" class=\"addOption btn btn-default\"" +
                     "value=\"Add new choices\"/>" +
                     "</li>" +
                 "</ul>" +
             "<input class=\"form-control\" type=\"text\" name=\"votes-num\"" +
-            "id=\"votes-num\" style=\"display:none;\" value=\"1\"/>" +
+            "id=\"votes-num\" style=\"display:none;\" value=\"0\"/>" +                    // the number of votes
             "<input type=\"button\" class=\"addVote btn btn-default\"" +
             "value=\"Add new vote content\"/><br><br>" +
             "<input class=\"form-control\" type=\"text\" id=\"endtime-selection\"" +
-            "name=\"endtime-selection\" value = \"1\" style=\"display:none\"/>" +
+            "name=\"endtime-selection\" value = \"1\" style=\"display:none\"/>" +        /// if 1 longlasting
             "<label for=\"endtime\">Set the datetime</label>" +
             "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
             "class=\"ui_timepicker form-control\" value=\"\"/><br>" +
@@ -446,7 +448,9 @@ $(function(){
         });
 
         voteReady();
-        optionReady();
+        optionReady($("#vote1"));
+        $("#vote1").find("input.addOption").click();
+        //$('#')
     }
     )
 });
