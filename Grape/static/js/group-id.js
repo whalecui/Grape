@@ -216,6 +216,7 @@ function optionReady_instant(){
         //vote_wrap.appendChild(vote_option);
         vote_wrap.appendChild(vote_option_content);
         vote_wrap.appendChild(option_remove_button);
+        vote_wrap.setAttribute('class', 'vote-wrap');
 
 
         var vote_add_form = document.getElementById("vote-add-form");
