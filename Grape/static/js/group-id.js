@@ -139,50 +139,26 @@ $(function(){
     });
 });
 
-$(function () {
-    $(".countdown_timepicker").datetimepicker({
-        //showOn: "button",
-        //buttonImage: "./css/images/icon_calendar.gif",
-        //buttonImageOnly: true,
-        showButtonPanel: false,
-        timeOnly: true,
-        showSecond: true,
-        timeFormat: 'hh:mm:ss',
-        stepHour: 1,
-        stepMinute: 1,
-        stepSecond: 1
-    });
-
-    $(".ui_timepicker").datetimepicker({
-        //showOn: "button",
-        //buttonImage: "./css/images/icon_calendar.gif",
-        //buttonImageOnly: true,
-        //showButtonPanel: false,
-        //timeOnly: true,
-        showSecond: true,
-        timeFormat: 'hh:mm:ss',
-        stepHour: 1,
-        stepMinute: 1,
-        stepSecond: 1
-    });
-});
 
 // optionready_instant is used in instant
 function optionReady_instant(){
     var options = 0;
     $('.addOption').click(function(){
-
         ++options;
+        if (options > 26)
+        {
+            --options;
+            alert("the number is limited to 26");
+            return;
+        }
+
+        //get num
         var vote_options_num = document.getElementById('vote-options-num');
+        //update num
         vote_options_num.setAttribute('value',options.toString());
 
-        //var vote_option = document.createElement('input');
-        //vote_option.setAttribute('type','radio');
-        //vote_option.setAttribute('class','vote-option');
-        //vote_option.setAttribute('name','vote-option[]');
-
+        //create option
         var vote_option_content = document.createElement('input');
-        //vote_option_content.setAttribute('type','text');
         vote_option_content.setAttribute('class','vote-option-content form-control');
         vote_option_content.setAttribute('name','vote-option-content-'+options.toString());
         vote_option_content.readOnly = true;
@@ -212,6 +188,11 @@ function optionReady_instant(){
 
         option_remove_button.onclick = function()
         {
+            if (options<=1)
+            {
+                alert ("options can't be empty");
+                return;
+            }
             options--;
             vote_options_num.setAttribute('value',options.toString());
             var tempArray = vote_option_content.name.split('-');
@@ -244,17 +225,30 @@ function optionReady_instant(){
     });
 }
 
-// if I have time, I want to realize the drag part;
+
 function optionReady(toAdd){
     var options = 0;
     $(toAdd).find('input.addOption').click(function(){
-        this.disable = true;
         ++options;
+        if (options > 26)
+        {
+            --options;
+            alert("the number is limited to 26");
+            return;
+        }
+
+        this.disable = true;
+
         var vote_add_target = this.parentNode;
         var target_id = $(vote_add_target).attr("id");
-        var vote_order = target_id.replace(/[^0-9]/ig,""); 
+        //get the number in the id
+        var vote_order = target_id.replace(/[^0-9]/ig,"");
+
+        //uodate num
         var vote_options_num = document.getElementById('vote-options-num-'+vote_order); // specify it
         vote_options_num.setAttribute('value',options.toString());
+
+        //create option
         var vote_option_content = document.createElement('input');
         vote_option_content.setAttribute('class','vote-option-content form-control');
         vote_option_content.setAttribute('name',target_id+'-option-content-'+options.toString());
@@ -280,10 +274,14 @@ function optionReady(toAdd){
             }
             this.readOnly = true;
             this.className = "vote-option-content";
-            
         };
         option_remove_button.onclick = function()
         {
+            if (options<=1)
+            {
+                alert ("options can't be empty");
+                return;
+            }
             options--;
             vote_options_num.setAttribute('value',options.toString());
             var tempArray = vote_option_content.name.split('-');
@@ -300,13 +298,13 @@ function optionReady(toAdd){
             }
             vote_wrap.parentNode.removeChild(vote_wrap);
         }
-        //var vote_change_row = document.createElement('br');
+
+        //wrap the option
         var vote_wrap = document.createElement('div');
         var option_order = String.fromCharCode(64+options); //limit to 26 options
         var vote_add_button = vote_add_target.getElementsByClassName("addOption")[0];
 
         vote_wrap.innerHTML = "<span class='vote-option-title'>"+option_order+"</span>";
-        //vote_wrap.appendChild(vote_option);
         vote_wrap.setAttribute('class', 'vote-option');
         vote_wrap.appendChild(vote_option_content);
         vote_wrap.appendChild(option_remove_button);
@@ -319,71 +317,54 @@ function optionReady(toAdd){
 
 function voteReady()
 {
-    var votes = 1;
+    //total votes
+    var votes = 1;                                                        
     $('.addVote').click(function()
     {
         ++votes;
-        var votes_num = $("#votes-num");
+        //get num actually votes = votes_num    0.0 
+        var votes_num = $("#votes-num"); 
         $(votes_num).val(votes.toString());
         var vote_li = document.createElement('li');
         $(vote_li).attr('class','list-group-item');
         $(vote_li).attr('id','vote'+votes.toString());
 
+        ///add content
         $(vote_li).html(
-            "<label for=\"vote-content-"+votes+"\">Title of the item</label>" +
+            "<label for=\"vote-content-"+votes+"\">Title of the item</label>" +              //question
             "<input class=\"form-control\" type=\"text\" name=\"vote-content-"+votes+
-            "\" id=\"vote-content-"+votes+"\"/>" +
+            "\" id=\"vote-content-"+votes+"\"/>" +                                          
             "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-"+votes+
-            "\" id=\"vote-options-num-"+votes+"\" style=\"display:none;\" value=\"0\"/><br>" +
+            "\" id=\"vote-options-num-"+votes+"\" style=\"display:none;\" value=\"0\"/><br>" +  //options num
             "<input type=\"button\" class=\"addOption btn btn-default\"" +
             "value=\"Add new choices\"/>"
         );
 
         var votes_content_set = document.getElementById("votes_content_set");
-        votes_content_set.appendChild(vote_li);
-        optionReady(vote_li);
-        $(vote_li).find('input.addOption').click();
+        votes_content_set.appendChild(vote_li);                    //insert the vote
+        optionReady(vote_li);                                      //add listener
+        $(vote_li).find('input.addOption').click();                //ensure at least one option
     }
     );
 }
 
-$(function(){
-    $('.changeTimeSet').click(function(){
-        var time = document.getElementById("timeinterval");
-        var datetime = document.getElementById("datetime");
-        var endtime_selection = document.getElementById("endtime-selection");
-
-        if (endtime_selection.value == "2")
-        {
-            datetime.style['display'] = "none";
-            time.style['display'] = "block";
-            endtime_selection.value = "1";
-        }
-        else
-        {
-            time.style['display'] = "none";
-            datetime.style['display'] = "block";
-            endtime_selection.value = "2";
-        }
-    });
-});
 
 $(function(){
     $('#instant_vote').click(function(){
         // $('#vote-add-form').html("");
         $('#vote-add-form').html(
-            "<label for=\"vote-content\">Title of the Vote</label>" +
-            "<input class=\"form-control\" type=\"text\" name=\"vote-content\"" +
+            "<label for=\"vote-content\">Title of the Vote</label>" +                                 //title and question are the same
+            "<input class=\"form-control\" type=\"text\" name=\"vote-content\"" +                   
             "id=\"vote-content\"/>" +
-            "<input class=\"form-control\" type=\"text\" name=\"vote-options-num\"" +
+            "<input class=\"form-control\" type=\"text\" name=\"vote-options-num\"" +                 //the number of options
             "id=\"vote-options-num\" style=\"display:none;\" value=\"0\"/><br>" +
-            "<input type=\"button\" class=\"addOption btn btn-default\" id=\"vote-add-button\"" +
+            "<input type=\"button\" class=\"addOption btn btn-default\" id=\"vote-add-button\"" +       //the button to add options
             "value=\"Add new choices\"/><br><br>" +
             "<input class=\"form-control\" type=\"text\" id=\"endtime-selection\"" +
-            "name=\"endtime-selection\" value = \"0\" style=\"display:none\"/>" +
+            "name=\"endtime-selection\" value = \"0\" style=\"display:none\"/>" +                   //if 0 instant
             "<label for=\"endtime\">Set the time</label>" +
             "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
-            "class=\"countdown_timepicker form-control\" value=\"00:00:00\" /><br>" +
+            "class=\"countdown_timepicker form-control\" value=\"00:00:00\" /><br>" +             
             "<button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
         );
         $(".countdown_timepicker").datetimepicker({
@@ -399,7 +380,8 @@ $(function(){
         stepSecond: 1
         });
 
-        optionReady_instant();
+        optionReady_instant();                                                         //add listener to the button that adds options
+        $('#vote-add-form').find("input.addOption").click();                          //ensure at least one option
     }
     )
 }
@@ -410,35 +392,30 @@ $(function(){
         // $("vote-add-form").html("");
         $("#vote-add-form").html(
             "<label for=\"title\">Title of the Vote</label>" +
-            "<input class=\"form-control\" type=\"text\" name=\"title\"/>" +
+            "<input class=\"form-control\" type=\"text\" name=\"title\"/>" +                      //title
                 "<ul id=\"votes_content_set\" class='list-group'>" +
-                    "<li class=\"list-group-item\" id=\"vote1\">" +
+                    "<li class=\"list-group-item\" id=\"vote1\">" +                                ///every li represents a subvote
                     "<label for=\"vote-content-1\">Title of the item</label>" +
                     "<input class=\"form-control\" type=\"text\" name=\"vote-content-1\"" +
                     "id=\"vote-content-1\"/>" +
                     "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-1\"" + // the number of options
                     "id=\"vote-options-num-1\" style=\"display:none;\" value=\"0\"/><br>" +
-                    "<input type=\"button\" class=\"addOption btn btn-default\"" +
+                    "<input type=\"button\" class=\"addOption btn btn-default\"" +               // the button is used to add options
                     "value=\"Add new choices\"/>" +
                     "</li>" +
                 "</ul>" +
             "<input class=\"form-control\" type=\"text\" name=\"votes-num\"" +
-            "id=\"votes-num\" style=\"display:none;\" value=\"0\"/>" +                    // the number of votes
-            "<input type=\"button\" class=\"addVote btn btn-default\"" +
+            "id=\"votes-num\" style=\"display:none;\" value=\"0\"/>" + // the number of votes
+            "<input type=\"button\" class=\"addVote btn btn-default\"" +  //this button is used to add vote
             "value=\"Add new vote content\"/><br><br>" +
             "<input class=\"form-control\" type=\"text\" id=\"endtime-selection\"" +
-            "name=\"endtime-selection\" value = \"1\" style=\"display:none\"/>" +        /// if 1 longlasting
+            "name=\"endtime-selection\" value = \"1\" style=\"display:none\"/>" +  // if 1 longlasting
             "<label for=\"endtime\">Set the datetime</label>" +
             "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
             "class=\"ui_timepicker form-control\" value=\"\"/><br>" +
             "<button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
         )
         $(".ui_timepicker").datetimepicker({
-        //showOn: "button",
-        //buttonImage: "./css/images/icon_calendar.gif",
-        //buttonImageOnly: true,
-        //showButtonPanel: false,
-        //timeOnly: true,
         dateFormat: 'yy-mm-dd',
         showSecond: true,
         timeFormat: 'hh:mm:ss',
@@ -447,10 +424,9 @@ $(function(){
         stepSecond: 1
         });
 
-        voteReady();
+        voteReady();           // add listener to vote
         optionReady($("#vote1"));
         $("#vote1").find("input.addOption").click();
-        //$('#')
     }
     )
 });
