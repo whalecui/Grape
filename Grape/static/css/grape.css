@@ -50,3 +50,8 @@ a
     transition: background-color 500ms,
 				color 800ms;
 }
+
+.fa-bug
+{
+    color: rgb(248, 25, 25);
+}
