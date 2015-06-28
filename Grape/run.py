@@ -450,7 +450,7 @@ def raise_a_vote_result(group_id):
             title = quoteattr(request.args.get('title'))
             endtime = "'%s'" % time2end
             vote_contents_num = string.atoi(request.args.get('votes-num'))
-
+            print "vote_contents_num:", vote_contents_num
             for i in range(1,vote_contents_num+1):
                 vote_contents_set.append(quoteattr(request.args.get('vote-content-%d' % i)))
                 options = string.atoi(request.args.get('vote-options-num-%d' % i))
