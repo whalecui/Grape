@@ -49,6 +49,7 @@
 
 .discuss-icon {
     color: rgb(116, 192, 98);
+    margin-left: 7px;
 }
 
 .bulletin-icon {
@@ -58,7 +59,7 @@
 
 .vote-icon {
     color: rgb(217, 112, 51);
-    margin-left: 7px;
+    margin-left: 9px;
     margin-top: 2px;
 }
 

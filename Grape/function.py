@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+#coding:utf-8-*-
 import MySQLdb
 from config import *
 from datetime import datetime
@@ -574,8 +574,9 @@ class Group:
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         receiver = -1*user_id
         sql = 'select * from news where \
-               (group_id = %s and receiver != %d) \
-               order by time desc;' % (self.group_id, receiver)
+               group_id = %s and ((receiver < 0 and receiver != %d )\
+               or (receiver > 0 and receiver = %d and receiver != %d) or receiver = 0)\
+               order by time desc;' % (self.group_id, receiver, user_id, self.leader_id)
         cursor.execute(sql)
         data = cursor.fetchall()
         return data

@@ -59,7 +59,7 @@
                         {% elif message.type == 2 %}
                             {% set key = 'fa-table vote-icon icon' %}
                         {% elif message.type == 3 %}
-                            {% set key = 'fa-weixin discuss-icon icon' %}
+                            {% set key = 'fa-comments-o discuss-icon icon' %}
                         {% else %}
                             {% set key = 'fa-chain-broken delete-icon icon' %}
                         {% endif %}
@@ -70,7 +70,6 @@
                             <h4>{{message.content}}</h4>
                             <p class="news_info">
                                 <span class="news_time">{{message.time}}&nbsp;&nbsp;</span>
-                                <span class="news_viewed">viewed:{{message.viewed}}</span>
                                 <a class="popover-options" id="message-confirm-{{ message['message_id'] }}"
                                    title="Sure?"
                                    data-container="body" data-toggle="popover"
