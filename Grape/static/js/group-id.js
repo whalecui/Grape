@@ -261,6 +261,10 @@ function optionReady(toAdd){
         option_remove_button.setAttribute('class', 'fa fa-lg fa-minus-square-o vote-option-remove');
         option_remove_button.setAttribute('id', target_id+'-remove-option-'+options.toString());        
 
+        option_remove_button.onmouseover = function() {
+            this.style.display = "inline-block";
+        }
+
         vote_option_content.ondblclick = function()
         {
             this.value = '';
@@ -319,7 +323,9 @@ function optionReady(toAdd){
 function voteReady()
 {
     //total votes
-    var votes = 1;                                                        
+    var votes = 1;              
+    var votes_num = $("#votes-num"); 
+    $(votes_num).val(votes.toString());
     $('.addVote').click(function()
     {
         ++votes;
@@ -354,7 +360,7 @@ $(function(){
     $('#instant_vote').click(function(){
         // $('#vote-add-form').html("");
         $('#vote-add-form').html(
-            "<label for=\"vote-content\">Title of the Vote</label>" +                                 //title and question are the same
+            "<label for=\"vote-content\">Vote Title</label>" +                                 //title and question are the same
             "<input class=\"form-control\" type=\"text\" name=\"vote-content\"" +                   
             "id=\"vote-content\"/>" +
             "<input class=\"form-control\" type=\"text\" name=\"vote-options-num\"" +                 //the number of options
@@ -363,7 +369,6 @@ $(function(){
             "value=\"Add new choices\"/><br><br>" +
             "<input class=\"form-control\" type=\"text\" id=\"endtime-selection\"" +
             "name=\"endtime-selection\" value = \"0\" style=\"display:none\"/>" +                   //if 0 instant
-            "<label for=\"endtime\">Set the time</label>" +
             "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
             "class=\"countdown_timepicker form-control\" value=\"00:00:00\" /><br>" +                
             "<button type=\"submit\" id=\"validcheck\" class=\"btn btn-default\">let's vote!</button>"
@@ -434,10 +439,9 @@ String.prototype.isTime = function()
         alert("time format is not right");
         return false;
     }
-  alert(Now);
-  alert(d);
   if (d<=Now)
   {
+    alert("time format is invalid");
     return false;
   }
   else
@@ -477,7 +481,7 @@ $(function(){
         // $("vote-add-form").html("");
         var timesetted = false;
         $("#vote-add-form").html(
-            "<label for=\"title\">Title of the Vote</label>" +
+            "<label for=\"title\">Vote Title</label>" +
             "<input class=\"form-control\" id=\"votetitle\" type=\"text\" name=\"title\"/>" +                      //title id !!!!
                 "<ul id=\"votes_content_set\" class='list-group'>" +
                     "<li class=\"list-group-item\" id=\"vote1\">" +                                ///every li represents a subvote
@@ -496,8 +500,8 @@ $(function(){
             "value=\"Add new vote content\"/><br><br>" +
             "<input class=\"form-control\" type=\"text\" id=\"endtime-selection\"" +
             "name=\"endtime-selection\" value = \"1\" style=\"display:none\"/>" +  // if 1 longlasting
-            "<label for=\"endtime\">Set the datetime</label>" +
-            "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
+            "" +
+            "<input type=\"text\" id=\"endtime\" name=\"endtime\" value=\"Click to set endtime\"" +
             "class=\"ui_timepicker form-control\" value=\"\"/><br>" +
             "<button type=\"submit\" id=\"validcheck\" class=\"btn btn-default\">let's vote!</button>" //change id!!!!!!!!!!!!!!!!!!
         )

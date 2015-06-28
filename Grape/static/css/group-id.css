@@ -48,19 +48,22 @@ input.vote-option-content-edit
     min-width: 70px;
 }
 
-.discuss-icon {
+.group-discuss-icon {
     color: rgb(116, 192, 98);
+    margin-left: 15px;
+    margin-top: 5px;
 }
 
-.bulletin-icon {
+.group-bulletin-icon {
     color: rgb(139, 100, 186);
-    margin-left: 8px;
+    margin-left: 15px;
+    margin-top: 5px;
 }
 
-.vote-icon {
+.group-vote-icon {
     color: rgb(217, 112, 51);
-    margin-left: 7px;
-    margin-top: 2px;
+    margin-left: 15px;
+    margin-top: 5px;
 }
 
 .delete-icon {
@@ -75,4 +78,57 @@ input.vote-option-content-edit
 .vote-detail
 {
     margin: 2% 0;
+}
+
+.vote-wrap, .vote-option {
+    margin-left: 30px;
+}
+
+.vote-wrap > span, .vote-option > span {
+    font-weight: bold;
+    margin-right: 10px;
+} 
+
+.vote-option-content {
+    margin-bottom: 5px;
+}
+
+.vote-option-content[readonly] {
+    background-color: white;
+    border: 1px solid rgb(221,221,221);
+    border-radius: 2px;
+    cursor: default;
+}
+
+.vote-wrap > i, .vote-option > i {
+    margin-left: 10px;
+    display: none;
+}
+
+.addOption {
+    margin-left: 50px;
+    margin-top: 10px;
+}
+
+.vote-option:hover i, .vote-wrap:hover i {
+    display: inline-block;
+}
+
+#vote-add-form  > label {
+    font-size: 24px;
+    font-weight: 400;
+}
+
+#votes_content_set label {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+label[for="endtime"] {
+    margin-right: 20px;
+}
+
+#endtime {
+    width: 180px;
+    text-align: center;
 }

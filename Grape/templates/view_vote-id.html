@@ -28,8 +28,8 @@
     <div class="vote-details">
         <div id="discuss_div" class="panel panel-default">
             <div class="panel-heading">
-                <h4>{{vote.title}}</h4>
-                created by {{ creator.username }}
+                <div style="color:#5f9ea0;font-weight:bold;font-size:50px">{{vote.title}}</div>
+                <div style="text-align:right">---created by {{ creator.username }}</div>
             </div>
             <div class="panel-body">
                 <!-- status judged -->
@@ -59,20 +59,34 @@
                 {% else %}
                         <br>
                         <!-- vote order -->
+                        <ul class="list-group">
                         {% set contents = 0 %}
                         {% for vote_content in vote.vote_contents %}
-                            <h4>Question:{{vote_content}}</h4>
+                        <li class="list-group-item">
+                            <h3>{{vote_content}}</h3>
                             {% set contents = contents + 1 %}
                             {% set options = 0 %}
                             <!-- show the options -->
                             {% for vote_option in vote_options_list[contents-1] %}
                                 {% set options = 1 + options %}
+
+                                {% if options == vote.options_voted[contents-1] %}
+                                <div style="color:red;">
+                                    <p>{{options}}.{{vote_option}}</p>
+                                </div>
+
+                                {% else%}
                                 <p>{{options}}.{{vote_option}}</p>
+                                {% endif%}
+
                             {% endfor %}<hr>
-                            <h4>
+<!--                             <h4>
                                 You have voted for {{vote.options_voted[contents-1]}}
-                            </h4>
+                            </h4> -->
+                        </li>
                         {% endfor %}
+
+                    </ul>
                 {% endif %}
             </div>
             <div class="panel-footer">

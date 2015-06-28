@@ -253,23 +253,25 @@ def myGroups():
 @app.route('/discussion/dis<int:discuss_id>')
 def show_discuss(discuss_id):
     is_login = session.get('islogin')
-    if(is_login == 0):                       #please login first!
+    if(is_login != '1'):                       #please login first!
         return make_response(redirect('/'))
     user_id = session.get('user_id')
     user = User(user_id=user_id)
     if(user.check_id() == 0):                #user not exist?
         session.clear()
         return make_response(redirect('/'))
-    user_data = user.get_data_by_id()
-
-    # group = Group(group_id) not used-morning
     discuss = Discussion(discuss_id=discuss_id)
+    group_id = discuss.group_id
+    group = Group(group_id=group_id)
+    if(user_id not in group.get_members()):
+        return make_response(redirect('/'))
+
+    user_data = user.get_data_by_id()
     if discuss.exist():
         discuss_data = discuss.get_data()
         reply = discuss.get_reply()
-        group_id = discuss.group_id
-        group = Group(group_id=group_id)
         if group.exist_group():
+            creator = User(user_id=discuss.user_id).username
             discuss.increase_read_num()
             group_name = group.name
             members = group.get_members()
@@ -281,7 +283,7 @@ def show_discuss(discuss_id):
             return render_template('discussion.html', group_id=group_id,\
                                     discuss=discuss_data,reply=reply,group_name=group_name,\
                                     username=user_data['username'], role=role,\
-                                    user_id=user_id)
+                                    user_id=user_id, creator=creator)
 
     abort(404)
 
@@ -450,7 +452,7 @@ def raise_a_vote_result(group_id):
             title = quoteattr(request.args.get('title'))
             endtime = "'%s'" % time2end
             vote_contents_num = string.atoi(request.args.get('votes-num'))
-
+            print "vote_contents_num:", vote_contents_num
             for i in range(1,vote_contents_num+1):
                 vote_contents_set.append(quoteattr(request.args.get('vote-content-%d' % i)))
                 options = string.atoi(request.args.get('vote-options-num-%d' % i))
@@ -547,8 +549,10 @@ def view_votes_result(vote_id):
     for i in votes_distribution:
         votes_max.append(max(i))
 
+    latest=vote.get_recent_voted_record()
+
     return render_template('votes_static.html', user=user, creator=creator, group=group,\
-                            vote=vote, votes_max=votes_max, title=title,\
+                            vote=vote, votes_max=votes_max, title=title,latest=latest,\
                             vote_options_order = vote_options_order, vote_options = vote_options,\
                             vote_contents = vote_contents, votes_distribution = votes_distribution)
 

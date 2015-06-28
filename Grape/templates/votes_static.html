@@ -50,7 +50,6 @@
           inGraphDataShow : true,
           annotateDisplay : true,
           graphTitleFontSize: 18,
-          responsive: true
         };
 
         //draw the graph
@@ -87,28 +86,33 @@
     <div class="vote-results">
         <div id="discuss_div" class="panel panel-default">
             <div class="panel-heading">
-                <h4>{{vote.title}}</h4>
-                created by {{ creator.username }}
+                <div style="color:#5f9ea0;font-weight:bold;font-size:50px">{{vote.title}}</div>
+                <div style="text-align:right">---created by {{ creator.username }}</div>
             </div>
             <div class="panel-body">
+                <ul class="list-group">
                 {% for i in range(1,vote.contents_num + 1) %}
+                <li class="list-group-item">
                     <!-- to make the width all the same-->
                     {% set height = vote.options_num[i-1]*75 + 55 %}
                     <br>
                     <canvas id="canvas_HorizontalBar{{i}}" height="{{height}}px" width="600px"></canvas><br>
                     <!-- each option -->
-                    <h4>Options for {{vote_contents[i-1]}}</h4>
+                    <!-- <h4>Options for {{vote_contents[i-1]}}</h4> -->
                     {% for j in range(1,(vote_options[i-1]|length) + 1) %}
                         <lable>{{j}}. {{vote_options[i-1][j-1]}}</lable>
                         <br>
                     {% endfor %}<hr>
+                </li>
                 {% endfor %}
-                <h3>Vote Details</h3>
+                </ul>
+
+                <br><br>
+                <h2>Vote History</h2>
                 {% for each in latest%}
                 <hr>
                 <ul>
-                  <li>member:{{each[0]}}</li>
-                  <li>cast a vote {{each[2]}} ago</li>
+                  <li>{{each[0]}} cast a vote {{each[2]}} ago</li>
                 </ul>
                 <hr>
             {% endfor %}
