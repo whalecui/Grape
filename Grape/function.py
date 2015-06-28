@@ -1072,7 +1072,9 @@ class Vote:
                 sql = "select * from content_user_map where content_id= %s and user_id= %s" % (vote_content['content_id'],user_id)
                 print sql
                 cursor.execute(sql)
-                option_voted = cursor.fetchone()['votefor']
+                option_voted = cursor.fetchone()
+                print type(option_voted)
+                option_voted = option_voted['votefor']
             item['options_voted'].append(option_voted)
 
 
@@ -1109,11 +1111,12 @@ class Vote:
             sql = "insert into content_user_map(vote_id,content_id,user_id,votefor) values(%s,'%s','%s','%s')" % (self.vote_id,diff[i-1]['content_id'],user_id,vote_options[i-1])
             cursor.execute(sql)
             conn.commit()
-            sql = "select count(user_id) from content_user_map where content_id=%s" % diff[i-1]['content_id']
+            sql = "select count(user_id) from content_user_map where content_id=%s and votefor = %s" % (diff[i-1]['content_id'],vote_options[i-1])
             cursor.execute(sql)
             new_votes = cursor.fetchone()['count(user_id)']
-
+            print new_votes
             sql = "update vote_detail set votes=%s where content_id=%s and option_order=%s" % (new_votes,diff[i-1]['content_id'],vote_options[i-1])
+            print new_votes
             cursor.execute(sql)
             conn.commit()
         conn.close()

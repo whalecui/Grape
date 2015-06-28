@@ -421,6 +421,7 @@ def groupDetail(group_id):
 
 @app.route('/_create_vote/<int:group_id>',methods=['GET','POST'])
 def raise_a_vote_result(group_id):
+
     user_id = session.get('user_id')
     if request.method == "GET":
         vote_contents_set = []
@@ -428,8 +429,6 @@ def raise_a_vote_result(group_id):
         vote_options_set = []
 
         time2end = request.args.get('endtime')
-        print "############",type(time2end)
-        print time2end
         endtime_selection = request.args.get('endtime-selection')
         print endtime_selection
         if endtime_selection == '0': # date
@@ -475,6 +474,10 @@ def raise_a_vote_result(group_id):
 def vote_operation(vote_id): # use groupid to verify the vote
     user_id = session.get('user_id')
     vote = Vote(vote_id,user_id)
+    group = Group(vote.group_id)
+    members = group.get_members()
+    if {'member_id': user_id} not in members :
+        return redirect(url_for('groupDetail', group_id=vote.group_id))
     # ensure the vote has not voted before 
     # if the user change the status to submit it
     # try:
@@ -505,7 +508,7 @@ def vote_operation_result(vote_id):
         #vote_id = request.args.get('vote-id')
         vote = Vote(vote_id,user_id)
         if vote.is_voted != 0:
-            return "You have been voted"
+            return "You have voted"
         vote_contents_num = vote.contents_num
         vote_options = []
         for i in range(1,vote_contents_num+1):
@@ -529,10 +532,13 @@ def view_votes_result(vote_id):
     group = Group(group_id=vote.group_id)
     creator_id = vote.user_id
     creator = User(user_id = creator_id)
-
+    members = group.get_members()
+    if {'member_id': user_id} not in members :
+        return redirect(url_for('groupDetail', group_id=vote.group_id))
     #votes for each option
     #in the form [v1-[op1,op2,op3...],v2-[op1,op2,op3..],[]]
     votes_distribution = vote.votes
+    print votes_distribution
     #in the form [v1,v2,v3]
     vote_contents = vote.vote_contents
     #in the form [v1-[op1,op2,op3...],v2-[op1,op2,op3..],[]]
