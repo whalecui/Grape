@@ -546,8 +546,10 @@ def view_votes_result(vote_id):
     for i in votes_distribution:
         votes_max.append(max(i))
 
+    latest=vote.get_recent_voted_record()
+
     return render_template('votes_static.html', user=user, creator=creator, group=group,\
-                            vote=vote, votes_max=votes_max, title=title,\
+                            vote=vote, votes_max=votes_max, title=title,latest=latest,\
                             vote_options_order = vote_options_order, vote_options = vote_options,\
                             vote_contents = vote_contents, votes_distribution = votes_distribution)
 
