@@ -270,6 +270,7 @@ def show_discuss(discuss_id):
         group_id = discuss.group_id
         group = Group(group_id=group_id)
         if group.exist_group():
+            creator = User(user_id=discuss.user_id).username
             discuss.increase_read_num()
             group_name = group.name
             members = group.get_members()
@@ -281,7 +282,7 @@ def show_discuss(discuss_id):
             return render_template('discussion.html', group_id=group_id,\
                                     discuss=discuss_data,reply=reply,group_name=group_name,\
                                     username=user_data['username'], role=role,\
-                                    user_id=user_id)
+                                    user_id=user_id, creator=creator)
 
     abort(404)
 
