@@ -89,6 +89,10 @@ input.vote-option-content-edit
     margin-right: 10px;
 } 
 
+.vote-option-content {
+    margin-bottom: 5px;
+}
+
 .vote-option-content[readonly] {
     background-color: white;
     border: 1px solid rgb(221,221,221);
@@ -118,4 +122,13 @@ input.vote-option-content-edit
 #votes_content_set label {
     font-size: 20px;
     font-weight: 400;
+}
+
+label[for="endtime"] {
+    margin-right: 20px;
+}
+
+#endtime {
+    width: 180px;
+    text-align: center;
 }

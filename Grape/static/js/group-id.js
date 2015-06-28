@@ -369,8 +369,8 @@ $(function(){
             "value=\"Add new choices\"/><br><br>" +
             "<input class=\"form-control\" type=\"text\" id=\"endtime-selection\"" +
             "name=\"endtime-selection\" value = \"0\" style=\"display:none\"/>" +                   //if 0 instant
-            "<label for=\"endtime\">End Time :</label>" +
-            "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
+            "" +
+            "<input type=\"text\" id=\"endtime\" name=\"endtime\" value=\"Set countdown time\"" +
             "class=\"countdown_timepicker form-control\" value=\"00:00:00\" /><br>" +             
             "<button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
         );
@@ -417,8 +417,8 @@ $(function(){
             "value=\"Add new vote content\"/><br><br>" +
             "<input class=\"form-control\" type=\"text\" id=\"endtime-selection\"" +
             "name=\"endtime-selection\" value = \"1\" style=\"display:none\"/>" +  // if 1 longlasting
-            "<label for=\"endtime\">End Time :</label>" +
-            "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
+            "" +
+            "<input type=\"text\" id=\"endtime\" name=\"endtime\" value=\"Click to set endtime\"" +
             "class=\"ui_timepicker form-control\" value=\"\"/><br>" +
             "<button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
         )

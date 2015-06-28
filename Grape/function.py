@@ -390,7 +390,7 @@ class User:
         group = Group(discuss.group_id)
         valid = (discuss.user_id == self.user_id) or (group.leader_id == self.user_id)
         if(valid):
-            delete_message = "Your discussion <i>%s</i> in group %s has been deleted by leader."\
+            delete_message = "Your discussion %s in group %s has been deleted by leader."\
                               % (discuss.title,group.name)
             sql = "insert into news(type, group_id, receiver, content)\
                    values(%d, %s, %s, '%s');" % (6, group.group_id, discuss.user_id, delete_message)
@@ -414,7 +414,7 @@ class User:
         group = Group(discuss.group_id)
         valid = (reply.user_id == self.user_id) or (group.leader_id == self.user_id)
         if(valid):
-            delete_message = 'Your reply: "%s" on discussion <i>%s</i> has been deleted by leader.'\
+            delete_message = 'Your reply: "%s" on discussion %s has been deleted by leader.'\
                               % (reply.content, discuss.title)
             sql = "insert into news(type, group_id, receiver, content)\
                    values(%d, %s, %s, '%s');" % (7, group.group_id, reply.user_id, delete_message)
@@ -615,7 +615,7 @@ class Group:
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 
-        create_message = "A new discussion <i>%s</i> is created in our group" % (title)
+        create_message = "A new discussion %s is created in our group" % (title)
         receiver = -1*(user_id)
         sql = "insert into news(type, group_id, receiver, content)\
                values(%d, %s, %d, '%s');" % (1, self.group_id, receiver, create_message)
@@ -642,7 +642,7 @@ class Group:
                              db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 
-        create_message = "A new vote <i>%s</i> is created in our group!" % (title)
+        create_message = "A new vote %s is created in our group!" % (title)
         receiver = -1*(user_id)
         sql = "insert into news(type, group_id, receiver, content)\
                values(%d, %s, %d, '%s');" % (3, self.group_id, receiver, create_message)
@@ -761,7 +761,7 @@ class Group:
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
         if self.leader_id == user_id:
 
-            create_message = "A new bulletin <i>%s</i> is created in our group!" % (title)
+            create_message = "A new bulletin %s is created in our group!" % (title)
             receiver = -1*(user_id)
             sql = "insert into news(type, group_id, receiver, content)\
                    values(%d, %s, %d, '%s');" % (4, self.group_id, receiver, create_message)

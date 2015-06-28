@@ -253,22 +253,23 @@ def myGroups():
 @app.route('/discussion/dis<int:discuss_id>')
 def show_discuss(discuss_id):
     is_login = session.get('islogin')
-    if(is_login == 0):                       #please login first!
+    if(is_login != '1'):                       #please login first!
         return make_response(redirect('/'))
     user_id = session.get('user_id')
     user = User(user_id=user_id)
     if(user.check_id() == 0):                #user not exist?
         session.clear()
         return make_response(redirect('/'))
-    user_data = user.get_data_by_id()
-
-    # group = Group(group_id) not used-morning
     discuss = Discussion(discuss_id=discuss_id)
+    group_id = discuss.group_id
+    group = Group(group_id=group_id)
+    if(user_id not in group.get_members()):
+        return make_response(redirect('/'))
+
+    user_data = user.get_data_by_id()
     if discuss.exist():
         discuss_data = discuss.get_data()
         reply = discuss.get_reply()
-        group_id = discuss.group_id
-        group = Group(group_id=group_id)
         if group.exist_group():
             creator = User(user_id=discuss.user_id).username
             discuss.increase_read_num()
