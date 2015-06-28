@@ -333,7 +333,7 @@ function voteReady()
         ///add content
         $(vote_li).html(
             "<label for=\"vote-content-"+votes+"\">Title of the item</label>" +              //question
-            "<input class=\"form-control\" type=\"text\" name=\"vote-content-"+votes+
+            "<input class=\"vote-content form-control\" type=\"text\" name=\"vote-content-"+votes+
             "\" id=\"vote-content-"+votes+"\"/>" +                                          
             "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-"+votes+
             "\" id=\"vote-options-num-"+votes+"\" style=\"display:none;\" value=\"0\"/><br>" +  //options num
@@ -365,8 +365,8 @@ $(function(){
             "name=\"endtime-selection\" value = \"0\" style=\"display:none\"/>" +                   //if 0 instant
             "<label for=\"endtime\">Set the time</label>" +
             "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
-            "class=\"countdown_timepicker form-control\" value=\"00:00:00\" /><br>" +             
-            "<button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
+            "class=\"countdown_timepicker form-control\" value=\"00:00:00\" /><br>" +                
+            "<button type=\"submit\" id=\"validcheck\" class=\"btn btn-default\">let's vote!</button>"
         );
         $(".countdown_timepicker").datetimepicker({
         //showOn: "button",
@@ -381,23 +381,108 @@ $(function(){
         stepSecond: 1
         });
 
-        optionReady_instant();                                                         //add listener to the button that adds options
+        optionReady_instant();
+
+        $("#validcheck").click(
+            function()
+            {
+                var ops = new Array();
+                var order = 0;
+                var status = true;
+
+                if ($("#vote-content").val() == "")
+                {
+                    alert("the title can't be empty");
+                    return false;
+                }
+
+                $(".vote-option-content").each(function(key,value){
+                    ops[key] = $(this).val();
+                    ++order;
+                    if (ops[key] == "double click to change value")
+                        {
+                            alert("the No."+order+" option hasn't been setted");
+                            status = false;
+                            return false;
+                        }
+                    
+                }
+                    );
+
+                if (!status) return false;
+
+                return $(".countdown_timepicker").val().isCountTime();
+            }
+        );                                                         
+        //add listener to the button that adds options
         $('#vote-add-form').find("input.addOption").click();                          //ensure at least one option
     }
     )
 }
 );
 
+
+
+String.prototype.isTime = function()
+{
+  var r = this.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/);
+  if(r==null)return false; var d = new Date(r[1], r[3]-1,r[4],r[5],r[6],r[7]);
+  var isTime = d.getFullYear()==r[1]&&(d.getMonth()+1)==r[3]&&d.getDate()==r[4]&&d.getHours()==r[5]&&d.getMinutes()==r[6]&&d.getSeconds()==r[7];
+  var Now = new Date();
+  if (!isTime)
+    {
+        alert("time format is not right");
+        return false;
+    }
+  alert(Now);
+  alert(d);
+  if (d<=Now)
+  {
+    return false;
+  }
+  else
+    if (d-Now < 15000)
+        alert("warning: the time is too tight\nplease reset it");
+
+  return true;
+}
+
+String.prototype.isCountTime = function()
+{
+    var r = this.match(/^(\d{2}):(\d{2}):(\d{2})$/);
+    if (r == null)
+    {
+        alert("invalid time format");
+    }
+    if (r[1]<"24" && r[2]<"60" && r[3]<"60")
+    {
+        if (r[1] == "00" && r[2] == "00")
+            if (r[3] < "15")
+            {
+                alert ("the time is too tight\n please reset it");
+                return false;
+            }
+        return true;
+    }
+    else
+    {
+        alert("invalid time format");
+        return false;
+    }
+}
+//function isDate()
+
 $(function(){
     $('#longlasting_vote').click(function(){
         // $("vote-add-form").html("");
+        var timesetted = false;
         $("#vote-add-form").html(
             "<label for=\"title\">Title of the Vote</label>" +
-            "<input class=\"form-control\" type=\"text\" name=\"title\"/>" +                      //title
+            "<input class=\"form-control\" id=\"votetitle\" type=\"text\" name=\"title\"/>" +                      //title id !!!!
                 "<ul id=\"votes_content_set\" class='list-group'>" +
                     "<li class=\"list-group-item\" id=\"vote1\">" +                                ///every li represents a subvote
                     "<label for=\"vote-content-1\">Title of the item</label>" +
-                    "<input class=\"form-control\" type=\"text\" name=\"vote-content-1\"" +
+                    "<input class=\"vote-content form-control\" type=\"text\" name=\"vote-content-1\"" +
                     "id=\"vote-content-1\"/>" +
                     "<input class=\"form-control\" type=\"text\" name=\"vote-options-num-1\"" + // the number of options
                     "id=\"vote-options-num-1\" style=\"display:none;\" value=\"0\"/><br>" +
@@ -414,7 +499,7 @@ $(function(){
             "<label for=\"endtime\">Set the datetime</label>" +
             "<input type=\"text\" id=\"endtime\" name=\"endtime\"" +
             "class=\"ui_timepicker form-control\" value=\"\"/><br>" +
-            "<button type=\"submit\" class=\"btn btn-default\">let's vote!</button>"
+            "<button type=\"submit\" id=\"validcheck\" class=\"btn btn-default\">let's vote!</button>" //change id!!!!!!!!!!!!!!!!!!
         )
         $(".ui_timepicker").datetimepicker({
         dateFormat: 'yy-mm-dd',
@@ -424,6 +509,71 @@ $(function(){
         stepMinute: 1,
         stepSecond: 1
         });
+
+
+        $("#validcheck").click(
+            function()
+            {
+                var ops = new Array();
+                var status = true;
+                var id_origin = "vote1";
+                var order = 0;
+
+                if ($("#votetitle").val() == '')
+                    {
+                        alert("votetitle can't be empty");
+                        return false;
+                    }
+
+
+                $(".vote-option-content").each(function(key,value){
+                    ops[key] = $(this).val();
+                    target_id =$(this).parent().parent().attr("id");
+                    if (target_id != id_origin)
+                    {
+                        id_origin = target_id;
+                        order = 0;
+                    }
+                    ++order;
+                    if (ops[key] == "double click to change value"||ops[key] == "")
+                        {
+                            var vote_order = target_id.replace(/[^0-9]/ig,"");
+                            alert ("the No."+order+" option of the No."+vote_order+" hasn't been set");
+                            status = false;
+                            return false;
+                        }
+                })
+                if (!status)
+                    return false;
+
+                var vts = new Array();
+                order = 0;
+                $(".vote-content").each(function(key,value){
+                    vts[key] = $(this).val();
+                    ++order;
+                    if (vts[key] == "")
+                    {
+                        alert ("the title of the No."+order+" hasn't been set");
+                        status = false;
+                        return false;
+                    }
+                })
+
+                if (!status)
+                    return false;
+
+                if (!$(".ui_timepicker").val().isTime())
+                    {
+                        return false;
+                    };
+
+
+
+                return true;
+            }
+
+
+            );
 
         voteReady();           // add listener to vote
         optionReady($("#vote1"));
@@ -450,3 +600,5 @@ $(function(){
         });
     });
 });
+
+

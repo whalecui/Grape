@@ -531,6 +531,7 @@ def view_votes_result(vote_id):
     #votes for each option
     #in the form [v1-[op1,op2,op3...],v2-[op1,op2,op3..],[]]
     votes_distribution = vote.votes
+    print votes_distribution
     #in the form [v1,v2,v3]
     vote_contents = vote.vote_contents
     #in the form [v1-[op1,op2,op3...],v2-[op1,op2,op3..],[]]
