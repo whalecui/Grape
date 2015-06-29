@@ -16,7 +16,7 @@ def initdb():
 	conn.set_character_set('utf8')
 	cursor.execute("SET NAMES utf8;")
 	cursor.execute("SET CHARACTER SET utf8;")
-	cursor.execute("SET CHARACTER SET utf8;")
+	cursor.execute("SET character_set_connection=utf8;")
 	cursor.execute("SET character_set_client=utf8;")
 	cursor.execute("SET character_set_database=utf8;")
 	cursor.execute("SET character_set_results=utf8;")
@@ -28,42 +28,55 @@ def initdb():
 	sql = "set session sql_mode = 'NO_AUTO_VALUE_ON_ZERO';"
 	cursor.execute(sql)
 	sql = "insert into user(user_id, username, password, email,role) \
-		   values(0, 'admin','admin','admin@sjtu.edu.cn',1);"
+		   values(0, 'admin','admin','admin@123.com',1);"
 	cursor.execute(sql)
 	conn.commit()
 	conn.close()
 
-	userList = range(5130309732, 5130309800)
-	userList.append(5130309034)
-	userList.append(5130309051)
-
-	for i in userList:
-		name = "%d" % (i)
-		email = "%d@sjtu.edu.cn" % (i)
-		password = "%d" % i
+	for i in range(1,11):
+		name = "user%d" % (i)
+		email = "user%d@123.com" % (i)
+		password = "password"
 		user = User(name = name, email = email)
 		status = user.register(password)
 		if(status):
-			print "user %d insert successfully!"% i
+			print "user%d insert successfully!"% i
 
 
-		user = User(user_id = 0)
-		name = "SE Demo"
-		topic = "Discussion on our demo ^_^"
-		desc = "This is the discussion group on our Grape system. \
-				Be free to join the discussion!"
-		confirm = "We are grapers"
+	for i in range(1,11):
+		user = User(user_id = i)
+		name = "group%d" % i
+		topic = "topic%d" % i
+		desc = "description%d" % i
+		confirm = "thisiskey%d" % i
 		status = user.create_group(name, topic, desc, confirm)
 		if(status=='success'):
-			print "group insert successfully!"
+			print "group%d insert successfully!"% i
 
 
-	for i in range(1,71):
-		confirm = "We are grapers"
-		user = User(user_id = i)
-		status = user.join_group(group_id = 1, confirm = confirm)
-		if(status=='success'):
-			print "user %d joins the group!"% (i)
+	for i in range(1,11):
+		confirm = "thisiskey%d" % i
+		for j in range(i+1,11):			# jump the creation of the leader.
+			user = User(user_id = j)
+			status = user.join_group(group_id = i, confirm = confirm)
+			if(status=='success'):
+				print "user%d joins the group%d"% (j, i)
+
+	count_dis = 0;
+	for i in range(1,11):
+		group = Group(group_id = i)
+		for j in range(1,4):			# user1 is the id of 2.
+			title = "title%d"% j
+			content = "content%d"% j
+			status = group.create_discussion(j, title, content)
+			if(status):
+				print "user%d creates discussion%d"% (j, j)
+				count_dis += 1
+			discuss = Discussion(count_dis)
+			for k in range(i+1, 10):
+				user_id = k
+				reply_content = "This is reply from user%d to discussion%d of group%d" % (k,j-1,i)
+				status = discuss.add_reply(user_id, reply_content)
 
 
 	

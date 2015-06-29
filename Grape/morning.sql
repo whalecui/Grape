@@ -1,6 +1,12 @@
 Drop Database if exists Grape;
 Create Database Grape;
 use Grape;
+SET NAMES utf8;
+SET CHARACTER SET utf8;
+SET character_set_client=utf8;
+SET character_set_database=utf8;
+SET character_set_results=utf8;
+SET character_set_server=utf8;
 
 Drop Table if exists groups;
 Create Table groups(

@@ -2,7 +2,7 @@
 import MySQLdb
 from config import *
 from datetime import datetime
-
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class User:
     def __init__(self, name='', email='', user_id=0):
@@ -133,7 +133,7 @@ class User:
             cursor.execute(sql)
             
 
-            cursor.execute("delete from message where group_id'"+group_id+"';")
+            cursor.execute("delete from message where group_id='"+group_id+"';")
             cursor.execute("delete from groups where group_id='"+group_id+"';")
             conn.commit()
             cursor.execute("delete from groupMemberAssosiation where group_id='"+group_id+"';")
@@ -339,7 +339,7 @@ class User:
         exist = cursor.fetchall()
         print exist
         if exist:
-            if exist[0]['password'] == pw:
+            if check_password_hash(exist[0]['password'], pw):
                 return 1    #匹配成功
             else:
                 return 0    #密码错误
@@ -348,6 +348,7 @@ class User:
     def register(self, password):
         conn = MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        password = generate_password_hash(password)
         sql = 'insert into user(username, password, email) values("%s","%s","%s")' % (self.username, password, self.email)
         cursor.execute(sql)
         conn.commit()
@@ -356,8 +357,8 @@ class User:
         user = cursor.fetchone()
 
         welcome_content = "welcome to our Grape system, %s!" % user['username']
-        sql = 'insert into message(type, group_id, receiver, content) \
-               values(%d, %d, %d, "%s");' % (0, 0, user['user_id'], welcome_content)
+        sql = 'insert into message(type, group_id, receiver, content, viewed) \
+               values(%d, %d, %d, "%s",0);' % (0, 0, user['user_id'], welcome_content)
         cursor.execute(sql)
         conn.commit()
 

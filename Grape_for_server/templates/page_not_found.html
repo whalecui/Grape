@@ -20,10 +20,6 @@
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Contact with Admin</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Settings</a></li>
-                    <li class="divider"></li>
                     <li><a href="{{ url_for('logout') }}">Log Out</a></li>
                 </ul>
             </li>
@@ -39,97 +35,97 @@
 {% endblock %}
 
 {% block content %}
-    <div class="grape-index">
+    <div class="">
         <h1>404 NOT FOUND</h1>
     </div>
 {% endblock %}
 
 {% if islogin == '0' %}
     {% block modal %}
-            <div class="modal fade" id="logModal" tabindex="-1" role="dialog"
-                aria-labelledby="logModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close"
-                            data-dismiss="modal" aria-hidden="true">
-                            &times;
-                            </button>
-                            <h4 class="modal-title" id="logModalLabel">
-                                Log In</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form class="login" action="{{ url_for('login') }}" method="post">
-                                <div class="form-group">
-                                    <label for="emailL">Email address</label>
-                                    <input class="form-control email" name="email"
-                                           id="emailL" placeholder="Enter email">
-                                </div>
-                                <div class="form-group">
-                                    <label for="passwordL">Password</label>
-                                    <input type="password" class="form-control password"
-                                           id="passwordL" placeholder="Password" name="password">
-                                </div>
-                                <button type="submit" class="btn btn-default">Submit</button>
-                            </form>
-                            {% if message2 %}
-                                <p>{{ message2 }}</p>
-                            {% endif %}
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default"
-                            data-dismiss="modal">Close
-                            </button>
-                        </div>
+        <div class="modal fade" id="logModal" tabindex="-1" role="dialog"
+            aria-labelledby="logModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                        &times;
+                        </button>
+                        <h4 class="modal-title" id="logModalLabel">
+                            Log In</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="login" action="{{ url_for('login') }}" method="post">
+                            <div class="form-group">
+                                <label for="emailL">Email address</label>
+                                <input class="form-control email" name="email"
+                                       id="emailL" placeholder="Enter email">
+                            </div>
+                            <div class="form-group">
+                                <label for="passwordL">Password</label>
+                                <input type="password" class="form-control password"
+                                       id="passwordL" placeholder="Password" name="password">
+                            </div>
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </form>
+                        {% if message2 %}
+                            <p>{{ message2 }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                        data-dismiss="modal">Close
+                        </button>
                     </div>
                 </div>
-            </div><!-- end of log in modal -->
+            </div>
+        </div><!-- end of log in modal -->
 
-            <div class="modal fade" id="regModal" tabindex="-1" role="dialog"
-            aria-labelledby="regModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close"
-                                data-dismiss="modal" aria-hidden="true">
-                                &times;</button>
-                            <h4 class="modal-title" id="regModalLabel">
-                                Sign Up</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form class="register" action="{{ url_for('register') }}" method="post">
-                                <div class="form-group">
-                                    <label for="emailR">Email address</label>
-                                    <input class="form-control email" name="email"
-                                           id="emailR" placeholder="Enter email">
-                                </div>
-                                <div class="form-group">
-                                    <label for="usernameR">Username</label>
-                                    <input class="form-control username-login" name="username"
-                                           id="usernameR" placeholder="Enter username">
-                                </div>
-                                <div class="form-group">
-                                    <label for="password">Password</label>
-                                    <input type="password" class="form-control password"
-                                           name="password" id="passwordR" placeholder="Password">
-                                </div>
-                                <div class="form-group">
-                                    <label for="confirmR">Confirm Your Password</label>
-                                    <input type="password" class="form-control password"
-                                           name="password2" id="confirmR" placeholder="Confirm">
-                                </div>
-                                <button type="submit" class="btn btn-default" >Join!</button>
-                            </form>
-                            {% if message1 %}
-                                <p>{{ message1 }}</p>
-                            {% endif %}
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default"
-                                data-dismiss="modal">Close</button>
-                        </div>
+        <div class="modal fade" id="regModal" tabindex="-1" role="dialog"
+        aria-labelledby="regModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                            &times;</button>
+                        <h4 class="modal-title" id="regModalLabel">
+                            Sign Up</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="register" action="{{ url_for('register') }}" method="post">
+                            <div class="form-group">
+                                <label for="emailR">Email address</label>
+                                <input class="form-control email" name="email"
+                                       id="emailR" placeholder="Enter email">
+                            </div>
+                            <div class="form-group">
+                                <label for="usernameR">Username</label>
+                                <input class="form-control username-login" name="username"
+                                       id="usernameR" placeholder="Enter username">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control password"
+                                       name="password" id="passwordR" placeholder="Password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmR">Confirm Your Password</label>
+                                <input type="password" class="form-control password"
+                                       name="password2" id="confirmR" placeholder="Confirm">
+                            </div>
+                            <button type="submit" class="btn btn-default" >Join!</button>
+                        </form>
+                        {% if message1 %}
+                            <p>{{ message1 }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                            data-dismiss="modal">Close</button>
                     </div>
                 </div>
-            </div><!-- end of register modal -->
+            </div>
+        </div><!-- end of register modal -->
     {% endblock %}
 {% endif %}

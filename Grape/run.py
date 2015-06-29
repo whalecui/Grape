@@ -34,7 +34,6 @@ def init():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    print "GET HOSTERE"
     islogin = session.get('islogin')
     user_id = session.get('user_id')
     message1 = session.get('message1')
@@ -216,6 +215,7 @@ def quit_group():
 def deleteGroup():
     user_id = session.get('user_id')
     group_id = str(request.args.get('group_id', 0, type=int))
+    print "user_id:", session
     user = User(user_id=user_id)
     return jsonify(success=user.delete_group(group_id))
 
@@ -263,7 +263,9 @@ def show_discuss(discuss_id):
     discuss = Discussion(discuss_id=discuss_id)
     group_id = discuss.group_id
     group = Group(group_id=group_id)
-    if(user_id not in group.get_members()):
+    user_dic = {}
+    user_dic['member_id'] = user_id
+    if(user_dic not in group.get_members()):
         return make_response(redirect('/'))
 
     user_data = user.get_data_by_id()

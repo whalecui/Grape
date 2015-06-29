@@ -1,0 +1,2 @@
+new group用户没输入全并无提示信息就返回主页 且不能创建成功 我在后端是有一个success变量的 <- 已解决
+delete user和group的时候要删除 vote和discussion表中的信息 我不是很清楚你们具体怎么写的，都来加一下吧

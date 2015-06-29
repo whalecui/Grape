@@ -7,49 +7,52 @@
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         var username = "{{ user.username }}";
+        var startWithDataset =1;
+        var startWithData =1;
 
-        var plotdata = {
-            labels : {{vote_options_list | safe}},
+
+    //the vote order like vote1 vote2
+    {% set order = 0 %}
+    {% for votes in votes_distribution %}
+        {% set order = order + 1 %}
+        var plotdata{{order}} = {
+            //the y axis
+            labels : {{vote_options_order[order-1] | safe}},
             datasets : [
             {
                 fillColor : "rgba(255,153,0,0.5)",
                 strokeColor : "rgba(255,153,0,1)",
                 pointColor : "rgba(255,153,0,1)",
                 pointstrokeColor : "orange",
-                data : {{votes_distribution}},
-    //          data : [40],
-
-          title : "2014"
+                //the data array
+                data : {{votes}},
+                //the title of the graph
+                title : "{{vote_contents[order-1]}}"
             }
         ]
-        }
+        };
 
-        var startWithDataset =1;
-        var startWithData =1;
+        var opt{{order}} = {
+          yAxisMinimumInterval : 1,
+          animationStartWithDataset : startWithDataset,
+          animationStartWithData : startWithData,
+          animationSteps : 200,
+          canvasBordersWidth : 3,
+          canvasBordersColor : "black",
+          graphTitle : "{{vote_contents[order-1]|safe}}",
+          //确保 最大的那个值是填满整个图的高度的
+          graphMax:{{votes_max[order-1]}},
+          legend : true,
+          inGraphDataShow : true,
+          annotateDisplay : true,
+          graphTitleFontSize: 18
+        };
 
-        var opt = {
-              //scaleOverride: true,
-              yAxisMinimumInterval : 1,
-              xAxisMinimumInterval : 1,
-              scaleIntegersOnly: true,
-              animationStartWithDataset : startWithDataset,
-              animationStartWithData : startWithData,
-              animationSteps : 200,
-            //canvasBorders : true,
-              canvasBordersWidth : 3,
-              canvasBordersColor : "black",
-              graphTitle : "{{vote.vote_content}}",
-              legend : true,
-              inGraphDataShow : true,
-              annotateDisplay : true,
-              graphTitleFontSize: 18
-
-        }
-
-        window.onload = function(){
-            var horizonralbar = new Chart(document.getElementById("canvas_HorizontalBar").getContext("2d")).HorizontalBar(plotdata,opt);
-        }
-
+        //draw the graph
+        $(function(){
+            var horizonralbar = new Chart(document.getElementById("canvas_HorizontalBar{{order}}").getContext("2d")).HorizontalBar(plotdata{{order}},opt{{order}});
+        });
+    {% endfor %}
     </script>
 {% endblock %}
 
@@ -62,10 +65,6 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">Contact with Admin</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Settings</a></li>
-                <li class="divider"></li>
                 <li><a href="{{ url_for('logout') }}">Log Out</a></li>
             </ul>
         </li>
@@ -76,21 +75,46 @@
     <div class="vote-results">
         <div id="discuss_div" class="panel panel-default">
             <div class="panel-heading">
-                <h4>{{vote.vote_content}}</h4>
-                created by {{ creator.username }}
+                <div style="color:#5f9ea0;font-weight:bold;font-size:50px">{{vote.title}}</div>
+                <div style="text-align:right">---created by {{ creator.username }}</div>
             </div>
             <div class="panel-body">
-                <canvas id="canvas_HorizontalBar" height="300px" width="600px"></canvas>
+                <ul class="list-group">
+                {% for i in range(1,vote.contents_num + 1) %}
+                <li class="list-group-item">
+                    <!-- to make the width all the same-->
+                    {% set height = vote.options_num[i-1]*75 + 55 %}
+                    <br>
+                    <canvas id="canvas_HorizontalBar{{i}}" height="{{height}}px" width="600px"></canvas><br>
+                    <!-- each option -->
+                    <!-- <h4>Options for {{vote_contents[i-1]}}</h4> -->
+                    {% for j in range(1,(vote_options[i-1]|length) + 1) %}
+                        <lable>{{j}}. {{vote_options[i-1][j-1]}}</lable>
+                        <br>
+                    {% endfor %}<hr>
+                </li>
+                {% endfor %}
+                </ul>
+
+                <br><br>
+                <h2>Vote History</h2>
+                {% for each in latest%}
+                <hr>
+                <ul>
+                  <li>{{each[0]}} cast a vote {{each[2]}} ago</li>
+                </ul>
+                <hr>
+            {% endfor %}
             </div>
             <div class="panel-footer">
                 <ol class="breadcrumb">
                     <li><a href="{{ url_for('index') }}">Grape</a></li>
                     <li><a href="{{ url_for('groupDetail', group_id=vote.group_id) }}">{{ group.name }}</a></li>
-                    <li class="active">{{ vote.vote_content }}</li>
+                    <li class="active">{{ vote.title }}</li>
                 </ol>
             </div>
     	</div>
     </div>
-{% endblock %}
 
-<!-- https://plot.ly/~abhishek.mitra.963/1/.embed?width=800&height=600 -->
+
+{% endblock %}

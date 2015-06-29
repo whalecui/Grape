@@ -4,7 +4,7 @@
 
 <Workspace>
 	<Local Expanded="Yes">
-		<Model Expanded="Yes" ID="{539DC0A9-30C1-404C-9DCC-230C4ACB361F}" Name="ObjectOrientedModel_2" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="ObjectOrientedModel_2.oom"/>
+		<Model Expanded="Yes" ID="{539DC0A9-30C1-404C-9DCC-230C4ACB361F}" Name="ObjectOrientedModel_2" OpenedReadOnly="Yes" Selected="Yes" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="ObjectOrientedModel_2.oom"/>
 	</Local>
 	<BrowserModule Name="Repository"/>
 </Workspace>

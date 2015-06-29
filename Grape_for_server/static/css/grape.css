@@ -12,8 +12,6 @@
 .grape-index
 {
     display: block;
-    width: 60%;
-    margin: 10% auto 0 auto;
 }
 
 .hide
@@ -29,4 +27,26 @@ label
 i.fa-check, i.fa-times
 {
     float: right;
+}
+
+.bs-docs-footer 
+{
+	padding-top: 5px !important;
+	padding-bottom: 20px !important;
+}
+
+nav.navbar-default
+{
+    margin-bottom: 0;
+}
+
+.container
+{
+    /*margin-top: 3%;*/
+}
+
+a
+{
+    transition: background-color 500ms,
+				color 800ms;
 }

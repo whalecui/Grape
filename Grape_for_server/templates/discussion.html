@@ -19,10 +19,6 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">Contact with Admin</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Settings</a></li>
-                <li class="divider"></li>
                 <li><a href="{{ url_for('logout') }}">Log Out</a></li>
             </ul>
         </li>
@@ -32,12 +28,24 @@
 {% block content %}
     <div id="discuss_body">
     	<div id="discuss_div" class="panel panel-default">
-            <div class="panel-heading"><h4>{{discuss.title}}</h4></div>
-            <div class="panel-body"><p class="dis-content">{{discuss.content}}</p></div>
-            <div class="discuss_info" style="margin-left:70%">
-                <span>time:{{discuss.create_time}}</span>
-                <span>reply_num:{{discuss.reply_num}}</span>
-                <span>read_num:{{discuss.read_num}}</span>
+            <div class="panel-heading">
+                <h4><i class="fa fa-comment-o"></i> {{discuss.title}}</h4>
+            </div>
+            <div class="panel-body">
+                <div style="margin: 2% auto 0; width: 95%;">
+                    <p class="dis-content">{{discuss.content}}</p><hr>
+                    <div>
+                        <a class="show-detail btn btn-default" data-toggle="collapse"
+                               data-target="#discuss_info">
+                                details</a>
+                        <div id="discuss_info" class="discuss_info collapse">
+                            <ul>
+                                <li>Created By {{creator}} on {{discuss.create_time}}.</li>
+                                <li>Has been read for {{discuss.read_num}} times and replied for {{discuss.reply_num}} times.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="panel-footer">
                 <ol class="breadcrumb">
@@ -48,24 +56,30 @@
             </div>
     	</div>
         <div id="discuss_div" class="panel panel-default">
-            <div class="panel-heading"><h4>Replies:</h4></div>
+            <div class="panel-heading"><h4>
+                <i class="fa fa-comments"></i> Replies:
+            </h4></div>
             <ul class="replies list-group">
             {% for item in reply %}
                 <li class="list-group-item">
-                    <p class="reply">{{item.content}}</p>
-                    <p class="reply_info">
-                        <span class="reply_from">from: {{item.username}}</span>
-                        <span class="reply_time">time: {{item.reply_time}}</span>
-                    </p>
-                    {% if user_id == item.user_id or role == '2' %}
-                    <a class="popover-options" id="reply-delete-{{ item.reply_id }}"
-                        title="Are you sure to delete this reply?"
-                        data-container="body" data-toggle="popover"
-                        data-content='<a class="btn btn-primary reply-delete" victim="{{ item.reply_id }}">yes</a>
-                        <a class="btn btn-primary popover-close" origin="#reply-delete-{{ item.reply_id }}">no</a>'>
-                        delete
-                    </a>
-                    {% endif %}
+                    <div style="margin: 2% auto 0; width: 95%;">
+                        <p class="reply-content">{{item.content}}</p><hr>
+                        <div style="margin: 0 0 1% 0;">
+                            <p class="reply_info">
+                                <span class="reply_from">from {{item.username}}</span><br>
+                                <span class="reply_time">in {{item.reply_time}}</span><br>
+                            </p>
+                            {% if user_id == item.user_id or role == '2' %}
+                            <a class="popover-options btn btn-default" id="reply-delete-{{ item.reply_id }}"
+                                title="Are you sure to delete this reply?"
+                                data-container="body" data-toggle="popover"
+                                data-content='<a class="btn btn-primary reply-delete" victim="{{ item.reply_id }}">yes</a>
+                                <a class="btn btn-primary popover-close" origin="#reply-delete-{{ item.reply_id }}">no</a>'>
+                                delete
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </li>
             {% else %}
                 <li class="list-group-item">
@@ -78,9 +92,8 @@
             <h4>Submit your reply:</h4>
             <form action="" id="reply-form">
                 <div class="form-group">
-                    <label for="content">content:</label>
+                    <label for="reply-content"></label>
                     <textarea class="form-control" rows="4" name="content" id="reply-content"></textarea>
-                    <br>
                 </div>
                 <button type="submit" class="btn btn-default">submit</button>
             </form>

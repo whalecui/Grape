@@ -20,10 +20,6 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">Contact with Admin</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Settings</a></li>
-                <li class="divider"></li>
                 <li><a href="{{ url_for('logout') }}">Log Out</a></li>
             </ul>
         </li>
@@ -34,10 +30,8 @@
     <div class="group-details">
         <div class="tab-group">
             <ul class="list-group">
-                <li><a class="list-group-item tab-main" href="#news" data-toggle="tab">
-                    News</a></li>
-                <li><a class="list-group-item tab-main" href="#message" data-toggle="tab">
-                    Message</a></li>
+                <li><a class="list-group-item tab-main" href="#messages" data-toggle="tab">
+                    Messages</a></li>
                 <hr>
                 <li><a class="list-group-item tab-main" href="#myGroup" data-toggle="tab">
                     My Group</a></li>
@@ -53,46 +47,38 @@
             </ul>
         </div>
         <div id="tab-content-main" class="tab-content tab-content-main">
-            <div class="tab-pane fade in active" id="news">
-                <h3>News</h3><hr>
-                <ul class="news list-group">
-                    <li class="list-group-item">
-                        <h4>News 1</h4>
-                        <p>details</p>
-                    </li>
-                    <li class="list-group-item">
-                        <h4>News 2</h4>
-                        <p>details</p>
-                    </li>
-                    <li class="list-group-item">
-                        <h4>News 3</h4>
-                        <p>details</p>
-                    </li>
-                </ul>
-            </div>
-            <div class="tab-pane fade" id="message">
+            <div class="tab-pane fade in active" id="messages">
                 <h3>Messages</h3><hr>
-                <ul class="message list-group">
+                <ul class="messages list-group">
                 {% for message in messages %}
-                    {% if message.viewed == 0 %}
-                    <li class="list-group-item message_not_viewed">
-                    {% else %}
                     <li class="list-group-item">
-                    {% endif %}
-                        <h4>{{message.content}}</h4>
-                        <p class="message_info">
-                            <span class="message_time">{{message.time}}&nbsp;&nbsp;</span>
-                            {% if message.viewed == 0 %}
-                            <a class="popover-options" id="message-confirm-{{ message.message_id }}"
-                               title="Sure?"
-                               data-container="body" data-toggle="popover"
-                               data-content='<a class="message_confirm btn btn-primary" victim1="{{ user_id }}" victim2="{{message.message_id}}">yes</a>
-                               <a class="btn btn-primary popover-close" origin="#message-confirm-{{ message.message_id }}">no</a>'>
-                                 Mark as read  
-                            </a>
-                            {% endif %}
-                            <span class="message_viewed">viewed:{{message.viewed}}</span>
-                        </p>
+                        {% if message.type == 0 %}
+                            {% set key = 'fa-heart-o first-time-icon icon' %}
+                        {% elif message.type == 1 %}
+                            {% set key = 'fa-bullhorn bulletin-icon icon' %}
+                        {% elif message.type == 2 %}
+                            {% set key = 'fa-table vote-icon icon' %}
+                        {% elif message.type == 3 %}
+                            {% set key = 'fa-comments-o discuss-icon icon' %}
+                        {% else %}
+                            {% set key = 'fa-chain-broken delete-icon icon' %}
+                        {% endif %}
+                        <div class="icon-div">
+                            <span class="fa fa-4x {{key}}"></span>
+                        </div>
+                        <div class="message-content-div">
+                            <h4><a href="{{ url_for('groupDetail', group_id = message.group_id) }}">{{message.content}}</a></h4>
+                            <p class="news_info">
+                                <span class="news_time">{{message.time}}&nbsp;&nbsp;</span>
+                                <a class="popover-options" id="message-confirm-{{ message['message_id'] }}"
+                                   title="Sure?"
+                                   data-container="body" data-toggle="popover"
+                                   data-content='<a class="message_confirm btn btn-primary" victim1="{{ user_id }}" victim2="{{ message['message_id'] }}">yes</a>
+                                   <a class="btn btn-primary popover-close" origin="#message-confirm-{{ message['message_id'] }}">no</a>'>
+                                   Mark as read
+                                </a>
+                            </p>
+                        </div>
                     </li>
                 {% endfor %}
                 </ul>
@@ -238,7 +224,7 @@
                 {% if leader %}
                     <p>Leader:</p>
                     <p>{{leader}}</p>
-                {% endif %} 
+                {% endif %}
                 <br><br>
                 {% if members %}
                     <p>Members:</p>
@@ -247,7 +233,7 @@
                     {% endfor %}
                 {% endif %}
 
-            
+
             </div>
         </div>
     </div>
