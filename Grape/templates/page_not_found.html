@@ -26,7 +26,7 @@
         </ul>
     {% else %}
         <li><a href="#" data-toggle="modal" data-target="#logModal">
-        Log In
+            Log In
         </a></li>
         <li><a href="#"  data-toggle="modal" data-target="#regModal">
             <i class="fa fa-user-plus"></i> Sign Up
@@ -35,8 +35,18 @@
 {% endblock %}
 
 {% block content %}
-    <div class="">
-        <h1>404 NOT FOUND</h1>
+    <div style="margin-top: 5%">
+        <h1><i class="fa fa-bug"></i> 404 NOT FOUND <i class="fa fa-bug"></i></h1><hr>
+        <div class="error-info">
+            <h4>OOPS! The page You are looking for does not exist!</h4><hr>
+            <h4>You are directed to this page because:</h4>
+            <ul>
+                <li><h4>The group/vote/discussion you are finding does not exist</h4></li>
+                <li><h4>The group/vote/discussion you are finding has been deleted</h4></li>
+            </ul><hr>
+            <h4>Please check if the id of the group/vote/discussion you entered is correct.</h4>
+            <h4>Click <a href="{{ url_for('index') }}">here</a> to go back to Index</h4>
+        </div>
     </div>
 {% endblock %}
 

@@ -1299,10 +1299,8 @@ Shadow=0</a:DisplayPreferences>
 <c:Symbols>
 <o:AssociationSymbol Id="o6">
 <a:CreationDate>1430670142</a:CreationDate>
-<a:ModificationDate>1435503171</a:ModificationDate>
-<a:SourceTextOffset>(-1, 645)</a:SourceTextOffset>
-<a:DestinationTextOffset>(-52, -698)</a:DestinationTextOffset>
-<a:Rect>((-2325,5025), (9225,8245))</a:Rect>
+<a:ModificationDate>1430670142</a:ModificationDate>
+<a:Rect>((-2325,5025), (9225,8137))</a:Rect>
 <a:ListOfPoints>((-2325,7500),(9225,5025))</a:ListOfPoints>
 <a:ArrowStyle>8</a:ArrowStyle>
 <a:LineColor>16744448</a:LineColor>
@@ -1321,9 +1319,9 @@ Multiplicity 0 新宋体,8,N</a:FontList>
 </o:AssociationSymbol>
 <o:AssociationSymbol Id="o10">
 <a:CreationDate>1430670146</a:CreationDate>
-<a:ModificationDate>1435503228</a:ModificationDate>
-<a:Rect>((-8133,-9176), (-4398,2641))</a:Rect>
-<a:ListOfPoints>((-6277,2641),(-6253,-9176))</a:ListOfPoints>
+<a:ModificationDate>1430670146</a:ModificationDate>
+<a:Rect>((-8244,-8475), (-4273,2850))</a:Rect>
+<a:ListOfPoints>((-6225,2850),(-6300,-8475))</a:ListOfPoints>
 <a:ArrowStyle>8</a:ArrowStyle>
 <a:LineColor>16744448</a:LineColor>
 <a:ShadowColor>12632256</a:ShadowColor>
@@ -1364,8 +1362,8 @@ LABL 0 新宋体,8,N</a:FontList>
 </o:ClassSymbol>
 <o:ClassSymbol Id="o11">
 <a:CreationDate>1430670011</a:CreationDate>
-<a:ModificationDate>1435503198</a:ModificationDate>
-<a:Rect>((-11456,-10184), (-1312,-5686))</a:Rect>
+<a:ModificationDate>1430670088</a:ModificationDate>
+<a:Rect>((-11821,-9975), (-1677,-5477))</a:Rect>
 <a:LineColor>16744448</a:LineColor>
 <a:FillColor>16770222</a:FillColor>
 <a:ShadowColor>12632256</a:ShadowColor>
@@ -1604,14 +1602,13 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:Code>association1</a:Code>
 <a:CreationDate>1430670142</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1435503166</a:ModificationDate>
+<a:ModificationDate>1430670158</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
-<a:RoleAMultiplicity>1</a:RoleAMultiplicity>
-<a:RoleBMultiplicity>1</a:RoleBMultiplicity>
-<a:ExtendedAttributesText>{D824A738-E160-11D2-B693-0008C7EA924D},Java,276={72FA5C48-5524-4DF7-8187-ABB19AB5AF9E},roleAContainer,6=&lt;None&gt;
+<a:RoleAMultiplicity>0..*</a:RoleAMultiplicity>
+<a:RoleBMultiplicity>0..*</a:RoleBMultiplicity>
+<a:ExtendedAttributesText>{D824A738-E160-11D2-B693-0008C7EA924D},Java,224={72FA5C48-5524-4DF7-8187-ABB19AB5AF9E},roleAContainer,6=&lt;None&gt;
 {F6FFC71C-C472-4261-A710-B0BCC0BF4D58},roleAImplementationClass,6=&lt;None&gt;
-{C11C9F66-6453-43A2-8824-6654518CF65A},roleBImplementationClass,6=&lt;None&gt;
-{78C31404-0EE5-4FD0-9038-EE396B305F05},roleBContainer,6=&lt;None&gt;
+{C11C9F66-6453-43A2-8824-6654518CF65A},roleBImplementationClass,17=java.util.HashSet
 
 </a:ExtendedAttributesText>
 <c:Object1>

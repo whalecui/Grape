@@ -3,6 +3,7 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="../static/css/view_vote-id.css">
+    <script src="../static/js/view_vote-id.js"></script>
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         var username = "{{ username }}";
@@ -47,14 +48,14 @@
                                 <!-- select -->
                                 <div class="radio">
                                     <label>
-                                        <input type="radio" name="vote{{contents}}-option" value="{{options}}"/>
+                                        <input class="options" type="radio" name="vote{{contents}}-option" value="{{options}}"/>
                                         {{vote_option}}
                                     </label>
                                 </div>
                             {% endfor %}
                             <hr>
                         {% endfor %}
-                            <button type="submit" class="btn btn-default">Submit</button>
+                            <button id="validcheck" type="submit" class="btn btn-default">Submit</button>
                     </form>
                 {% else %}
                         <br>

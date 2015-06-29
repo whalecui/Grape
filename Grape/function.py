@@ -382,6 +382,23 @@ class User:
         conn.close()
         return False
 
+    def end_vote(self,vote_id):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        vote = Vote(vote_id,self.user_id)
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor.execute("select * from groups where group_id = %d and leader_id = %d" % (vote.group_id,self.user_id))
+        # only leader can delete vote
+        right = cursor.fetchall()
+        if (right):
+            cursor.execute("update votes set voting=0 and endtime=CURRENT_TIMESTAMP where vote_id=%s" % vote_id);
+            conn.commit();
+            conn.close();
+            return True
+        conn.close()
+        return False
+
     def delete_discussion(self,discuss_id):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
@@ -1073,7 +1090,9 @@ class Vote:
                 sql = "select * from content_user_map where content_id= %s and user_id= %s" % (vote_content['content_id'],user_id)
                 print sql
                 cursor.execute(sql)
-                option_voted = cursor.fetchone()['votefor']
+                option_voted = cursor.fetchone()
+                print type(option_voted)
+                option_voted = option_voted['votefor']
             item['options_voted'].append(option_voted)
 
 
@@ -1110,11 +1129,12 @@ class Vote:
             sql = "insert into content_user_map(vote_id,content_id,user_id,votefor) values(%s,'%s','%s','%s')" % (self.vote_id,diff[i-1]['content_id'],user_id,vote_options[i-1])
             cursor.execute(sql)
             conn.commit()
-            sql = "select count(user_id) from content_user_map where content_id=%s" % diff[i-1]['content_id']
+            sql = "select count(user_id) from content_user_map where content_id=%s and votefor = %s" % (diff[i-1]['content_id'],vote_options[i-1])
             cursor.execute(sql)
             new_votes = cursor.fetchone()['count(user_id)']
-
+            print new_votes
             sql = "update vote_detail set votes=%s where content_id=%s and option_order=%s" % (new_votes,diff[i-1]['content_id'],vote_options[i-1])
+            print new_votes
             cursor.execute(sql)
             conn.commit()
         conn.close()

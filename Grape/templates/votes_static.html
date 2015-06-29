@@ -20,7 +20,10 @@
             labels : {{vote_options_order[order-1] | safe}},
             datasets : [
             {
-                fillColor : "rgba(255,153,0,0.5)",
+                fillColor : [
+                {% for i in vote_options[order-1] %}
+                    "rgba(255,153,0,0.5)",
+                {% endfor %}],
                 strokeColor : "rgba(255,153,0,1)",
                 pointColor : "rgba(255,153,0,1)",
                 pointstrokeColor : "orange",
@@ -42,16 +45,24 @@
           graphTitle : "{{vote_contents[order-1]|safe}}",
           //确保 最大的那个值是填满整个图的高度的
           graphMax:{{votes_max[order-1]}},
+          graphMin:0,
           legend : true,
           inGraphDataShow : true,
           annotateDisplay : true,
-          graphTitleFontSize: 18
+          graphTitleFontSize: 18,
         };
 
         //draw the graph
         $(function(){
-            var horizonralbar = new Chart(document.getElementById("canvas_HorizontalBar{{order}}").getContext("2d")).HorizontalBar(plotdata{{order}},opt{{order}});
+            plotdata{{order}}.datasets[0].fillColor[{{vote.options_voted[order-1] - 1}}] = "red";//[0].bars[0].fillColor = "red";
+             var horizonralbar = new Chart(document.getElementById("canvas_HorizontalBar{{order}}").getContext("2d")).HorizontalBar(plotdata{{order}},opt{{order}});
         });
+
+        // myObjBar.datasets[{{order-1}}].bars[{{vote.options_voted[order-1]}}].fillColor = "red";
+
+
+
+
     {% endfor %}
     </script>
 {% endblock %}
@@ -113,7 +124,7 @@
                     <li class="active">{{ vote.title }}</li>
                 </ol>
             </div>
-    	</div>
+        </div>
     </div>
 
 
