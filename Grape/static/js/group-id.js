@@ -218,7 +218,6 @@ function optionReady_instant(){
         vote_wrap.appendChild(option_remove_button);
         vote_wrap.setAttribute('class', 'vote-wrap');
 
-
         var vote_add_form = document.getElementById("vote-add-form");
         var vote_add_button = document.getElementById("vote-add-button");
 
@@ -606,3 +605,21 @@ $(function(){
 });
 
 
+$(function(){
+    $('.popover-options').on('shown.bs.popover', function(){
+        $('.vote-end').click(function(){
+            var vote_id = Number($(this).attr('victim'));
+            var div = $(this).parent();
+            console.log(vote_id);
+            $.getJSON($SCRIPT_ROOT + '/_end_vote',
+                {vote_id: vote_id},
+                function(data){
+                    if(data.success == '0'){
+                        alert('failed');
+                    }else{
+                        location.reload();
+                    }
+            });
+        });
+    });
+});

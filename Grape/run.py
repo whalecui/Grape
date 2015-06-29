@@ -244,6 +244,14 @@ def delete_vote():
     return jsonify(success=user.delete_vote(vote_id))
 
 
+@app.route('/_end_vote')
+def end_vote():
+    user_id = session.get('user_id')
+    vote_id = str(request.args.get('vote_id', 0, type=int))
+    print vote_id,234234
+    user = User(user_id=user_id)
+    return jsonify(success=user.end_vote(vote_id))
+
 @app.route('/group/')
 def myGroups():
     return make_response(redirect('/'))
@@ -420,14 +428,13 @@ def groupDetail(group_id):
                            #non-exist
 
 @app.route('/_create_vote/<int:group_id>',methods=['GET','POST'])
-def raise_a_vote_result(group_id):
-
+def raise_a_vote_result(group_id):  
     user_id = session.get('user_id')
     if request.method == "GET":
         vote_contents_set = []
         options_set = []
         vote_options_set = []
-
+        
         time2end = request.args.get('endtime')
         endtime_selection = request.args.get('endtime-selection')
         print endtime_selection
@@ -534,7 +541,7 @@ def view_votes_result(vote_id):
     creator = User(user_id = creator_id)
     members = group.get_members()
     if {'member_id': user_id} not in members :
-        return redirect(url_for('groupDetail', group_id=vote.group_id))
+        return redirect(url_for('groupDetail', group_id=vote.group_id)) 
     #votes for each option
     #in the form [v1-[op1,op2,op3...],v2-[op1,op2,op3..],[]]
     votes_distribution = vote.votes

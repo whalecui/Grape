@@ -231,6 +231,13 @@
                                                     <a class="btn btn-primary popover-close" origin="#delete-vote-{{ vote_pair[0] }}">no</a>'>
                                                     delete
                                             </a>
+                                            <a class="popover-options end btn btn-default" id="end-vote-{{ vote_pair[0] }}"
+                                                    title="Are you sure to end this vote?"
+                                                    data-container="body" data-toggle="popover"
+                                                    data-content='<a class="vote-end btn btn-primary" victim="{{ vote_pair[0] }}">yes</a>
+                                                    <a class="btn btn-primary popover-close" origin="#end-vote-{{ vote_pair[0] }}">no</a>'>
+                                                    end
+                                            </a>
                                         {% endif %}
                                         <div id="vote-{{ vote_pair[0]}}" class="collapse row vote-detail">
                                             <ul>

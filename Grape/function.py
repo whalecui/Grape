@@ -381,6 +381,23 @@ class User:
         conn.close()
         return False
 
+    def end_vote(self,vote_id):
+        conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
+                             user=db_config["db_user"],passwd=db_config["db_passwd"],\
+                             db=db_config["db_name"],charset="utf8")
+        vote = Vote(vote_id,self.user_id)
+        cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        cursor.execute("select * from groups where group_id = %d and leader_id = %d" % (vote.group_id,self.user_id))
+        # only leader can delete vote
+        right = cursor.fetchall()
+        if (right):
+            cursor.execute("update votes set voting=0 and endtime=CURRENT_TIMESTAMP where vote_id=%s" % vote_id);
+            conn.commit();
+            conn.close();
+            return True
+        conn.close()
+        return False
+
     def delete_discussion(self,discuss_id):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],\
                              user=db_config["db_user"],passwd=db_config["db_passwd"],\
