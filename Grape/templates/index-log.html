@@ -67,7 +67,7 @@
                             <span class="fa fa-4x {{key}}"></span>
                         </div>
                         <div class="message-content-div">
-                            {% if message.type != 0 %}}
+                            {% if message.type != 0 %}
                             <h4><a href="{{ url_for('groupDetail', group_id = message.group_id) }}">{{message.content}}</a></h4>
                             {% else %}
                             <h4>{{message.content}}</h4>

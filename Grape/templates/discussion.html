@@ -77,6 +77,11 @@
                                 <a class="btn btn-primary popover-close" origin="#reply-delete-{{ item.reply_id }}">no</a>'>
                                 delete
                             </a>
+                            {% else %}
+                            <a class="btn btn-default" id="reply-delete-{{ item.reply_id }}"  
+                                disabled="disabled">
+                                delete
+                            </a>
                             {% endif %}
                         </div>
                     </div>
