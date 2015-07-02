@@ -73,6 +73,7 @@ class User:
     def create_group(self, groupname, topic, desc,confirmMessage):
         conn=MySQLdb.connect(host=db_config["db_host"],port=db_config["db_port"],user=db_config["db_user"],passwd=db_config["db_passwd"],db=db_config["db_name"],charset="utf8")
         cursor=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+        groupname = groupname.encode('utf8')
         #判断是否存在
         cursor.execute("select name from groups where name='" + groupname + "';")
         exist=cursor.fetchall()

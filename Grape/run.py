@@ -172,12 +172,11 @@ def check_email():
 def new_group():
     user_id = session.get('user_id')
     user = User(user_id=user_id)
-    name=request.args.get('name', '', type=str)
-    topic=request.args.get('topic', '', type=str)
-    confirmMessage=request.args.get('confirm', '', type=str)
+    name=request.args.get('name')
+    topic=request.args.get('topic')
+    confirmMessage=request.args.get('confirm')
     desc=request.args.get('desc', '', type=str)
     if name and topic and confirmMessage:
-        print name,topic,confirmMessage,desc,1235543
         if not desc:
             desc="this is my group"
         status=user.create_group(name, topic, desc, confirmMessage)
