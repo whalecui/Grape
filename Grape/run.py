@@ -587,4 +587,6 @@ def delete_bulletin():
     return jsonify(status=user.delete_bulletin(bulletin_id))
 
 if __name__ == '__main__':
+    a = generate_password_hash('admin')
+    print a
     app.run(debug=True, host=HOST, port=PORT)
