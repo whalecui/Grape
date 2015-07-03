@@ -1322,7 +1322,7 @@ Multiplicity 0 新宋体,8,N</a:FontList>
 <o:AssociationSymbol Id="o10">
 <a:CreationDate>1430670146</a:CreationDate>
 <a:ModificationDate>1435503228</a:ModificationDate>
-<a:Rect>((-8133,-9176), (-4398,2641))</a:Rect>
+<a:Rect>((-8246,-9176), (-4285,2641))</a:Rect>
 <a:ListOfPoints>((-6277,2641),(-6253,-9176))</a:ListOfPoints>
 <a:ArrowStyle>8</a:ArrowStyle>
 <a:LineColor>16744448</a:LineColor>
@@ -1527,11 +1527,11 @@ LABL 0 新宋体,8,N</a:FontList>
 <c:Operations>
 <o:Operation Id="o24">
 <a:ObjectID>F161C029-E3E8-4DFD-8EEB-478DEF8E4FF6</a:ObjectID>
-<a:Name>findGroup</a:Name>
-<a:Code>findGroup</a:Code>
+<a:Name>joinGroup</a:Name>
+<a:Code>joinGroup</a:Code>
 <a:CreationDate>1430670097</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1430670105</a:ModificationDate>
+<a:ModificationDate>1435884884</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <a:ReturnType>boolean</a:ReturnType>
 <a:TemplateBody>%DefaultBody%</a:TemplateBody>

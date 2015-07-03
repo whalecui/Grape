@@ -12,7 +12,7 @@
 <a:Code>ObjectOrientedModel_4</a:Code>
 <a:CreationDate>1430671211</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671632</a:ModificationDate>
+<a:ModificationDate>1435884926</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <a:PackageOptionsText>[FolderOptions]
 
@@ -931,93 +931,19 @@ NameToCode=No</a:ModelOptionsText>
 </c:Object2>
 </o:ActivityFlow>
 <o:ActivityFlow Id="o9">
-<a:ObjectID>5D02FF19-BD72-4C2C-A657-989073AA1D71</a:ObjectID>
-<a:CreationDate>1430671352</a:CreationDate>
+<a:ObjectID>75E7DC3B-3549-48FE-8D77-78C1DF5C68D3</a:ObjectID>
+<a:CreationDate>1435884926</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671352</a:ModificationDate>
+<a:ModificationDate>1435884926</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <c:Object1>
-<o:ObjectNode Ref="o10"/>
+<o:End Ref="o10"/>
 </c:Object1>
 <c:Object2>
 <o:Activity Ref="o7"/>
 </c:Object2>
 </o:ActivityFlow>
-<o:ActivityFlow Id="o11">
-<a:ObjectID>9977E6C4-5B9E-47A9-A99C-AE947FBF2FE1</a:ObjectID>
-<a:CreationDate>1430671398</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671398</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<c:Object1>
-<o:Activity Ref="o12"/>
-</c:Object1>
-<c:Object2>
-<o:ObjectNode Ref="o10"/>
-</c:Object2>
-</o:ActivityFlow>
-<o:ActivityFlow Id="o13">
-<a:ObjectID>701CC579-C622-4C00-A3BA-399E5B54905A</a:ObjectID>
-<a:CreationDate>1430671510</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671510</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<c:Object1>
-<o:Decision Ref="o14"/>
-</c:Object1>
-<c:Object2>
-<o:Activity Ref="o12"/>
-</c:Object2>
-</o:ActivityFlow>
-<o:ActivityFlow Id="o15">
-<a:ObjectID>0A2699CC-92E3-41C3-BFA9-C815BDA5A919</a:ObjectID>
-<a:CreationDate>1430671525</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671525</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<c:Object1>
-<o:ObjectNode Ref="o16"/>
-</c:Object1>
-<c:Object2>
-<o:Decision Ref="o14"/>
-</c:Object2>
-</o:ActivityFlow>
-<o:ActivityFlow Id="o17">
-<a:ObjectID>4EFEDA3B-46F8-4AFA-97AC-F4A4D2C1B097</a:ObjectID>
-<a:CreationDate>1430671632</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671632</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<c:Object1>
-<o:End Ref="o18"/>
-</c:Object1>
-<c:Object2>
-<o:ObjectNode Ref="o16"/>
-</c:Object2>
-</o:ActivityFlow>
 </c:Flows>
-<c:ObjectNodes>
-<o:ObjectNode Id="o10">
-<a:ObjectID>8BE9B5C3-0098-4D2D-8B50-69C824323387</a:ObjectID>
-<a:Name>ObjectNode_1</a:Name>
-<a:Code>ObjectNode_1</a:Code>
-<a:CreationDate>1430671347</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671347</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<a:DataType>int</a:DataType>
-</o:ObjectNode>
-<o:ObjectNode Id="o16">
-<a:ObjectID>52477B5E-42BA-4FFA-AF8C-A981D49B684B</a:ObjectID>
-<a:Name>MemberInGroup</a:Name>
-<a:Code>MemberInGroup</a:Code>
-<a:CreationDate>1430671516</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671539</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<a:DataType>int</a:DataType>
-</o:ObjectNode>
-</c:ObjectNodes>
 <c:Activities>
 <o:Activity Id="o7">
 <a:ObjectID>5A435D87-18F6-46FA-BEDD-835BF251EFE5</a:ObjectID>
@@ -1029,28 +955,7 @@ NameToCode=No</a:ModelOptionsText>
 <a:Modifier>畅</a:Modifier>
 <a:ActionType>UNDEF</a:ActionType>
 </o:Activity>
-<o:Activity Id="o12">
-<a:ObjectID>9D22451C-0730-476D-8882-317176C4060C</a:ObjectID>
-<a:Name>inviteOthers</a:Name>
-<a:Code>inviteOthers</a:Code>
-<a:CreationDate>1430671392</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671409</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<a:ActionType>UNDEF</a:ActionType>
-</o:Activity>
 </c:Activities>
-<c:Decisions>
-<o:Decision Id="o14">
-<a:ObjectID>30AD3CA3-131C-4C40-8EA8-3162DB8A598C</a:ObjectID>
-<a:Name>accept()</a:Name>
-<a:Code>accept</a:Code>
-<a:CreationDate>1430671499</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671505</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-</o:Decision>
-</c:Decisions>
 <c:ActivityDiagrams>
 <o:ActivityDiagram Id="o5">
 <a:ObjectID>B204C1AA-24D2-4FA8-AEC8-96E9DD9FFCC4</a:ObjectID>
@@ -1058,7 +963,7 @@ NameToCode=No</a:ModelOptionsText>
 <a:Code>ActivityDiagram_1</a:Code>
 <a:CreationDate>1430671211</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671632</a:ModificationDate>
+<a:ModificationDate>1435884926</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <a:DisplayPreferences>[DisplayPreferences]
 
@@ -1448,19 +1353,7 @@ Shadow=0</a:DisplayPreferences>
 <a:PageOrientation>1</a:PageOrientation>
 <a:PaperSource>15</a:PaperSource>
 <c:Symbols>
-<o:TextSymbol Id="o19">
-<a:Text>yes</a:Text>
-<a:CreationDate>1430671589</a:CreationDate>
-<a:ModificationDate>1430671605</a:ModificationDate>
-<a:Rect>((12676,-449), (17475,3150))</a:Rect>
-<a:TextStyle>4130</a:TextStyle>
-<a:LineColor>0</a:LineColor>
-<a:DashStyle>7</a:DashStyle>
-<a:FillColor>0</a:FillColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontName>新宋体,8,N</a:FontName>
-</o:TextSymbol>
-<o:FlowSymbol Id="o20">
+<o:FlowSymbol Id="o11">
 <a:CreationDate>1430671251</a:CreationDate>
 <a:ModificationDate>1430671251</a:ModificationDate>
 <a:Rect>((-19500,10757), (-12600,11218))</a:Rect>
@@ -1471,116 +1364,36 @@ Shadow=0</a:DisplayPreferences>
 <a:FontList>CNDD 0 新宋体,8,N
 STRN 0 新宋体,8,N</a:FontList>
 <c:SourceSymbol>
-<o:StartSymbol Ref="o21"/>
+<o:StartSymbol Ref="o12"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:ActivitySymbol Ref="o22"/>
+<o:ActivitySymbol Ref="o13"/>
 </c:DestinationSymbol>
 <c:Object>
 <o:ActivityFlow Ref="o6"/>
 </c:Object>
 </o:FlowSymbol>
-<o:FlowSymbol Id="o23">
-<a:CreationDate>1430671352</a:CreationDate>
-<a:ModificationDate>1430671352</a:ModificationDate>
-<a:Rect>((-9075,10575), (-375,11025))</a:Rect>
-<a:ListOfPoints>((-9075,10800),(-375,10800))</a:ListOfPoints>
+<o:FlowSymbol Id="o14">
+<a:CreationDate>1435884926</a:CreationDate>
+<a:ModificationDate>1435884926</a:ModificationDate>
+<a:Rect>((-9000,10361), (-3150,10939))</a:Rect>
+<a:ListOfPoints>((-9000,10575),(-3150,10724))</a:ListOfPoints>
 <a:ArrowStyle>1</a:ArrowStyle>
 <a:LineColor>16711680</a:LineColor>
 <a:ShadowColor>12632256</a:ShadowColor>
 <a:FontList>CNDD 0 新宋体,8,N
 STRN 0 新宋体,8,N</a:FontList>
 <c:SourceSymbol>
-<o:ActivitySymbol Ref="o22"/>
+<o:ActivitySymbol Ref="o13"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:ObjectNodeSymbol Ref="o24"/>
+<o:EndSymbol Ref="o15"/>
 </c:DestinationSymbol>
 <c:Object>
 <o:ActivityFlow Ref="o9"/>
 </c:Object>
 </o:FlowSymbol>
-<o:FlowSymbol Id="o25">
-<a:CreationDate>1430671398</a:CreationDate>
-<a:ModificationDate>1430671398</a:ModificationDate>
-<a:Rect>((3450,10575), (11850,11025))</a:Rect>
-<a:ListOfPoints>((3450,10800),(11850,10800))</a:ListOfPoints>
-<a:ArrowStyle>1</a:ArrowStyle>
-<a:LineColor>16711680</a:LineColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>CNDD 0 新宋体,8,N
-STRN 0 新宋体,8,N</a:FontList>
-<c:SourceSymbol>
-<o:ObjectNodeSymbol Ref="o24"/>
-</c:SourceSymbol>
-<c:DestinationSymbol>
-<o:ActivitySymbol Ref="o26"/>
-</c:DestinationSymbol>
-<c:Object>
-<o:ActivityFlow Ref="o11"/>
-</c:Object>
-</o:FlowSymbol>
-<o:FlowSymbol Id="o27">
-<a:CreationDate>1430671510</a:CreationDate>
-<a:ModificationDate>1430671510</a:ModificationDate>
-<a:Rect>((13525,7379), (13999,10500))</a:Rect>
-<a:ListOfPoints>((13725,10500),(13799,7379))</a:ListOfPoints>
-<a:ArrowStyle>1</a:ArrowStyle>
-<a:LineColor>16711680</a:LineColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>CNDD 0 新宋体,8,N
-STRN 0 新宋体,8,N</a:FontList>
-<c:SourceSymbol>
-<o:ActivitySymbol Ref="o26"/>
-</c:SourceSymbol>
-<c:DestinationSymbol>
-<o:BaseDecisionSymbol Ref="o28"/>
-</c:DestinationSymbol>
-<c:Object>
-<o:ActivityFlow Ref="o13"/>
-</c:Object>
-</o:FlowSymbol>
-<o:FlowSymbol Id="o29">
-<a:CreationDate>1430671525</a:CreationDate>
-<a:ModificationDate>1430671525</a:ModificationDate>
-<a:Rect>((13612,-2100), (14079,3419))</a:Rect>
-<a:ListOfPoints>((13799,3419),(13891,-2100))</a:ListOfPoints>
-<a:ArrowStyle>1</a:ArrowStyle>
-<a:LineColor>16711680</a:LineColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>CNDD 0 新宋体,8,N
-STRN 0 新宋体,8,N</a:FontList>
-<c:SourceSymbol>
-<o:BaseDecisionSymbol Ref="o28"/>
-</c:SourceSymbol>
-<c:DestinationSymbol>
-<o:ObjectNodeSymbol Ref="o30"/>
-</c:DestinationSymbol>
-<c:Object>
-<o:ActivityFlow Ref="o15"/>
-</c:Object>
-</o:FlowSymbol>
-<o:FlowSymbol Id="o31">
-<a:CreationDate>1430671632</a:CreationDate>
-<a:ModificationDate>1430671632</a:ModificationDate>
-<a:Rect>((13566,-8325), (14033,-3225))</a:Rect>
-<a:ListOfPoints>((13800,-3225),(13799,-8325))</a:ListOfPoints>
-<a:ArrowStyle>1</a:ArrowStyle>
-<a:LineColor>16711680</a:LineColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>CNDD 0 新宋体,8,N
-STRN 0 新宋体,8,N</a:FontList>
-<c:SourceSymbol>
-<o:ObjectNodeSymbol Ref="o30"/>
-</c:SourceSymbol>
-<c:DestinationSymbol>
-<o:EndSymbol Ref="o32"/>
-</c:DestinationSymbol>
-<c:Object>
-<o:ActivityFlow Ref="o17"/>
-</c:Object>
-</o:FlowSymbol>
-<o:StartSymbol Id="o21">
+<o:StartSymbol Id="o12">
 <a:CreationDate>1430671214</a:CreationDate>
 <a:ModificationDate>1430671214</a:ModificationDate>
 <a:Rect>((-20100,10350), (-18901,11549))</a:Rect>
@@ -1599,7 +1412,7 @@ DISPNAME 0 新宋体,8,N</a:FontList>
 <o:Start Ref="o8"/>
 </c:Object>
 </o:StartSymbol>
-<o:ActivitySymbol Id="o22">
+<o:ActivitySymbol Id="o13">
 <a:CreationDate>1430671231</a:CreationDate>
 <a:ModificationDate>1430671245</a:ModificationDate>
 <a:Rect>((-14954,9875), (-8750,11874))</a:Rect>
@@ -1616,80 +1429,10 @@ LABL 0 新宋体,8,N</a:FontList>
 <o:Activity Ref="o7"/>
 </c:Object>
 </o:ActivitySymbol>
-<o:ObjectNodeSymbol Id="o24">
-<a:CreationDate>1430671347</a:CreationDate>
-<a:ModificationDate>1430671347</a:ModificationDate>
-<a:Rect>((-1275,9375), (3824,12374))</a:Rect>
-<a:LineColor>8421504</a:LineColor>
-<a:FillColor>14737632</a:FillColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>STRN 0 新宋体,8,N
-DISPNAME 0 新宋体,8,N
-LABL 0 新宋体,8,N</a:FontList>
-<a:BrushStyle>6</a:BrushStyle>
-<a:GradientFillMode>65</a:GradientFillMode>
-<a:GradientEndColor>16777215</a:GradientEndColor>
-<c:Object>
-<o:ObjectNode Ref="o10"/>
-</c:Object>
-</o:ObjectNodeSymbol>
-<o:ActivitySymbol Id="o26">
-<a:CreationDate>1430671392</a:CreationDate>
-<a:ModificationDate>1430671392</a:ModificationDate>
-<a:Rect>((10575,9800), (16574,11799))</a:Rect>
-<a:LineColor>12615680</a:LineColor>
-<a:FillColor>16777152</a:FillColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>STRN 0 新宋体,8,N
-DISPNAME 0 新宋体,8,N
-LABL 0 新宋体,8,N</a:FontList>
-<a:BrushStyle>6</a:BrushStyle>
-<a:GradientFillMode>65</a:GradientFillMode>
-<a:GradientEndColor>16777215</a:GradientEndColor>
-<c:Object>
-<o:Activity Ref="o12"/>
-</c:Object>
-</o:ActivitySymbol>
-<o:BaseDecisionSymbol Id="o28">
-<a:CreationDate>1430671499</a:CreationDate>
-<a:ModificationDate>1430671499</a:ModificationDate>
-<a:Rect>((10500,3400), (17099,7399))</a:Rect>
-<a:LineColor>32896</a:LineColor>
-<a:FillColor>12648447</a:FillColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>STRN 0 新宋体,8,N
-DEXN 0 新宋体,8,N</a:FontList>
-<a:BrushStyle>6</a:BrushStyle>
-<a:GradientFillMode>512</a:GradientFillMode>
-<a:GradientEndColor>16777215</a:GradientEndColor>
-<a:KeepCenter>1</a:KeepCenter>
-<c:Object>
-<o:Decision Ref="o14"/>
-</c:Object>
-</o:BaseDecisionSymbol>
-<o:ObjectNodeSymbol Id="o30">
-<a:CreationDate>1430671516</a:CreationDate>
-<a:ModificationDate>1430671543</a:ModificationDate>
-<a:Rect>((10725,-3676), (16875,-676))</a:Rect>
-<a:AutoAdjustToText>0</a:AutoAdjustToText>
-<a:LineColor>8421504</a:LineColor>
-<a:FillColor>14737632</a:FillColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>STRN 0 新宋体,8,N
-DISPNAME 0 新宋体,8,N
-LABL 0 新宋体,8,N</a:FontList>
-<a:BrushStyle>6</a:BrushStyle>
-<a:GradientFillMode>65</a:GradientFillMode>
-<a:GradientEndColor>16777215</a:GradientEndColor>
-<a:ManuallyResized>1</a:ManuallyResized>
-<c:Object>
-<o:ObjectNode Ref="o16"/>
-</c:Object>
-</o:ObjectNodeSymbol>
-<o:EndSymbol Id="o32">
+<o:EndSymbol Id="o15">
 <a:CreationDate>1430671627</a:CreationDate>
-<a:ModificationDate>1430671627</a:ModificationDate>
-<a:Rect>((13050,-9075), (14549,-7576))</a:Rect>
+<a:ModificationDate>1435884917</a:ModificationDate>
+<a:Rect>((-3900,9975), (-2401,11474))</a:Rect>
 <a:LineColor>12615680</a:LineColor>
 <a:FillColor>12615680</a:FillColor>
 <a:ShadowColor>12632256</a:ShadowColor>
@@ -1702,7 +1445,7 @@ DISPNAME 0 新宋体,8,N</a:FontList>
 <a:KeepCenter>1</a:KeepCenter>
 <a:KeepSize>1</a:KeepSize>
 <c:Object>
-<o:End Ref="o18"/>
+<o:End Ref="o10"/>
 </c:Object>
 </o:EndSymbol>
 </c:Symbols>
@@ -1720,7 +1463,7 @@ DISPNAME 0 新宋体,8,N</a:FontList>
 </o:Start>
 </c:Starts>
 <c:Ends>
-<o:End Id="o18">
+<o:End Id="o10">
 <a:ObjectID>A87E3DA5-25E7-476C-9281-73A89E13B4BB</a:ObjectID>
 <a:Name>End_1</a:Name>
 <a:Code>End_1</a:Code>
@@ -1731,7 +1474,7 @@ DISPNAME 0 新宋体,8,N</a:FontList>
 </o:End>
 </c:Ends>
 <c:TargetModels>
-<o:TargetModel Id="o33">
+<o:TargetModel Id="o16">
 <a:ObjectID>47898C21-5E90-4B41-A716-82FFF964FE11</a:ObjectID>
 <a:Name>Java</a:Name>
 <a:Code>Java</a:Code>
@@ -1746,7 +1489,7 @@ DISPNAME 0 新宋体,8,N</a:FontList>
 <o:Shortcut Ref="o3"/>
 </c:SessionShortcuts>
 </o:TargetModel>
-<o:TargetModel Id="o34">
+<o:TargetModel Id="o17">
 <a:ObjectID>681CC9DF-34EE-434D-906E-A98D0E08F713</a:ObjectID>
 <a:Name>WSDL for Java</a:Name>
 <a:Code>WSDLJava</a:Code>
