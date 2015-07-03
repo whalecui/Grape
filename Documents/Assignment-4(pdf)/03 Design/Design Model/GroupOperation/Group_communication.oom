@@ -12,7 +12,7 @@
 <a:Code>ObjectOrientedModel_3</a:Code>
 <a:CreationDate>1430670540</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671174</a:ModificationDate>
+<a:ModificationDate>1435884458</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <a:PackageOptionsText>[FolderOptions]
 
@@ -923,7 +923,7 @@ NameToCode=No</a:ModelOptionsText>
 <a:Code>CommunicationDiagram_1</a:Code>
 <a:CreationDate>1430670540</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671174</a:ModificationDate>
+<a:ModificationDate>1435884458</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <a:DisplayPreferences>[DisplayPreferences]
 
@@ -1184,8 +1184,8 @@ Shadow=0</a:DisplayPreferences>
 <c:Symbols>
 <o:CollaborationInstanceLinkSymbol Id="o6">
 <a:CreationDate>1430670680</a:CreationDate>
-<a:ModificationDate>1430671125</a:ModificationDate>
-<a:Rect>((-13125,820), (-1425,10219))</a:Rect>
+<a:ModificationDate>1435884458</a:ModificationDate>
+<a:Rect>((-13125,820), (-1425,3689))</a:Rect>
 <a:ListOfPoints>((-13125,3000),(-1425,2925))</a:ListOfPoints>
 <a:ArrowStyle>0</a:ArrowStyle>
 <a:LineColor>16744576</a:LineColor>
@@ -1194,68 +1194,20 @@ Shadow=0</a:DisplayPreferences>
 InstanceLinkRole 0 新宋体,8,N</a:FontList>
 <c:MessageSymbols>
 <o:CollaborationMessageSymbol Ref="o7"/>
-<o:CollaborationMessageSymbol Ref="o8"/>
-<o:CollaborationMessageSymbol Ref="o9"/>
 </c:MessageSymbols>
 <c:SourceSymbol>
-<o:UMLObjectStandardSymbol Ref="o10"/>
+<o:UMLObjectStandardSymbol Ref="o8"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:UMLObjectStandardSymbol Ref="o11"/>
+<o:UMLObjectStandardSymbol Ref="o9"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:InstanceLink Ref="o12"/>
+<o:InstanceLink Ref="o10"/>
 </c:Object>
 </o:CollaborationInstanceLinkSymbol>
-<o:CollaborationMessageSymbol Id="o9">
-<a:CreationDate>1430671125</a:CreationDate>
-<a:ModificationDate>1430671181</a:ModificationDate>
-<a:CenterTextOffset>(-225, -4247)</a:CenterTextOffset>
-<a:DistanceFromILink>2500</a:DistanceFromILink>
-<a:PercentOfLinkLength>50</a:PercentOfLinkLength>
-<a:DestinationAnchorOffset>(16, 2499)</a:DestinationAnchorOffset>
-<a:Rect>((-8758,5233), (-5759,5689))</a:Rect>
-<a:ListOfPoints>((-8758,5470),(-5759,5451))</a:ListOfPoints>
-<a:ArrowStyle>1</a:ArrowStyle>
-<a:LineColor>12615808</a:LineColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>DISPNAME 0 新宋体,8,N</a:FontList>
-<c:SourceSymbol>
-<o:UMLObjectStandardSymbol Ref="o10"/>
-</c:SourceSymbol>
-<c:DestinationSymbol>
-<o:UMLObjectStandardSymbol Ref="o11"/>
-</c:DestinationSymbol>
-<c:Object>
-<o:Message Ref="o13"/>
-</c:Object>
-</o:CollaborationMessageSymbol>
-<o:CollaborationMessageSymbol Id="o8">
-<a:CreationDate>1430670786</a:CreationDate>
-<a:ModificationDate>1430671181</a:ModificationDate>
-<a:CenterTextOffset>(-375, -3197)</a:CenterTextOffset>
-<a:DistanceFromILink>1500</a:DistanceFromILink>
-<a:PercentOfLinkLength>50</a:PercentOfLinkLength>
-<a:DestinationAnchorOffset>(9, 1499)</a:DestinationAnchorOffset>
-<a:Rect>((-8765,4233), (-5766,4689))</a:Rect>
-<a:ListOfPoints>((-5766,4451),(-8765,4470))</a:ListOfPoints>
-<a:ArrowStyle>1</a:ArrowStyle>
-<a:LineColor>12615808</a:LineColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>DISPNAME 0 新宋体,8,N</a:FontList>
-<c:SourceSymbol>
-<o:UMLObjectStandardSymbol Ref="o11"/>
-</c:SourceSymbol>
-<c:DestinationSymbol>
-<o:UMLObjectStandardSymbol Ref="o10"/>
-</c:DestinationSymbol>
-<c:Object>
-<o:Message Ref="o14"/>
-</c:Object>
-</o:CollaborationMessageSymbol>
 <o:CollaborationMessageSymbol Id="o7">
 <a:CreationDate>1430670680</a:CreationDate>
-<a:ModificationDate>1430671181</a:ModificationDate>
+<a:ModificationDate>1435884500</a:ModificationDate>
 <a:CenterTextOffset>(1050, 2128)</a:CenterTextOffset>
 <a:DistanceFromILink>500</a:DistanceFromILink>
 <a:PercentOfLinkLength>50</a:PercentOfLinkLength>
@@ -1267,65 +1219,19 @@ InstanceLinkRole 0 新宋体,8,N</a:FontList>
 <a:ShadowColor>12632256</a:ShadowColor>
 <a:FontList>DISPNAME 0 新宋体,8,N</a:FontList>
 <c:SourceSymbol>
-<o:UMLObjectStandardSymbol Ref="o10"/>
+<o:UMLObjectStandardSymbol Ref="o8"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:UMLObjectStandardSymbol Ref="o11"/>
+<o:UMLObjectStandardSymbol Ref="o9"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o15"/>
+<o:Message Ref="o11"/>
 </c:Object>
 </o:CollaborationMessageSymbol>
-<o:CollaborationInstanceLinkSymbol Id="o16">
-<a:CreationDate>1430670703</a:CreationDate>
-<a:ModificationDate>1430670703</a:ModificationDate>
-<a:Rect>((-15675,-6450), (13275,1050))</a:Rect>
-<a:ListOfPoints>((-15675,900),(-12225,-6450),(9300,-6450),(13275,1050))</a:ListOfPoints>
-<a:ArrowStyle>0</a:ArrowStyle>
-<a:LineColor>16744576</a:LineColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>DISPNAME 0 新宋体,8,N
-InstanceLinkRole 0 新宋体,8,N</a:FontList>
-<c:MessageSymbols>
-<o:CollaborationMessageSymbol Ref="o17"/>
-</c:MessageSymbols>
-<c:SourceSymbol>
-<o:UMLObjectStandardSymbol Ref="o10"/>
-</c:SourceSymbol>
-<c:DestinationSymbol>
-<o:UMLObjectStandardSymbol Ref="o18"/>
-</c:DestinationSymbol>
-<c:Object>
-<o:InstanceLink Ref="o19"/>
-</c:Object>
-</o:CollaborationInstanceLinkSymbol>
-<o:CollaborationMessageSymbol Id="o17">
-<a:CreationDate>1430670703</a:CreationDate>
-<a:ModificationDate>1430671181</a:ModificationDate>
-<a:CenterTextOffset>(600, -1088)</a:CenterTextOffset>
-<a:DistanceFromILink>500</a:DistanceFromILink>
-<a:PercentOfLinkLength>50</a:PercentOfLinkLength>
-<a:DestinationAnchorOffset>(0, 500)</a:DestinationAnchorOffset>
-<a:Rect>((-2778,-6175), (222,-5725))</a:Rect>
-<a:ListOfPoints>((-2778,-5950),(222,-5950))</a:ListOfPoints>
-<a:ArrowStyle>1</a:ArrowStyle>
-<a:LineColor>12615808</a:LineColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>DISPNAME 0 新宋体,8,N</a:FontList>
-<c:SourceSymbol>
-<o:UMLObjectStandardSymbol Ref="o10"/>
-</c:SourceSymbol>
-<c:DestinationSymbol>
-<o:UMLObjectStandardSymbol Ref="o18"/>
-</c:DestinationSymbol>
-<c:Object>
-<o:Message Ref="o20"/>
-</c:Object>
-</o:CollaborationMessageSymbol>
-<o:CollaborationInstanceLinkSymbol Id="o21">
+<o:CollaborationInstanceLinkSymbol Id="o12">
 <a:CreationDate>1430670729</a:CreationDate>
-<a:ModificationDate>1430671174</a:ModificationDate>
-<a:Rect>((675,1025), (10500,7774))</a:Rect>
+<a:ModificationDate>1435884433</a:ModificationDate>
+<a:Rect>((675,425), (10500,7774))</a:Rect>
 <a:ListOfPoints>((10500,2775),(675,2775))</a:ListOfPoints>
 <a:ArrowStyle>0</a:ArrowStyle>
 <a:LineColor>16744576</a:LineColor>
@@ -1333,23 +1239,22 @@ InstanceLinkRole 0 新宋体,8,N</a:FontList>
 <a:FontList>DISPNAME 0 新宋体,8,N
 InstanceLinkRole 0 新宋体,8,N</a:FontList>
 <c:MessageSymbols>
-<o:CollaborationMessageSymbol Ref="o22"/>
-<o:CollaborationMessageSymbol Ref="o23"/>
-<o:CollaborationMessageSymbol Ref="o24"/>
+<o:CollaborationMessageSymbol Ref="o13"/>
+<o:CollaborationMessageSymbol Ref="o14"/>
 </c:MessageSymbols>
 <c:SourceSymbol>
-<o:UMLObjectStandardSymbol Ref="o18"/>
+<o:UMLObjectStandardSymbol Ref="o15"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:UMLObjectStandardSymbol Ref="o11"/>
+<o:UMLObjectStandardSymbol Ref="o9"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:InstanceLink Ref="o25"/>
+<o:InstanceLink Ref="o16"/>
 </c:Object>
 </o:CollaborationInstanceLinkSymbol>
-<o:CollaborationMessageSymbol Id="o24">
+<o:CollaborationMessageSymbol Id="o14">
 <a:CreationDate>1430671174</a:CreationDate>
-<a:ModificationDate>1430671182</a:ModificationDate>
+<a:ModificationDate>1435884505</a:ModificationDate>
 <a:CenterTextOffset>(-150, -1987)</a:CenterTextOffset>
 <a:DistanceFromILink>2500</a:DistanceFromILink>
 <a:PercentOfLinkLength>50</a:PercentOfLinkLength>
@@ -1361,62 +1266,39 @@ InstanceLinkRole 0 新宋体,8,N</a:FontList>
 <a:ShadowColor>12632256</a:ShadowColor>
 <a:FontList>DISPNAME 0 新宋体,8,N</a:FontList>
 <c:SourceSymbol>
-<o:UMLObjectStandardSymbol Ref="o11"/>
+<o:UMLObjectStandardSymbol Ref="o9"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:UMLObjectStandardSymbol Ref="o18"/>
+<o:UMLObjectStandardSymbol Ref="o15"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o26"/>
+<o:Message Ref="o17"/>
 </c:Object>
 </o:CollaborationMessageSymbol>
-<o:CollaborationMessageSymbol Id="o23">
+<o:CollaborationMessageSymbol Id="o13">
 <a:CreationDate>1430670752</a:CreationDate>
-<a:ModificationDate>1430671181</a:ModificationDate>
+<a:ModificationDate>1435884500</a:ModificationDate>
 <a:CenterTextOffset>(37, 2738)</a:CenterTextOffset>
-<a:DistanceFromILink>1500</a:DistanceFromILink>
-<a:PercentOfLinkLength>50</a:PercentOfLinkLength>
-<a:DestinationAnchorOffset>(0, 1500)</a:DestinationAnchorOffset>
-<a:Rect>((4088,4050), (7088,4500))</a:Rect>
-<a:ListOfPoints>((7088,4275),(4088,4275))</a:ListOfPoints>
+<a:DistanceFromILink>900</a:DistanceFromILink>
+<a:PercentOfLinkLength>51</a:PercentOfLinkLength>
+<a:DestinationAnchorOffset>(0, 900)</a:DestinationAnchorOffset>
+<a:Rect>((3990,3450), (6990,3900))</a:Rect>
+<a:ListOfPoints>((6990,3675),(3990,3675))</a:ListOfPoints>
 <a:ArrowStyle>1</a:ArrowStyle>
 <a:LineColor>12615808</a:LineColor>
 <a:ShadowColor>12632256</a:ShadowColor>
 <a:FontList>DISPNAME 0 新宋体,8,N</a:FontList>
 <c:SourceSymbol>
-<o:UMLObjectStandardSymbol Ref="o18"/>
+<o:UMLObjectStandardSymbol Ref="o15"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:UMLObjectStandardSymbol Ref="o11"/>
+<o:UMLObjectStandardSymbol Ref="o9"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o27"/>
+<o:Message Ref="o18"/>
 </c:Object>
 </o:CollaborationMessageSymbol>
-<o:CollaborationMessageSymbol Id="o22">
-<a:CreationDate>1430670729</a:CreationDate>
-<a:ModificationDate>1430671181</a:ModificationDate>
-<a:CenterTextOffset>(150, -1912)</a:CenterTextOffset>
-<a:DistanceFromILink>500</a:DistanceFromILink>
-<a:PercentOfLinkLength>50</a:PercentOfLinkLength>
-<a:DestinationAnchorOffset>(0, 500)</a:DestinationAnchorOffset>
-<a:Rect>((4088,3050), (7088,3500))</a:Rect>
-<a:ListOfPoints>((7088,3275),(4088,3275))</a:ListOfPoints>
-<a:ArrowStyle>1</a:ArrowStyle>
-<a:LineColor>12615808</a:LineColor>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>DISPNAME 0 新宋体,8,N</a:FontList>
-<c:SourceSymbol>
-<o:UMLObjectStandardSymbol Ref="o18"/>
-</c:SourceSymbol>
-<c:DestinationSymbol>
-<o:UMLObjectStandardSymbol Ref="o11"/>
-</c:DestinationSymbol>
-<c:Object>
-<o:Message Ref="o28"/>
-</c:Object>
-</o:CollaborationMessageSymbol>
-<o:UMLObjectStandardSymbol Id="o10">
+<o:UMLObjectStandardSymbol Id="o8">
 <a:CreationDate>1430670549</a:CreationDate>
 <a:ModificationDate>1430670573</a:ModificationDate>
 <a:Rect>((-17700,375), (-12901,3974))</a:Rect>
@@ -1431,10 +1313,10 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <c:Object>
-<o:UMLObject Ref="o29"/>
+<o:UMLObject Ref="o19"/>
 </c:Object>
 </o:UMLObjectStandardSymbol>
-<o:UMLObjectStandardSymbol Id="o11">
+<o:UMLObjectStandardSymbol Id="o9">
 <a:CreationDate>1430670556</a:CreationDate>
 <a:ModificationDate>1430670576</a:ModificationDate>
 <a:Rect>((-3450,225), (1349,3824))</a:Rect>
@@ -1449,10 +1331,10 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <c:Object>
-<o:UMLObject Ref="o30"/>
+<o:UMLObject Ref="o20"/>
 </c:Object>
 </o:UMLObjectStandardSymbol>
-<o:UMLObjectStandardSymbol Id="o18">
+<o:UMLObjectStandardSymbol Id="o15">
 <a:CreationDate>1430670557</a:CreationDate>
 <a:ModificationDate>1430670575</a:ModificationDate>
 <a:Rect>((9750,-75), (14549,3524))</a:Rect>
@@ -1467,14 +1349,14 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <c:Object>
-<o:UMLObject Ref="o31"/>
+<o:UMLObject Ref="o21"/>
 </c:Object>
 </o:UMLObjectStandardSymbol>
 </c:Symbols>
 </o:CommunicationDiagram>
 </c:CommunicationDiagrams>
 <c:Model.Objects>
-<o:UMLObject Id="o29">
+<o:UMLObject Id="o19">
 <a:ObjectID>327B22BE-0686-41A6-AC34-8BD1C5BBD52C</a:ObjectID>
 <a:Name>:Leader</a:Name>
 <a:Code>:Leader</a:Code>
@@ -1483,7 +1365,7 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:ModificationDate>1430670554</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 </o:UMLObject>
-<o:UMLObject Id="o30">
+<o:UMLObject Id="o20">
 <a:ObjectID>D5526CA2-7551-48CB-ADD5-B282E83E33EE</a:ObjectID>
 <a:Name>:Group</a:Name>
 <a:Code>:Group</a:Code>
@@ -1492,7 +1374,7 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:ModificationDate>1430670564</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 </o:UMLObject>
-<o:UMLObject Id="o31">
+<o:UMLObject Id="o21">
 <a:ObjectID>66253899-E195-4B0E-968A-1489A0B6BA92</a:ObjectID>
 <a:Name>:Member</a:Name>
 <a:Code>:Member</a:Code>
@@ -1503,7 +1385,7 @@ LABL 0 新宋体,8,N</a:FontList>
 </o:UMLObject>
 </c:Model.Objects>
 <c:Messages>
-<o:Message Id="o15">
+<o:Message Id="o11">
 <a:ObjectID>A3DAC290-FA69-4381-8673-6D22AF395E79</a:ObjectID>
 <a:Name>createGroup()</a:Name>
 <a:Code>createGroup</a:Code>
@@ -1513,168 +1395,84 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:Modifier>畅</a:Modifier>
 <a:SequenceNumber>1</a:SequenceNumber>
 <c:Object1>
-<o:UMLObject Ref="o30"/>
+<o:UMLObject Ref="o20"/>
 </c:Object1>
 <c:Object2>
-<o:UMLObject Ref="o29"/>
+<o:UMLObject Ref="o19"/>
 </c:Object2>
 </o:Message>
-<o:Message Id="o20">
-<a:ObjectID>1A9A67C7-109B-4F45-902E-AE6C0860B3D4</a:ObjectID>
-<a:Name>invite()</a:Name>
-<a:Code>invite</a:Code>
-<a:CreationDate>1430670703</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430670715</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<a:SequenceNumber>2</a:SequenceNumber>
-<c:Object1>
-<o:UMLObject Ref="o31"/>
-</c:Object1>
-<c:Object2>
-<o:UMLObject Ref="o29"/>
-</c:Object2>
-</o:Message>
-<o:Message Id="o28">
-<a:ObjectID>957B3739-0C5A-4B2E-A048-3B72DE165046</a:ObjectID>
-<a:Name>accpetInvitation()</a:Name>
-<a:Code>accpetInvitation</a:Code>
-<a:CreationDate>1430670729</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430670743</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<a:SequenceNumber>3</a:SequenceNumber>
-<c:Object1>
-<o:UMLObject Ref="o30"/>
-</c:Object1>
-<c:Object2>
-<o:UMLObject Ref="o31"/>
-</c:Object2>
-</o:Message>
-<o:Message Id="o27">
+<o:Message Id="o18">
 <a:ObjectID>A0231758-0253-4CBF-97E2-2EE6BD857F5D</a:ObjectID>
 <a:Name>applyToJoinGroup()</a:Name>
 <a:Code>applyToJoinGroup</a:Code>
 <a:CreationDate>1430670752</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1430670768</a:ModificationDate>
+<a:ModificationDate>1435884495</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
-<a:SequenceNumber>4</a:SequenceNumber>
+<a:SequenceNumber>2</a:SequenceNumber>
 <c:Object1>
-<o:UMLObject Ref="o30"/>
+<o:UMLObject Ref="o20"/>
 </c:Object1>
 <c:Object2>
-<o:UMLObject Ref="o31"/>
+<o:UMLObject Ref="o21"/>
 </c:Object2>
 </o:Message>
-<o:Message Id="o14">
-<a:ObjectID>D78DF10C-4C63-4F20-B593-5E4A5D07A6C3</a:ObjectID>
-<a:Name>askPermission()</a:Name>
-<a:Code>askPermission</a:Code>
-<a:CreationDate>1430670786</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430670802</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<a:SequenceNumber>6</a:SequenceNumber>
-<c:Object1>
-<o:UMLObject Ref="o29"/>
-</c:Object1>
-<c:Object2>
-<o:UMLObject Ref="o30"/>
-</c:Object2>
-</o:Message>
-<o:Message Id="o13">
-<a:ObjectID>8FA9CDFD-B3C0-4AEC-93E9-5B6C28888D85</a:ObjectID>
-<a:Name>acceptApplication()</a:Name>
-<a:Code>acceptApplication</a:Code>
-<a:CreationDate>1430671125</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671148</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<a:SequenceNumber>7</a:SequenceNumber>
-<c:Object1>
-<o:UMLObject Ref="o30"/>
-</c:Object1>
-<c:Object2>
-<o:UMLObject Ref="o29"/>
-</c:Object2>
-</o:Message>
-<o:Message Id="o26">
+<o:Message Id="o17">
 <a:ObjectID>4FDCE566-203E-432D-9CFF-14CB2C4ED41D</a:ObjectID>
 <a:Name>notifiy()</a:Name>
 <a:Code>notifiy</a:Code>
 <a:CreationDate>1430671174</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671181</a:ModificationDate>
+<a:ModificationDate>1435884500</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
-<a:SequenceNumber>8</a:SequenceNumber>
+<a:SequenceNumber>3</a:SequenceNumber>
 <c:Object1>
-<o:UMLObject Ref="o31"/>
+<o:UMLObject Ref="o21"/>
 </c:Object1>
 <c:Object2>
-<o:UMLObject Ref="o30"/>
+<o:UMLObject Ref="o20"/>
 </c:Object2>
 </o:Message>
 </c:Messages>
 <c:InstanceLinks>
-<o:InstanceLink Id="o12">
+<o:InstanceLink Id="o10">
 <a:ObjectID>29855BE9-BDD9-462C-B470-5D4587D4C26C</a:ObjectID>
 <a:CreationDate>1430670680</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671125</a:ModificationDate>
+<a:ModificationDate>1435884458</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <a:DiagramType>268435456</a:DiagramType>
 <c:Object1>
-<o:UMLObject Ref="o30"/>
+<o:UMLObject Ref="o20"/>
 </c:Object1>
 <c:Object2>
-<o:UMLObject Ref="o29"/>
+<o:UMLObject Ref="o19"/>
 </c:Object2>
 <c:InstanceLink.Messages>
-<o:Message Ref="o15"/>
-<o:Message Ref="o14"/>
-<o:Message Ref="o13"/>
+<o:Message Ref="o11"/>
 </c:InstanceLink.Messages>
 </o:InstanceLink>
-<o:InstanceLink Id="o19">
-<a:ObjectID>A3B4FAF0-C19D-45E9-A125-924B6A59C0B8</a:ObjectID>
-<a:CreationDate>1430670703</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1430670703</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<a:DiagramType>268435456</a:DiagramType>
-<c:Object1>
-<o:UMLObject Ref="o31"/>
-</c:Object1>
-<c:Object2>
-<o:UMLObject Ref="o29"/>
-</c:Object2>
-<c:InstanceLink.Messages>
-<o:Message Ref="o20"/>
-</c:InstanceLink.Messages>
-</o:InstanceLink>
-<o:InstanceLink Id="o25">
+<o:InstanceLink Id="o16">
 <a:ObjectID>A72AD390-CD8E-4F08-B56D-CB3B31D6B8FC</a:ObjectID>
 <a:CreationDate>1430670729</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1430671174</a:ModificationDate>
+<a:ModificationDate>1435884433</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <a:DiagramType>268435456</a:DiagramType>
 <c:Object1>
-<o:UMLObject Ref="o30"/>
+<o:UMLObject Ref="o20"/>
 </c:Object1>
 <c:Object2>
-<o:UMLObject Ref="o31"/>
+<o:UMLObject Ref="o21"/>
 </c:Object2>
 <c:InstanceLink.Messages>
-<o:Message Ref="o28"/>
-<o:Message Ref="o27"/>
-<o:Message Ref="o26"/>
+<o:Message Ref="o18"/>
+<o:Message Ref="o17"/>
 </c:InstanceLink.Messages>
 </o:InstanceLink>
 </c:InstanceLinks>
 <c:TargetModels>
-<o:TargetModel Id="o32">
+<o:TargetModel Id="o22">
 <a:ObjectID>EE279585-BE14-4556-80D7-7D0BABE06C3C</a:ObjectID>
 <a:Name>Java</a:Name>
 <a:Code>Java</a:Code>
@@ -1689,7 +1487,7 @@ LABL 0 新宋体,8,N</a:FontList>
 <o:Shortcut Ref="o3"/>
 </c:SessionShortcuts>
 </o:TargetModel>
-<o:TargetModel Id="o33">
+<o:TargetModel Id="o23">
 <a:ObjectID>5DFDC36B-8217-4601-A782-D78DC4E3A20C</a:ObjectID>
 <a:Name>WSDL for Java</a:Name>
 <a:Code>WSDLJava</a:Code>
