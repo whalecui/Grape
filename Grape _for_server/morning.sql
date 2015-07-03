@@ -1,6 +1,12 @@
 Drop Database if exists Grape;
 Create Database Grape;
 use Grape;
+SET NAMES utf8;
+SET CHARACTER SET utf8;
+SET character_set_client=utf8;
+SET character_set_database=utf8;
+SET character_set_results=utf8;
+SET character_set_server=utf8;
 
 Drop Table if exists groups;
 Create Table groups(
@@ -101,7 +107,7 @@ CREATE TABLE `vote_user_map` (
 `user_id` int(11) DEFAULT NULL,
 PRIMARY KEY (`vmap_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-alter table vote_user_map add column vote_time timestamp;
+alter table vote_user_map add column vote_time timestamp  not null default CURRENT_TIMESTAMP;
 ALTER TABLE vote_user_map ADD INDEX VU_MAP(vote_id);
 alter table vote_user_map add constraint VOTE_USER_LINK foreign key (vote_id) references votes(vote_id) on delete cascade;
 

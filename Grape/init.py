@@ -43,8 +43,6 @@ def initdb():
 		password = "%d" % i
 		user = User(name = name, email = email)
 		status = user.register(password)
-		if(status):
-			print "user %d insert successfully!"% i
 
 
 		user = User(user_id = 0)
@@ -62,8 +60,6 @@ def initdb():
 		confirm = "We are grapers"
 		user = User(user_id = i)
 		status = user.join_group(group_id = 1, confirm = confirm)
-		if(status=='success'):
-			print "user %d joins the group!"% (i)
 
 
 	

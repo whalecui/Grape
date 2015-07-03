@@ -174,9 +174,7 @@ class User:
             cursor.execute("select member_id from groupMemberAssosiation where group_id='"+str(group_id)+"';")
             member_list = cursor.fetchall()
             if(str(self.user_id) in member_list):
-                print 'already joined', group_id
                 return 'joined'
-            print confirm,233,group.confirmMessage
             if(confirm == group.confirmMessage):
 
                 create_message = "Have a look at new bulletin(s) in Group %s!" % group.name
@@ -200,14 +198,11 @@ class User:
                 cursor.execute("insert into groupMemberAssosiation(group_id,member_id) values(%s,%s) ;", (group_id, self.user_id) )
                 conn.commit()
                 conn.close()
-                print 'joined group successfully :', group_id
                 return 'success'
             else:
                 conn.close()
-                print 'failed to join group :', group_id
                 return 'fail'
         conn.close()
-        print 'group :', group_id, 'does not exist'
         return 'non-ex'
 
     def quit_group(self,group_id):
