@@ -12,7 +12,7 @@
 <a:Code>ObjectOrientedModel_1</a:Code>
 <a:CreationDate>1435900209</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1435901458</a:ModificationDate>
+<a:ModificationDate>1435902765</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <a:PackageOptionsText>[FolderOptions]
 
@@ -923,7 +923,7 @@ NameToCode=No</a:ModelOptionsText>
 <a:Code>SequenceDiagram_1</a:Code>
 <a:CreationDate>1435900209</a:CreationDate>
 <a:Creator>畅</a:Creator>
-<a:ModificationDate>1435901458</a:ModificationDate>
+<a:ModificationDate>1435902765</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <a:DisplayPreferences>[DisplayPreferences]
 
@@ -1343,8 +1343,8 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 <o:MessageSymbol Id="o17">
 <a:CreationDate>1435901373</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
-<a:Rect>((-15052,-11325), (7531,-9929))</a:Rect>
-<a:ListOfPoints>((7531,-11025),(-15052,-11025))</a:ListOfPoints>
+<a:Rect>((-15052,-11325), (7530,-9929))</a:Rect>
+<a:ListOfPoints>((7530,-11025),(-15052,-11025))</a:ListOfPoints>
 <a:ArrowStyle>8</a:ArrowStyle>
 <a:LineColor>12615808</a:LineColor>
 <a:DashStyle>2</a:DashStyle>
@@ -1365,8 +1365,8 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 <o:MessageSymbol Id="o19">
 <a:CreationDate>1435901359</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
-<a:Rect>((7531,-11263), (16268,-9867))</a:Rect>
-<a:ListOfPoints>((7531,-10963),(16268,-10963))</a:ListOfPoints>
+<a:Rect>((7530,-11263), (16268,-9867))</a:Rect>
+<a:ListOfPoints>((7530,-10963),(16268,-10963))</a:ListOfPoints>
 <a:ArrowStyle>8</a:ArrowStyle>
 <a:LineColor>12615808</a:LineColor>
 <a:DashStyle>2</a:DashStyle>
@@ -1469,10 +1469,10 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 </c:Object>
 </o:MessageSymbol>
 <o:MessageSymbol Id="o31">
-<a:CreationDate>1435901040</a:CreationDate>
+<a:CreationDate>1435901018</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
-<a:Rect>((-6885,13795), (16268,15191))</a:Rect>
-<a:ListOfPoints>((-6885,14095),(16268,14095))</a:ListOfPoints>
+<a:Rect>((-135,1482), (16268,2878))</a:Rect>
+<a:ListOfPoints>((-135,1782),(16268,1782))</a:ListOfPoints>
 <a:ArrowStyle>8</a:ArrowStyle>
 <a:LineColor>12615808</a:LineColor>
 <a:DashStyle>2</a:DashStyle>
@@ -1491,28 +1491,6 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 </c:Object>
 </o:MessageSymbol>
 <o:MessageSymbol Id="o34">
-<a:CreationDate>1435901018</a:CreationDate>
-<a:ModificationDate>1435901552</a:ModificationDate>
-<a:Rect>((-135,1482), (16268,2878))</a:Rect>
-<a:ListOfPoints>((-135,1782),(16268,1782))</a:ListOfPoints>
-<a:ArrowStyle>8</a:ArrowStyle>
-<a:LineColor>12615808</a:LineColor>
-<a:DashStyle>2</a:DashStyle>
-<a:ShadowColor>12632256</a:ShadowColor>
-<a:FontList>DISPNAME 0 新宋体,8,N
-MessageBeginTime 0 新宋体,8,N
-MessageEndTime 0 新宋体,8,N</a:FontList>
-<c:SourceSymbol>
-<o:ActivationSymbol Ref="o35"/>
-</c:SourceSymbol>
-<c:DestinationSymbol>
-<o:ActorSequenceSymbol Ref="o12"/>
-</c:DestinationSymbol>
-<c:Object>
-<o:Message Ref="o36"/>
-</c:Object>
-</o:MessageSymbol>
-<o:MessageSymbol Id="o37">
 <a:CreationDate>1435901000</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
 <a:Rect>((-15052,4690), (-262,6011))</a:Rect>
@@ -1530,10 +1508,10 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 <o:UMLObjectSequenceSymbol Ref="o26"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o38"/>
+<o:Message Ref="o35"/>
 </c:Object>
 </o:MessageSymbol>
-<o:MessageSymbol Id="o39">
+<o:MessageSymbol Id="o36">
 <a:CreationDate>1435900972</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
 <a:Rect>((-6877,10826), (16268,12221))</a:Rect>
@@ -1548,13 +1526,13 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 <o:ActorSequenceSymbol Ref="o12"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:ActivationSymbol Ref="o40"/>
+<o:ActivationSymbol Ref="o37"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o41"/>
+<o:Message Ref="o38"/>
 </c:Object>
 </o:MessageSymbol>
-<o:MessageSymbol Id="o42">
+<o:MessageSymbol Id="o39">
 <a:CreationDate>1435900956</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
 <a:Rect>((-15052,12092), (-6877,13413))</a:Rect>
@@ -1569,13 +1547,13 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 <o:ActorSequenceSymbol Ref="o8"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:ActivationSymbol Ref="o40"/>
+<o:ActivationSymbol Ref="o37"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o43"/>
+<o:Message Ref="o40"/>
 </c:Object>
 </o:MessageSymbol>
-<o:MessageSymbol Id="o44">
+<o:MessageSymbol Id="o41">
 <a:CreationDate>1435900931</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
 <a:Rect>((-15052,8329), (-6877,9725))</a:Rect>
@@ -1590,13 +1568,13 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 <o:ActorSequenceSymbol Ref="o8"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:UMLObjectSequenceSymbol Ref="o45"/>
+<o:UMLObjectSequenceSymbol Ref="o42"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o46"/>
+<o:Message Ref="o43"/>
 </c:Object>
 </o:MessageSymbol>
-<o:MessageSymbol Id="o47">
+<o:MessageSymbol Id="o44">
 <a:CreationDate>1435900576</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
 <a:Rect>((-15052,14907), (-7183,16303))</a:Rect>
@@ -1611,13 +1589,13 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 <o:ActorSequenceSymbol Ref="o8"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:ActivationSymbol Ref="o32"/>
+<o:ActivationSymbol Ref="o45"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o48"/>
+<o:Message Ref="o46"/>
 </c:Object>
 </o:MessageSymbol>
-<o:MessageSymbol Id="o49">
+<o:MessageSymbol Id="o47">
 <a:CreationDate>1435900543</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
 <a:Rect>((-6877,15951), (-1215,17847))</a:Rect>
@@ -1629,16 +1607,16 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 MessageBeginTime 0 新宋体,8,N
 MessageEndTime 0 新宋体,8,N</a:FontList>
 <c:SourceSymbol>
-<o:ActivationSymbol Ref="o50"/>
+<o:ActivationSymbol Ref="o48"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:ActivationSymbol Ref="o32"/>
+<o:ActivationSymbol Ref="o45"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o51"/>
+<o:Message Ref="o49"/>
 </c:Object>
 </o:MessageSymbol>
-<o:MessageSymbol Id="o52">
+<o:MessageSymbol Id="o50">
 <a:CreationDate>1435900395</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
 <a:Rect>((-6877,19245), (16268,20566))</a:Rect>
@@ -1653,13 +1631,13 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 <o:ActorSequenceSymbol Ref="o12"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:ActivationSymbol Ref="o50"/>
+<o:ActivationSymbol Ref="o48"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o53"/>
+<o:Message Ref="o51"/>
 </c:Object>
 </o:MessageSymbol>
-<o:MessageSymbol Id="o54">
+<o:MessageSymbol Id="o52">
 <a:CreationDate>1435900313</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
 <a:Rect>((-6877,21045), (16268,22441))</a:Rect>
@@ -1672,16 +1650,16 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 MessageBeginTime 0 新宋体,8,N
 MessageEndTime 0 新宋体,8,N</a:FontList>
 <c:SourceSymbol>
-<o:UMLObjectSequenceSymbol Ref="o45"/>
+<o:UMLObjectSequenceSymbol Ref="o42"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
 <o:ActorSequenceSymbol Ref="o12"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o55"/>
+<o:Message Ref="o53"/>
 </c:Object>
 </o:MessageSymbol>
-<o:MessageSymbol Id="o56">
+<o:MessageSymbol Id="o54">
 <a:CreationDate>1435900277</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
 <a:Rect>((-15052,24140), (-6877,25461))</a:Rect>
@@ -1696,10 +1674,10 @@ MessageEndTime 0 新宋体,8,N</a:FontList>
 <o:ActorSequenceSymbol Ref="o8"/>
 </c:SourceSymbol>
 <c:DestinationSymbol>
-<o:UMLObjectSequenceSymbol Ref="o45"/>
+<o:UMLObjectSequenceSymbol Ref="o42"/>
 </c:DestinationSymbol>
 <c:Object>
-<o:Message Ref="o57"/>
+<o:Message Ref="o55"/>
 </c:Object>
 </o:MessageSymbol>
 <o:ActorSequenceSymbol Id="o8">
@@ -1715,7 +1693,7 @@ DISPNAME 0 新宋体,8,N</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <c:SlaveSubSymbols>
-<o:LifelineSymbol Id="o58">
+<o:LifelineSymbol Id="o56">
 <a:ModificationDate>1435901458</a:ModificationDate>
 <a:Rect>((-15052,-21775), (-14952,29236))</a:Rect>
 <a:ListOfPoints>((-15052,29236),(-15052,-21775))</a:ListOfPoints>
@@ -1726,7 +1704,7 @@ DISPNAME 0 新宋体,8,N</a:FontList>
 </o:LifelineSymbol>
 </c:SlaveSubSymbols>
 <c:Object>
-<o:Actor Ref="o59"/>
+<o:Actor Ref="o57"/>
 </c:Object>
 </o:ActorSequenceSymbol>
 <o:ActorSequenceSymbol Id="o12">
@@ -1742,7 +1720,7 @@ DISPNAME 0 新宋体,8,N</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <c:SlaveSubSymbols>
-<o:LifelineSymbol Id="o60">
+<o:LifelineSymbol Id="o58">
 <a:ModificationDate>1435901458</a:ModificationDate>
 <a:Rect>((16268,-21775), (16368,29236))</a:Rect>
 <a:ListOfPoints>((16268,29236),(16268,-21775))</a:ListOfPoints>
@@ -1753,10 +1731,10 @@ DISPNAME 0 新宋体,8,N</a:FontList>
 </o:LifelineSymbol>
 </c:SlaveSubSymbols>
 <c:Object>
-<o:Actor Ref="o61"/>
+<o:Actor Ref="o59"/>
 </c:Object>
 </o:ActorSequenceSymbol>
-<o:UMLObjectSequenceSymbol Id="o45">
+<o:UMLObjectSequenceSymbol Id="o42">
 <a:CreationDate>1435900261</a:CreationDate>
 <a:ModificationDate>1435901552</a:ModificationDate>
 <a:Rect>((-9277,22566), (-4478,26165))</a:Rect>
@@ -1769,7 +1747,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <c:SlaveSubSymbols>
-<o:LifelineSymbol Id="o62">
+<o:LifelineSymbol Id="o60">
 <a:ModificationDate>1435901458</a:ModificationDate>
 <a:Rect>((-6877,-21775), (-6777,22566))</a:Rect>
 <a:ListOfPoints>((-6877,22566),(-6877,-21775))</a:ListOfPoints>
@@ -1778,7 +1756,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:DashStyle>3</a:DashStyle>
 <a:ShadowColor>8421504</a:ShadowColor>
 </o:LifelineSymbol>
-<o:ActivationSymbol Id="o63">
+<o:ActivationSymbol Id="o61">
 <a:CreationDate>1435900277</a:CreationDate>
 <a:ModificationDate>1435900277</a:ModificationDate>
 <a:Rect>((-7327,21069), (-6427,22562))</a:Rect>
@@ -1789,7 +1767,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 </o:ActivationSymbol>
-<o:ActivationSymbol Id="o50">
+<o:ActivationSymbol Id="o48">
 <a:CreationDate>1435900395</a:CreationDate>
 <a:ModificationDate>1435900663</a:ModificationDate>
 <a:Rect>((-7327,17070), (-6427,19480))</a:Rect>
@@ -1800,7 +1778,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 </o:ActivationSymbol>
-<o:ActivationSymbol Id="o32">
+<o:ActivationSymbol Id="o45">
 <a:CreationDate>1435900543</a:CreationDate>
 <a:ModificationDate>1435900663</a:ModificationDate>
 <a:Rect>((-7327,13551), (-6427,15951))</a:Rect>
@@ -1811,7 +1789,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 </o:ActivationSymbol>
-<o:ActivationSymbol Id="o40">
+<o:ActivationSymbol Id="o37">
 <a:CreationDate>1435900956</a:CreationDate>
 <a:ModificationDate>1435900956</a:ModificationDate>
 <a:Rect>((-7327,9917), (-6427,12327))</a:Rect>
@@ -1824,7 +1802,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 </o:ActivationSymbol>
 </c:SlaveSubSymbols>
 <c:Object>
-<o:UMLObject Ref="o64"/>
+<o:UMLObject Ref="o62"/>
 </c:Object>
 </o:UMLObjectSequenceSymbol>
 <o:UMLObjectSequenceSymbol Id="o26">
@@ -1840,7 +1818,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <c:SlaveSubSymbols>
-<o:LifelineSymbol Id="o65">
+<o:LifelineSymbol Id="o63">
 <a:ModificationDate>1435901458</a:ModificationDate>
 <a:Rect>((-262,-21775), (-162,3115))</a:Rect>
 <a:ListOfPoints>((-262,3115),(-262,-21775))</a:ListOfPoints>
@@ -1849,7 +1827,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:DashStyle>3</a:DashStyle>
 <a:ShadowColor>8421504</a:ShadowColor>
 </o:LifelineSymbol>
-<o:ActivationSymbol Id="o35">
+<o:ActivationSymbol Id="o32">
 <a:CreationDate>1435901000</a:CreationDate>
 <a:ModificationDate>1435901000</a:ModificationDate>
 <a:Rect>((-712,1618), (188,3111))</a:Rect>
@@ -1873,7 +1851,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 </o:ActivationSymbol>
 </c:SlaveSubSymbols>
 <c:Object>
-<o:UMLObject Ref="o66"/>
+<o:UMLObject Ref="o64"/>
 </c:Object>
 </o:UMLObjectSequenceSymbol>
 <o:UMLObjectSequenceSymbol Id="o9">
@@ -1889,7 +1867,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <c:SlaveSubSymbols>
-<o:LifelineSymbol Id="o67">
+<o:LifelineSymbol Id="o65">
 <a:ModificationDate>1435901458</a:ModificationDate>
 <a:Rect>((7530,-21775), (7630,-8137))</a:Rect>
 <a:ListOfPoints>((7530,-8137),(7530,-21775))</a:ListOfPoints>
@@ -1898,7 +1876,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:DashStyle>3</a:DashStyle>
 <a:ShadowColor>8421504</a:ShadowColor>
 </o:LifelineSymbol>
-<o:ActivationSymbol Id="o68">
+<o:ActivationSymbol Id="o66">
 <a:CreationDate>1435901233</a:CreationDate>
 <a:ModificationDate>1435901233</a:ModificationDate>
 <a:Rect>((7081,-9634), (7981,-8141))</a:Rect>
@@ -1922,14 +1900,14 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 </o:ActivationSymbol>
 </c:SlaveSubSymbols>
 <c:Object>
-<o:UMLObject Ref="o69"/>
+<o:UMLObject Ref="o67"/>
 </c:Object>
 </o:UMLObjectSequenceSymbol>
 </c:Symbols>
 </o:SequenceDiagram>
 </c:SequenceDiagrams>
 <c:Actors>
-<o:Actor Id="o59">
+<o:Actor Id="o57">
 <a:ObjectID>B4E85C09-EB89-4375-AE4A-9FE20E81E090</a:ObjectID>
 <a:Name>Leader</a:Name>
 <a:Code>Leader</a:Code>
@@ -1938,7 +1916,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ModificationDate>1435900226</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 </o:Actor>
-<o:Actor Id="o61">
+<o:Actor Id="o59">
 <a:ObjectID>A1A4359A-C027-4B4B-9518-6E4D563CE8F2</a:ObjectID>
 <a:Name>Member</a:Name>
 <a:Code>Member</a:Code>
@@ -1949,7 +1927,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 </o:Actor>
 </c:Actors>
 <c:Model.Objects>
-<o:UMLObject Id="o64">
+<o:UMLObject Id="o62">
 <a:ObjectID>4099AF93-CA37-4EC9-8062-46E1DB2C648F</a:ObjectID>
 <a:Name>Vote</a:Name>
 <a:Code>Vote</a:Code>
@@ -1958,7 +1936,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ModificationDate>1435900286</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 </o:UMLObject>
-<o:UMLObject Id="o66">
+<o:UMLObject Id="o64">
 <a:ObjectID>394FDEFE-63E5-4E52-904F-EA97FEBB15C8</a:ObjectID>
 <a:Name>Bulletin</a:Name>
 <a:Code>Bulletin</a:Code>
@@ -1967,7 +1945,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ModificationDate>1435900668</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 </o:UMLObject>
-<o:UMLObject Id="o69">
+<o:UMLObject Id="o67">
 <a:ObjectID>52A46887-6F2D-40B9-AE74-AAD989E8C81C</a:ObjectID>
 <a:Name>Discussion</a:Name>
 <a:Code>Discussion</a:Code>
@@ -1978,7 +1956,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 </o:UMLObject>
 </c:Model.Objects>
 <c:Messages>
-<o:Message Id="o57">
+<o:Message Id="o55">
 <a:ObjectID>3BFA9A51-C5B4-423C-B2BA-A15DB54638A0</a:ObjectID>
 <a:Name>newVote()</a:Name>
 <a:Code>newVote</a:Code>
@@ -1989,13 +1967,13 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ControlFlow>C</a:ControlFlow>
 <a:Message.Action>C</a:Message.Action>
 <c:Object1>
-<o:UMLObject Ref="o64"/>
+<o:UMLObject Ref="o62"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o59"/>
+<o:Actor Ref="o57"/>
 </c:Object2>
 </o:Message>
-<o:Message Id="o55">
+<o:Message Id="o53">
 <a:ObjectID>C1CEE1E8-4BC8-45FF-8332-B55A6791AAAA</a:ObjectID>
 <a:Name>notify()</a:Name>
 <a:Code>notify</a:Code>
@@ -2005,13 +1983,13 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:Modifier>畅</a:Modifier>
 <a:ControlFlow>R</a:ControlFlow>
 <c:Object1>
-<o:Actor Ref="o61"/>
+<o:Actor Ref="o59"/>
 </c:Object1>
 <c:Object2>
-<o:UMLObject Ref="o64"/>
+<o:UMLObject Ref="o62"/>
 </c:Object2>
 </o:Message>
-<o:Message Id="o53">
+<o:Message Id="o51">
 <a:ObjectID>8C93A3D3-83CC-475D-B6FF-DB1402D8DCEB</a:ObjectID>
 <a:Name>*attendVote()</a:Name>
 <a:Code>attendVote</a:Code>
@@ -2021,13 +1999,13 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:Modifier>畅</a:Modifier>
 <a:ControlFlow>C</a:ControlFlow>
 <c:Object1>
-<o:UMLObject Ref="o64"/>
+<o:UMLObject Ref="o62"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o61"/>
+<o:Actor Ref="o59"/>
 </c:Object2>
 </o:Message>
-<o:Message Id="o51">
+<o:Message Id="o49">
 <a:ObjectID>769E540D-3177-4643-A259-39F26AB54ACB</a:ObjectID>
 <a:Name>deadline()</a:Name>
 <a:Code>deadline</a:Code>
@@ -2038,13 +2016,13 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ControlFlow>C</a:ControlFlow>
 <a:Delay>1</a:Delay>
 <c:Object1>
-<o:UMLObject Ref="o64"/>
+<o:UMLObject Ref="o62"/>
 </c:Object1>
 <c:Object2>
-<o:UMLObject Ref="o64"/>
+<o:UMLObject Ref="o62"/>
 </c:Object2>
 </o:Message>
-<o:Message Id="o48">
+<o:Message Id="o46">
 <a:ObjectID>E4E8460A-373E-446B-8E34-D71E911503D9</a:ObjectID>
 <a:Name>endVote()</a:Name>
 <a:Code>endVote</a:Code>
@@ -2053,13 +2031,13 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ModificationDate>1435900587</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <c:Object1>
-<o:UMLObject Ref="o64"/>
+<o:UMLObject Ref="o62"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o59"/>
+<o:Actor Ref="o57"/>
 </c:Object2>
 </o:Message>
-<o:Message Id="o46">
+<o:Message Id="o43">
 <a:ObjectID>FFA419CF-E229-4489-9726-03C9EA9C9607</a:ObjectID>
 <a:Name>deleteVote()</a:Name>
 <a:Code>deleteVote</a:Code>
@@ -2068,13 +2046,13 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ModificationDate>1435900941</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <c:Object1>
-<o:UMLObject Ref="o64"/>
+<o:UMLObject Ref="o62"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o59"/>
+<o:Actor Ref="o57"/>
 </c:Object2>
 </o:Message>
-<o:Message Id="o43">
+<o:Message Id="o40">
 <a:ObjectID>196F3E17-6980-48E4-AD0F-AAC960CB8A14</a:ObjectID>
 <a:Name>viewResult()</a:Name>
 <a:Code>viewResult</a:Code>
@@ -2084,13 +2062,13 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:Modifier>畅</a:Modifier>
 <a:ControlFlow>C</a:ControlFlow>
 <c:Object1>
-<o:UMLObject Ref="o64"/>
+<o:UMLObject Ref="o62"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o59"/>
+<o:Actor Ref="o57"/>
 </c:Object2>
 </o:Message>
-<o:Message Id="o41">
+<o:Message Id="o38">
 <a:ObjectID>96034C81-E505-441A-9436-AFFABC08D25F</a:ObjectID>
 <a:Name>viewResult()</a:Name>
 <a:Code>viewResult</a:Code>
@@ -2099,13 +2077,13 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ModificationDate>1435900988</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <c:Object1>
-<o:UMLObject Ref="o64"/>
+<o:UMLObject Ref="o62"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o61"/>
+<o:Actor Ref="o59"/>
 </c:Object2>
 </o:Message>
-<o:Message Id="o38">
+<o:Message Id="o35">
 <a:ObjectID>ECA49C6A-4A6C-426F-A954-295A4CE8D9D4</a:ObjectID>
 <a:Name>newBulletin()</a:Name>
 <a:Code>newBulletin</a:Code>
@@ -2116,13 +2094,13 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ControlFlow>C</a:ControlFlow>
 <a:Message.Action>C</a:Message.Action>
 <c:Object1>
-<o:UMLObject Ref="o66"/>
+<o:UMLObject Ref="o64"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o59"/>
+<o:Actor Ref="o57"/>
 </c:Object2>
 </o:Message>
-<o:Message Id="o36">
+<o:Message Id="o33">
 <a:ObjectID>3DBEEC89-FEE3-475A-AF0E-3758FBBE39F9</a:ObjectID>
 <a:Name>notify()</a:Name>
 <a:Code>notify</a:Code>
@@ -2132,23 +2110,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:Modifier>畅</a:Modifier>
 <a:ControlFlow>R</a:ControlFlow>
 <c:Object1>
-<o:Actor Ref="o61"/>
-</c:Object1>
-<c:Object2>
-<o:UMLObject Ref="o66"/>
-</c:Object2>
-</o:Message>
-<o:Message Id="o33">
-<a:ObjectID>C491BE5F-475E-47D2-B663-F119F6343A93</a:ObjectID>
-<a:Name>notify()</a:Name>
-<a:Code>notify</a:Code>
-<a:CreationDate>1435901040</a:CreationDate>
-<a:Creator>畅</a:Creator>
-<a:ModificationDate>1435901047</a:ModificationDate>
-<a:Modifier>畅</a:Modifier>
-<a:ControlFlow>R</a:ControlFlow>
-<c:Object1>
-<o:Actor Ref="o61"/>
+<o:Actor Ref="o59"/>
 </c:Object1>
 <c:Object2>
 <o:UMLObject Ref="o64"/>
@@ -2164,10 +2126,10 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:Modifier>畅</a:Modifier>
 <a:ControlFlow>C</a:ControlFlow>
 <c:Object1>
-<o:UMLObject Ref="o66"/>
+<o:UMLObject Ref="o64"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o61"/>
+<o:Actor Ref="o59"/>
 </c:Object2>
 </o:Message>
 <o:Message Id="o27">
@@ -2179,10 +2141,10 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ModificationDate>1435901202</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <c:Object1>
-<o:UMLObject Ref="o66"/>
+<o:UMLObject Ref="o64"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o59"/>
+<o:Actor Ref="o57"/>
 </c:Object2>
 </o:Message>
 <o:Message Id="o24">
@@ -2196,10 +2158,10 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ControlFlow>C</a:ControlFlow>
 <a:Message.Action>C</a:Message.Action>
 <c:Object1>
-<o:UMLObject Ref="o69"/>
+<o:UMLObject Ref="o67"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o59"/>
+<o:Actor Ref="o57"/>
 </c:Object2>
 </o:Message>
 <o:Message Id="o22">
@@ -2211,10 +2173,10 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ModificationDate>1435901327</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <c:Object1>
-<o:UMLObject Ref="o69"/>
+<o:UMLObject Ref="o67"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o61"/>
+<o:Actor Ref="o59"/>
 </c:Object2>
 </o:Message>
 <o:Message Id="o20">
@@ -2227,10 +2189,10 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:Modifier>畅</a:Modifier>
 <a:ControlFlow>R</a:ControlFlow>
 <c:Object1>
-<o:Actor Ref="o61"/>
+<o:Actor Ref="o59"/>
 </c:Object1>
 <c:Object2>
-<o:UMLObject Ref="o69"/>
+<o:UMLObject Ref="o67"/>
 </c:Object2>
 </o:Message>
 <o:Message Id="o18">
@@ -2243,10 +2205,10 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:Modifier>畅</a:Modifier>
 <a:ControlFlow>R</a:ControlFlow>
 <c:Object1>
-<o:Actor Ref="o59"/>
+<o:Actor Ref="o57"/>
 </c:Object1>
 <c:Object2>
-<o:UMLObject Ref="o69"/>
+<o:UMLObject Ref="o67"/>
 </c:Object2>
 </o:Message>
 <o:Message Id="o16">
@@ -2259,10 +2221,10 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:Modifier>畅</a:Modifier>
 <a:ControlFlow>C</a:ControlFlow>
 <c:Object1>
-<o:UMLObject Ref="o69"/>
+<o:UMLObject Ref="o67"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o59"/>
+<o:Actor Ref="o57"/>
 </c:Object2>
 </o:Message>
 <o:Message Id="o14">
@@ -2275,10 +2237,10 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:Modifier>畅</a:Modifier>
 <a:ControlFlow>C</a:ControlFlow>
 <c:Object1>
-<o:UMLObject Ref="o69"/>
+<o:UMLObject Ref="o67"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o61"/>
+<o:Actor Ref="o59"/>
 </c:Object2>
 </o:Message>
 <o:Message Id="o10">
@@ -2290,15 +2252,15 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <a:ModificationDate>1435901472</a:ModificationDate>
 <a:Modifier>畅</a:Modifier>
 <c:Object1>
-<o:UMLObject Ref="o69"/>
+<o:UMLObject Ref="o67"/>
 </c:Object1>
 <c:Object2>
-<o:Actor Ref="o59"/>
+<o:Actor Ref="o57"/>
 </c:Object2>
 </o:Message>
 </c:Messages>
 <c:TargetModels>
-<o:TargetModel Id="o70">
+<o:TargetModel Id="o68">
 <a:ObjectID>2365D22F-F8A5-4C6C-94BF-81BB94E734C6</a:ObjectID>
 <a:Name>Java</a:Name>
 <a:Code>Java</a:Code>
@@ -2313,7 +2275,7 @@ DISPNAME 0 新宋体,8,U</a:FontList>
 <o:Shortcut Ref="o3"/>
 </c:SessionShortcuts>
 </o:TargetModel>
-<o:TargetModel Id="o71">
+<o:TargetModel Id="o69">
 <a:ObjectID>8D991FE2-5B3A-4D04-A014-CE039E697969</a:ObjectID>
 <a:Name>WSDL for Java</a:Name>
 <a:Code>WSDLJava</a:Code>
